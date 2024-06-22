@@ -18,7 +18,64 @@ $ pip install neopipe
 ## Usage
 
 A single Threaded sequential execution example:
+```
+import logging
+from typing import Callable, List, Any
+from neopipe.result import Result, Ok, Err
 from neopipe.pipeline import Pipeline
+
+# Initialize logging
+logging.basicConfig(level=logging.INFO)
+
+# Define your pipeline
+pipeline = Pipeline()
+
+# Define example tasks using pipeline.task decorator
+
+@pipeline.task(retries=3)
+def get_all_users(data):
+    # Example task: Extract names from data
+    try:
+        names = [item["name"] for item in data]
+        return Ok(names)
+    except KeyError as e:
+        return Err(f"KeyError: {str(e)}")
+
+@pipeline.task(retries=2)
+def filter_users_by_length(names):
+    # Example task: Filter names based on criteria
+    filtered_names = [name for name in names if len(name) > 3]
+    return Ok(filtered_names)
+
+@pipeline.task()
+def calculate_statistics(filtered_names):
+    # Example task: Calculate statistics
+    statistics = {
+        "total_names": len(filtered_names),
+        "longest_name": max(filtered_names, key=len) if filtered_names else None
+    }
+    return Ok(statistics)
+
+# Sample data
+sample_data = [
+    {"name": "Alice"},
+    {"name": "Bob"},
+    {"name": "Charlie"},
+    {"name": "David"},
+    {"name": "Eve"},
+]
+
+# Run the pipeline
+result = pipeline.run(sample_data, show_progress=True)  # Set verbosity to True to display progress bar
+
+# Check the final result
+if result.is_ok():
+    final_statistics = result.unwrap()
+    logging.info(f"Pipeline completed successfully. Statistics: {final_statistics}")
+else:
+    logging.error(f"Pipeline failed. Error: {result.unwrap_err()}")
+
+```
 
 ## Contributing
 
