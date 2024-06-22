@@ -2,8 +2,9 @@ from dataclasses import dataclass, field, asdict
 from typing import TypeVar, Generic, Optional
 import json
 
-T = TypeVar('T')
-E = TypeVar('E')
+T = TypeVar("T")
+E = TypeVar("E")
+
 
 @dataclass
 class Result(Generic[T, E]):
@@ -32,9 +33,11 @@ class Result(Generic[T, E]):
     def to_json(self) -> str:
         return json.dumps(self.to_dict())
 
+
 # Utility functions
 def Ok(value: T) -> Result[T, None]:
     return Result(value=value)
+
 
 def Err(error: E) -> Result[None, E]:
     return Result(error=error)
@@ -42,6 +45,7 @@ def Err(error: E) -> Result[None, E]:
 
 def Ok(value: T) -> Result[T, None]:
     return Result(value=value)
+
 
 def Err(error: E) -> Result[None, E]:
     return Result(error=error)
