@@ -43,10 +43,10 @@ If you are proposing a feature:
 Ready to contribute? Here's how to set up `neopipe` for local development.
 
 1. Download a copy of `neopipe` locally.
-2. Install `neopipe` using `poetry`:
+2. Install `neopipe` using pip as editable:
 
     ```console
-    $ poetry install
+    $ pip install -e .
     ```
 
 3. Use `git` (or similar) to create a branch for local development and make your changes:

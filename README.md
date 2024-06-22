@@ -29,7 +29,7 @@ Interested in contributing? Check out the contributing guidelines. Please note t
 
 ## Credits
 
-`neopipe` was initially built using [`cookiecutter`](https://cookiecutter.readthedocs.io/en/latest/) with the `py-pkgs-cookiecutter` [template](https://github.com/py-pkgs/py-pkgs-cookiecutter). But later found some draw back and later adjusted to use Hatch as backend wtith Hatch[] tool set, which also remove third party python dependency manager from the project.
+`neopipe` was initially built using [`cookiecutter`](https://cookiecutter.readthedocs.io/en/latest/). But later found some draw back and later adjusted to use Hatch as backend wtith [`Hatch`](https://hatch.pypa.io/1.8/intro/) tool set, which also remove third party python dependency manager from the project.
 
 Modifications include:
 - Hatchling build system
