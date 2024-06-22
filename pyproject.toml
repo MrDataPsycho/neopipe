@@ -5,22 +5,56 @@ build-backend = "hatchling.build"
 [project]
 name = "neopipe"
 dynamic = ["version"]
-description = "A Python library for seamless function orchestration, inspired by Rust and scikit-learn pipelines. Designed to streamline workflow management in microservices and AI-powered applications."
+description = 'A Python library for seamless function orchestration, Designed to streamline workflow management in microservices and AI-powered applications'
 readme = "README.md"
-license = "MIT"
-authors = [
-    { name = "MrDataPsycho", email = "mr.data.psycho@gmail.com" }
-]
 requires-python = ">=3.9"
-
-
-[tool.hatch.version]
-path = "src/neopipe/__init__.py"
-
-
-[tool.hatch.metadata]
-allow-direct-references = true
+license = "MIT"
+keywords = []
+authors = [
+  { name = "MrDataPsycho", email = "mr.data.psycho@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/DataPsycho/neopipe.git"
-Issues = "https://github.com/DataPsycho/neopipe.git/issues"
+Documentation = "https://github.com/MrDataPsycho/neopipee#readme"
+Issues = "https://github.com/MrDataPsycho/neopipe/issues"
+Source = "https://github.com/MrDataPsycho/neopipe"
+
+[tool.hatch.version]
+path = "src/neopipe_example/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/neopipe_example tests}"
+
+[tool.coverage.run]
+source_pkgs = ["neopipe_example", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/neopipe_example/__about__.py",
+]
+
+[tool.coverage.paths]
+neopipe_example = ["src/neopipe_example", "*/neopipe-example/src/neopipe_example"]
+tests = ["tests", "*/neopipe-example/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]

@@ -1,1 +1,1 @@
-from neopipe import neopipe
+from neopipe import pipeline
