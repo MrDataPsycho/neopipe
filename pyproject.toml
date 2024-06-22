@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "neopipe"
+dynamic = ["version"]
+description = "A Python library for seamless function orchestration, inspired by Rust and scikit-learn pipelines. Designed to streamline workflow management in microservices and AI-powered applications."
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "MrDataPsycho", email = "mr.data.psycho@gmail.com" }
+]
+requires-python = ">=3.9"
+
+
+[tool.hatch.version]
+path = "src/neopipe/__init__.py"
+
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[project.urls]
+Homepage = "https://github.com/DataPsycho/neopipe.git"
+Issues = "https://github.com/DataPsycho/neopipe.git/issues"
