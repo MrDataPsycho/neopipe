@@ -31,7 +31,7 @@ Issues = "https://github.com/MrDataPsycho/neopipe/issues"
 Source = "https://github.com/MrDataPsycho/neopipe"
 
 [tool.hatch.version]
-path = "src/neopipe_example/__about__.py"
+path = "src/neopipe/__about__.py"
 
 [tool.hatch.envs.types]
 extra-dependencies = [
@@ -45,7 +45,7 @@ source_pkgs = ["neopipe_example", "tests"]
 branch = true
 parallel = true
 omit = [
-  "src/neopipe_example/__about__.py",
+  "src/neopipe/__about__.py",
 ]
 
 [tool.coverage.paths]
