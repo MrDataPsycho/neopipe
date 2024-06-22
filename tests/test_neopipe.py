@@ -1,1 +1,0 @@
-from neopipe import pipeline

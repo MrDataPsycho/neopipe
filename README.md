@@ -17,7 +17,8 @@ $ pip install neopipe
 
 ## Usage
 
-- TODO
+A single Threaded sequential execution example:
+from neopipe.pipeline import Pipeline
 
 ## Contributing
 

@@ -1,13 +1,14 @@
+from dataclasses import dataclass, field, asdict
 from typing import TypeVar, Generic, Optional
-
+import json
 
 T = TypeVar('T')
 E = TypeVar('E')
 
+@dataclass
 class Result(Generic[T, E]):
-    def __init__(self, value: Optional[T] = None, error: Optional[E] = None):
-        self.value = value
-        self.error = error
+    value: Optional[T] = field(default=None)
+    error: Optional[E] = field(default=None)
 
     def is_ok(self) -> bool:
         return self.error is None
@@ -24,6 +25,20 @@ class Result(Generic[T, E]):
         if self.is_ok():
             raise ValueError(f"Called unwrap_err on an Ok value: {self.value}")
         return self.error
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+    def to_json(self) -> str:
+        return json.dumps(self.to_dict())
+
+# Utility functions
+def Ok(value: T) -> Result[T, None]:
+    return Result(value=value)
+
+def Err(error: E) -> Result[None, E]:
+    return Result(error=error)
+
 
 def Ok(value: T) -> Result[T, None]:
     return Result(value=value)

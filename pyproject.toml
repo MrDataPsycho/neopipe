@@ -25,6 +25,17 @@ classifiers = [
 ]
 dependencies = []
 
+[project.optional-dependencies]
+testing = [
+    "pytest",
+    "pytest-cov"
+]
+
+dev = [
+  "ruff",
+  "mypy",
+]
+
 [project.urls]
 Documentation = "https://github.com/MrDataPsycho/neopipee#readme"
 Issues = "https://github.com/MrDataPsycho/neopipe/issues"
@@ -32,6 +43,12 @@ Source = "https://github.com/MrDataPsycho/neopipe"
 
 [tool.hatch.version]
 path = "src/neopipe/__about__.py"
+
+[tool.hatch.envs.default]
+dependencies = ["project[testing]"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=src/neopipe --cov-report=term-missing"
 
 [tool.hatch.envs.types]
 extra-dependencies = [
@@ -41,7 +58,7 @@ extra-dependencies = [
 check = "mypy --install-types --non-interactive {args:src/neopipe_example tests}"
 
 [tool.coverage.run]
-source_pkgs = ["neopipe_example", "tests"]
+source_pkgs = ["neopipe", "tests"]
 branch = true
 parallel = true
 omit = [
