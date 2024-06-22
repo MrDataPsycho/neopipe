@@ -4,6 +4,7 @@ from functools import wraps
 from tqdm import tqdm
 from neopipe.result import Result, Ok, Err
 import time
+import uuid
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
@@ -15,10 +16,12 @@ class Task:
     def __init__(self, func: Callable[..., Result[T, E]], retries: int = 1):
         self.func = func
         self.retries = retries
+        self.id = uuid.uuid4()
 
     def __call__(self, *args, **kwargs) -> Result[T, E]:
         @wraps(self.func)
         def wrapped_func(*args, **kwargs) -> Result[T, E]:
+            logging.info(f"Executing task {self.func.__name__} (UUID: {self.id})")
             last_exception = None
             for attempt in range(self.retries):
                 try:

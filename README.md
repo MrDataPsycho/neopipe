@@ -18,15 +18,8 @@ $ pip install neopipe
 ## Usage
 
 A single Threaded sequential execution example:
-```
-import logging
-from typing import Callable, List, Any
-from neopipe.result import Result, Ok, Err
-from neopipe.pipeline import Pipeline
 
-# Initialize logging
-logging.basicConfig(level=logging.INFO)
-
+```python
 # Define your pipeline
 pipeline = Pipeline()
 
@@ -41,13 +34,13 @@ def get_all_users(data):
     except KeyError as e:
         return Err(f"KeyError: {str(e)}")
 
-@pipeline.task(retries=2)
+# @pipeline.task(retries=2)
 def filter_users_by_length(names):
     # Example task: Filter names based on criteria
     filtered_names = [name for name in names if len(name) > 3]
     return Ok(filtered_names)
 
-@pipeline.task()
+
 def calculate_statistics(filtered_names):
     # Example task: Calculate statistics
     statistics = {
@@ -55,6 +48,12 @@ def calculate_statistics(filtered_names):
         "longest_name": max(filtered_names, key=len) if filtered_names else None
     }
     return Ok(statistics)
+
+# Add a function as task later in the pipeline
+pipeline.append_function_as_task(filter_users_by_length, retries=2)
+
+# Add a task object into the pipeline
+pipeline.append_task(Task(calculate_statistics, retries=2))
 
 # Sample data
 sample_data = [
@@ -74,6 +73,7 @@ if result.is_ok():
     logging.info(f"Pipeline completed successfully. Statistics: {final_statistics}")
 else:
     logging.error(f"Pipeline failed. Error: {result.unwrap_err()}")
+
 
 ```
 
