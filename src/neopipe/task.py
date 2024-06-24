@@ -1,8 +1,7 @@
 import logging
-from typing import Callable, List, Any, TypeVar
+from typing import Callable, TypeVar
 from functools import wraps
-from tqdm import tqdm
-from neopipe.result import Result, Ok, Err
+from neopipe.result import Result, Err
 import time
 import uuid
 
@@ -14,12 +13,26 @@ E = TypeVar("E")
 
 
 class Task:
+    """Task is a wrapper around a function that can be retried."""
     def __init__(self, func: Callable[..., Result[T, E]], retries: int = 1):
+        """
+        Task is a wrapper around a function that can be retried.
+
+        Args:
+            func (Callable[..., Result[T, E]]): _description_
+            retries (int, optional): _description_. Defaults to 1.
+        """
         self.func = func
         self.retries = retries
         self.id = uuid.uuid4()
 
     def __call__(self, *args, **kwargs) -> Result[T, E]:
+        """
+        Execute the task and retry if it fails.
+
+        Returns:
+            Result[T, E]: The result of the task
+        """
         @wraps(self.func)
         def wrapped_func(*args, **kwargs) -> Result[T, E]:
             logging.info(f"Executing task {self.func.__name__} (UUID: {self.id})")
@@ -51,7 +64,9 @@ class Task:
         return wrapped_func(*args, **kwargs)
 
     def __str__(self):
+        """Return a string representation of the task."""
         return f"Task({self.func.__name__}, retries={self.retries})"
 
     def __repr__(self):
+        """Return a string representation of the task."""
         return self.__str__()

@@ -9,7 +9,7 @@ description = 'A Python library for seamless function orchestration, Designed to
 readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"
-keywords = []
+keywords = ["pipeline", "function", "orchestration"]
 authors = [
   { name = "MrDataPsycho", email = "mr.data.psycho@gmail.com" },
 ]
@@ -34,6 +34,11 @@ testing = [
 dev = [
   "ruff",
   "mypy",
+]
+docs = [
+  "mkdocs",
+  "mkdocs-material",
+  "mkdocstrings[python]"
 ]
 
 [project.urls]

@@ -1,0 +1,22 @@
+site_name: Neopipe Documentation
+nav:
+  - Home: index.md
+  - Examples: examples.md
+  - API Reference:
+      - Pipeline: api/pipeline.md
+      - Result: api/result.md
+      - Task: api/task.md
+
+theme:
+  name: material
+
+markdown_extensions:
+  - codehilite
+  - admonition
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - mkdocstrings
+
