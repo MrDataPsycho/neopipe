@@ -42,10 +42,3 @@ def Ok(value: T) -> Result[T, None]:
 def Err(error: E) -> Result[None, E]:
     return Result(error=error)
 
-
-def Ok(value: T) -> Result[T, None]:
-    return Result(value=value)
-
-
-def Err(error: E) -> Result[None, E]:
-    return Result(error=error)
