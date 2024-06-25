@@ -1,7 +1,9 @@
-site_name: Neopipe Documentation
+site_name: NeoPipe Documentation
 nav:
   - Home: index.md
-  - Examples: examples.md
+  - Examples: 
+      - Basic Use: examples/basic_use.md
+      - Lambda Function: examples/lambda_function.md
   - API Reference:
       - Pipeline: api/pipeline.md
       - Result: api/result.md
@@ -9,6 +11,9 @@ nav:
 
 theme:
   name: material
+  logo: assets/logo.png
+  favicon: assets/favicon.png
+
 
 markdown_extensions:
   - codehilite

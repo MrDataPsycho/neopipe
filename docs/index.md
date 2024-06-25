@@ -1,4 +1,9 @@
-# neopipe
+<p align="center">
+  <img src="assets/logo.png" alt="neopipe Logo" width="100" height="100">
+</p>
+---
+
+# NeoPipe
 
 A Python library for seamless function orchestration, inspired by Rust and scikit-learn pipelines. Designed to streamline workflow management in microservices and AI-powered applications.
 

@@ -43,7 +43,7 @@ docs = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/MrDataPsycho/neopipe#readme"
+Documentation = "https://mrdatapsycho.github.io/neopipe"
 Issues = "https://github.com/MrDataPsycho/neopipe/issues"
 Source = "https://github.com/MrDataPsycho/neopipe"
 
