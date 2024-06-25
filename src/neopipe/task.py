@@ -5,8 +5,7 @@ from neopipe.result import Result, Err
 import time
 import uuid
 
-# Initialize logging
-logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 T = TypeVar("T")
 E = TypeVar("E")
@@ -35,24 +34,24 @@ class Task:
         """
         @wraps(self.func)
         def wrapped_func(*args, **kwargs) -> Result[T, E]:
-            logging.info(f"Executing task {self.func.__name__} (UUID: {self.id})")
+            logger.info(f"Executing task {self.func.__name__} (UUID: {self.id})")
             last_exception = None
             for attempt in range(self.retries):
                 try:
                     result = self.func(*args, **kwargs)
                     if result.is_ok():
-                        logging.info(
+                        logger.info(
                             f"Task {self.func.__name__} succeeded on attempt {attempt + 1}"
                         )
                         return result
                     else:
-                        logging.error(
+                        logger.error(
                             f"Task {self.func.__name__} failed on attempt {attempt + 1}: {result.error}"
                         )
                         return result
                 except Exception as e:
                     last_exception = e
-                    logging.error(
+                    logger.error(
                         f"Task {self.func.__name__} exception on attempt {attempt + 1}: {str(e)}"
                     )
                     time.sleep(2**attempt)  # Exponential backoff

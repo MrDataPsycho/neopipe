@@ -12,7 +12,7 @@ pipeline = Pipeline()
 
 
 # Define example tasks using pipeline.task decorator : Method 1 (Using decorator)
-@pipeline.task(retries=3)
+@pipeline.register(retries=3)
 def get_all_users(data: Dict[str, str]) -> Result[List[str], str]:
     # Example task: Extract names from data
     try:
@@ -39,10 +39,10 @@ def calculate_statistics(filtered_names) -> Result[Dict[str, int], str]:
 
 
 # Example: Append tasks to the pipeline Alternative Method (Using append_function_as_task)
-pipeline.append_function_as_task(filter_users_by_length, retries=2)
+pipeline.append_function_to_registry(filter_users_by_length, retries=2)
 
 # Example: Append tasks to the pipeline Alternative Method (Using append_task)
-pipeline.append_task(Task(calculate_statistics, retries=2))
+pipeline.append_task_to_registry(Task(calculate_statistics, retries=2))
 
 
 if __name__ == "__main__":
@@ -54,6 +54,9 @@ if __name__ == "__main__":
         {"name": "David"},
         {"name": "Eve"},
     ]
+
+    # Print the execution plan
+    pipeline.print_execution_plan()
 
     # Run the pipeline
     result = pipeline.run(

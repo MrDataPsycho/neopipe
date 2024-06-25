@@ -28,7 +28,8 @@ dependencies = ["tqdm>=4.66.4"]
 [project.optional-dependencies]
 testing = [
     "pytest",
-    "pytest-cov"
+    "pytest-cov",
+    "pytest-mock"
 ]
 
 dev = [
@@ -68,11 +69,13 @@ branch = true
 parallel = true
 omit = [
   "src/neopipe/__about__.py",
+  "tests/*",
+  "src/neopipe/__init__.py",
 ]
 
 [tool.coverage.paths]
-neopipe_example = ["src/neopipe_example", "*/neopipe-example/src/neopipe_example"]
-tests = ["tests", "*/neopipe-example/tests"]
+neopipe_example = ["src/neopipe"]
+tests = ["tests"]
 
 [tool.coverage.report]
 exclude_lines = [
