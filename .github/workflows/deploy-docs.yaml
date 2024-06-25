@@ -7,14 +7,10 @@ on:
 
 permissions:
   contents: write
-  pages: write
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pages: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -34,6 +30,6 @@ jobs:
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GH_TOKEN }}
+        # with:
+        #   github_token: ${{ secrets.GH_TOKEN }}
           publish_dir: ./site
