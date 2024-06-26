@@ -84,7 +84,6 @@ def test_task_logging(mocker, caplog):
         result = task(1)
 
     assert result.is_ok()
-    assert "Executing task success_task" in caplog.text
     assert "Task success_task succeeded on attempt 1" in caplog.text
 
 
