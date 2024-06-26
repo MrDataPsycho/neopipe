@@ -1,6 +1,6 @@
-from dataclasses import dataclass, field, asdict
-from typing import TypeVar, Generic, Optional
 import json
+from dataclasses import asdict, dataclass, field
+from typing import Generic, Optional, TypeVar
 
 T = TypeVar("T")
 E = TypeVar("E")

@@ -1,9 +1,10 @@
 import logging
-from typing import Callable, List, Any, TypeVar, Self
+from typing import Callable, List, Any, TypeVar, Self, get_type_hints
 from functools import wraps
 from neopipe.result import Result, Ok
 from tqdm import tqdm
 from neopipe.task import Task
+import uuid
 
 
 logger = logging.getLogger(__name__)
@@ -15,6 +16,7 @@ class Pipeline:
     def __init__(self):
         """Create a Pipeline instance."""
         self.registry: List[Callable[..., Result[Any, Any]]] = []
+        self.uuid = uuid.uuid4()
 
     @classmethod
     def from_tasks(cls, tasks: List[Task]) -> Self:
@@ -96,6 +98,7 @@ class Pipeline:
         Returns:
             Result: The result of the pipeline execution.
         """
+        logger.info(f"Pipeline started (UUID: {self.uuid})")
         result = Ok(initial_value)
         task_iter = (
             self.registry
@@ -115,29 +118,29 @@ class Pipeline:
                     return result
         return result
 
-    def print_execution_plan(self) -> None:
-        """
-        Print the execution plan of the pipeline, showing the sequence of tasks and 
-        the expected input/output data types.
-        """
-        if not self.registry:
-            print("Pipeline is empty.")
-            return
+    def show_execution_plan(self) -> None:
+            """
+            Print the execution plan of the pipeline, showing the sequence of tasks and 
+            the expected input/output data types.
+            """
+            if not self.registry:
+                print("Pipeline is empty.")
+                return
 
-        print("Pipeline Execution Plan:")
-        print("="*30)
-        for i, task in enumerate(self.registry):
-            func_name = task.func.__name__
-            input_type = task.func.__annotations__.get('return', 'Any')
-            output_type = list(task.func.__annotations__.values())[0] if task.func.__annotations__ else 'Any'
-            
-            print(f"{func_name} : {output_type} -> {input_type}")
-            
-            if i < len(self.registry) - 1:
-                print(" |")
-                print(" |")
-                print(" V")
-        print("="*30)
+            print("Pipeline Execution Plan:")
+            print("="*30)
+            for i, task in enumerate(self.registry):
+                func_name = task.func.__name__
+                type_hints = get_type_hints(task.func)
+                input_type = list(type_hints.values())[0] if type_hints else 'Any'
+                output_type = type_hints.get('return', 'Any')
+                
+                print(f"{func_name} : {input_type} -> {output_type}")
+                
+                if i < len(self.registry) - 1:
+                    print(" |")
+                    print(" V")
+            print("="*30)
 
 
     def __str__(self) -> str:

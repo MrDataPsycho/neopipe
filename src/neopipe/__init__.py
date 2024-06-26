@@ -9,7 +9,7 @@ logging.basicConfig(
 
 # Import necessary modules
 from .pipeline import Pipeline
-from .result import Result, Ok, Err
+from .result import Err, Ok, Result
 from .task import Task
 
 # Specify what is available for import from this package

@@ -35,6 +35,7 @@ testing = [
 dev = [
   "ruff",
   "mypy",
+  "isort",
 ]
 docs = [
   "mkdocs",
