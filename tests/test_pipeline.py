@@ -1,76 +1,156 @@
 import pytest
-from neopipe.pipeline import Pipeline
-from neopipe.task import Task
 from neopipe.result import Result, Ok, Err
+from neopipe.task import FunctionTask, ContainerTaskBase, ContainerTask
+from neopipe.pipeline import Pipeline
+import logging
 
-def dummy_task_ok(data):
-    return Ok(data + 1)
+# Mock function for testing
+def success_func(x: int) -> Result[int, str]:
+    return Ok(x + 1)
 
-def dummy_task_err(data):
-    return Err("Task failed")
+def failure_func(x: int) -> Result[int, str]:
+    return Err("Failed to process")
 
-def dummy_task_with_types(data: int) -> Result[int, str]:
-    return Ok(data + 1)
+# Mock container task for testing
+class MockContainerTask(ContainerTaskBase):
+    def __init__(self, factor: int):
+        self.factor = factor
 
-def test_pipeline_creation():
+    def __call__(self, x: int) -> Result[int, str]:
+        if x > 0:
+            return Ok(x * self.factor)
+        return Err("Invalid input")
+
+def test_pipeline_with_function_tasks():
     pipeline = Pipeline()
-    assert isinstance(pipeline, Pipeline)
-    assert len(pipeline.registry) == 0
 
-def test_pipeline_from_tasks():
-    task1 = Task(dummy_task_ok)
-    task2 = Task(dummy_task_ok)
-    tasks = [task1, task2]
-    pipeline = Pipeline.from_tasks(tasks)
-    assert len(pipeline.registry) == 2
+    @pipeline.register(retries=1)
+    def add_one(x: int) -> Result[int, str]:
+        return Ok(x + 1)
 
-def test_register_function():
+    @pipeline.register(retries=1)
+    def multiply_by_two(x: int) -> Result[int, str]:
+        return Ok(x * 2)
+
+    result = pipeline.run(1)
+    assert result.is_ok()
+    assert result.unwrap() == 4
+
+def test_pipeline_with_container_tasks():
     pipeline = Pipeline()
-    @pipeline.register(retries=2)
-    def add_one(data):
-        return Ok(data + 1)
+    
+    class AddOne(ContainerTaskBase):
+        def __call__(self, x: int) -> Result[int, str]:
+            return Ok(x + 1)
 
-    assert len(pipeline.registry) == 1
+    class MultiplyByTwo(ContainerTaskBase):
+        def __call__(self, x: int) -> Result[int, str]:
+            return Ok(x * 2)
 
-def test_append_function_to_registry():
+    pipeline.register()(AddOne)
+    pipeline.register()(MultiplyByTwo)
+
+    result = pipeline.run(1)
+    assert result.is_ok()
+    assert result.unwrap() == 4
+
+def test_pipeline_mixed_tasks():
     pipeline = Pipeline()
-    pipeline.append_function_to_registry(dummy_task_ok, retries=2)
-    assert len(pipeline.registry) == 1
 
-def test_append_task_to_registry():
+    @pipeline.register(retries=1)
+    def add_one(x: int) -> Result[int, str]:
+        return Ok(x + 1)
+
+    class MultiplyByTwo(ContainerTaskBase):
+        def __call__(self, x: int) -> Result[int, str]:
+            return Ok(x * 2)
+
+    pipeline.register()(MultiplyByTwo)
+
+    result = pipeline.run(1)
+    assert result.is_ok()
+    assert result.unwrap() == 4
+
+def test_pipeline_failure():
     pipeline = Pipeline()
-    task = Task(dummy_task_ok, retries=2)
-    pipeline.append_task_to_registry(task)
-    assert len(pipeline.registry) == 1
 
-def test_append_task_to_registry_invalid():
+    @pipeline.register(retries=1)
+    def fail_task(x: int) -> Result[int, str]:
+        return Err("Failed")
+
+    result = pipeline.run(1)
+    assert result.is_err()
+    assert result.unwrap_err() == "Failed"
+
+def test_pipeline_with_retries():
     pipeline = Pipeline()
-    with pytest.raises(ValueError, match="task must be an instance of Task"):
-        pipeline.append_task_to_registry("not_a_task")
 
+    attempt = 0
+    @pipeline.register(retries=3)
+    def flaky_task(x: int) -> Result[int, str]:
+        nonlocal attempt
+        attempt += 1
+        if attempt < 3:
+            raise Exception("Temporary failure")
+        return Ok(x + 1)
 
-def test_run_pipeline_ok():
-    pipeline = Pipeline()
-    pipeline.append_function_to_registry(dummy_task_ok)
-    result = pipeline.run(initial_value=1)
+    result = pipeline.run(1)
     assert result.is_ok()
     assert result.unwrap() == 2
 
-def test_run_pipeline_err():
+def test_append_task():
     pipeline = Pipeline()
-    pipeline.append_function_to_registry(dummy_task_err)
-    result = pipeline.run(initial_value=1)
-    assert result.is_err()
-    assert result.unwrap_err() == "Task failed"
+    pipeline.append_task(FunctionTask(success_func, retries=1))
+    pipeline.append_task(ContainerTask(MockContainerTask(factor=2), retries=1))
 
+    result = pipeline.run(1)
+    assert result.is_ok()
+    assert result.unwrap() == 4
 
-def test_pipeline_str():
+def test_invalid_append_task():
     pipeline = Pipeline()
-    pipeline.append_function_to_registry(dummy_task_ok)
-    assert str(pipeline) == "Pipeline with 1 tasks:\n  Task(dummy_task_ok, retries=1)"
+    with pytest.raises(TypeError):
+        pipeline.append_task("invalid task")
 
-def test_pipeline_repr():
+def test_invalid_register_task():
     pipeline = Pipeline()
-    pipeline.append_function_to_registry(dummy_task_ok)
-    assert repr(pipeline) == "Pipeline with 1 tasks:\n  Task(dummy_task_ok, retries=1)"
+    with pytest.raises(TypeError):
+        @pipeline.register()
+        class InvalidTask:
+            pass
 
+def test_show_execution_plan(capsys):
+    pipeline = Pipeline()
+
+    @pipeline.register(retries=1)
+    def add_one(x: int) -> Result[int, str]:
+        return Ok(x + 1)
+
+    class MultiplyByTwo(ContainerTaskBase):
+        def __call__(self, x: int) -> Result[int, str]:
+            return Ok(x * 2)
+
+    pipeline.register()(MultiplyByTwo)
+    pipeline.show_execution_plan()
+    captured = capsys.readouterr()
+    assert "add_one" in captured.out
+    assert "MultiplyByTwo" in captured.out
+
+def test_pipeline_run_with_progress(caplog):
+    pipeline = Pipeline()
+
+    @pipeline.register(retries=1)
+    def add_one(x: int) -> Result[int, str]:
+        return Ok(x + 1)
+
+    @pipeline.register(retries=1)
+    def multiply_by_two(x: int) -> Result[int, str]:
+        return Ok(x * 2)
+
+    with caplog.at_level(logging.INFO):
+        result = pipeline.run(1, show_progress=True)
+        assert "1/2 is complete" in caplog.text
+        assert "2/2 is complete" in caplog.text
+
+    assert result.is_ok()
+    assert result.unwrap() == 4

@@ -23,7 +23,7 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = ["tqdm>=4.66.4"]
+dependencies = []
 
 [project.optional-dependencies]
 testing = [

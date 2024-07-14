@@ -1,102 +1,106 @@
 import pytest
-from unittest.mock import MagicMock
-from neopipe.task import Task
-from neopipe.result import Ok, Err
-import logging
+from neopipe.result import Result, Ok, Err
+from neopipe.task import FunctionTask, ContainerTask, ContainerTaskBase
 
-def test_task_success():
-    # Test a task that succeeds
-    def success_task(data):
-        return Ok(data + 1)
+# Mock function for testing
+def success_func(x: int) -> Result[int, str]:
+    return Ok(x + 1)
 
-    task = Task(success_task)
+def failure_func(x: int) -> Result[int, str]:
+    return Err("Failed to process")
+
+# Mock container task for testing
+class MockContainerTask(ContainerTaskBase):
+    def __init__(self, factor: int):
+        self.factor = factor
+
+    def __call__(self, x: int) -> Result[int, str]:
+        if x > 0:
+            return Ok(x * self.factor)
+        return Err("Invalid input")
+
+def test_function_task_success():
+    task = FunctionTask(success_func, retries=3)
     result = task(1)
     assert result.is_ok()
-    assert result.value == 2
+    assert result.unwrap() == 2
 
-def test_task_failure():
-    # Test a task that fails
-    def failure_task(data):
-        return Err("Failure")
-
-    task = Task(failure_task)
+def test_function_task_failure():
+    task = FunctionTask(failure_func, retries=3)
     result = task(1)
     assert result.is_err()
-    assert result.error == "Failure"
+    assert result.unwrap_err() == "Failed to process"
 
-def test_task_retries_success(mocker):
-    # Test a task that succeeds after a retry
-    mock = mocker.MagicMock()
-    mock.__name__ = "mock"
-    mock.side_effect = [Exception("Test exception"), Ok(2)]
-    task = Task(mock, retries=2)
-    result = task(1)
-    assert result.is_ok()
-    assert result.value == 2
-    assert mock.call_count == 2
-
-
-def test_task_retries_failure(mocker):
-    # Test a task that raises an exception and retries
-    mock = mocker.MagicMock()
-    mock.__name__ = "mock"
-    mock.side_effect = [Exception("Test exception"), Exception("Test exception")]
-
-    task = Task(mock, retries=2)
+def test_function_task_retries():
+    def flaky_func(x: int) -> Result[int, str]:
+        if x == 1:
+            raise Exception("Random failure")
+        return Ok(x + 1)
+    
+    task = FunctionTask(flaky_func, retries=3)
     result = task(1)
     assert result.is_err()
-    assert result.error == "Task mock failed after 2 attempts: Test exception"
-    assert mock.call_count == 2
+    assert "Random failure" in result.unwrap_err()
 
-def test_task_exception_handling(mocker):
-    # Test a task that raises an exception and retries
-    mock = mocker.MagicMock()
-    mock.__name__ = "mock"
-    mock.side_effect = [Exception("Test exception"), Ok(2)]
+def test_function_task_eventually_succeeds():
+    attempts = 0
 
-    task = Task(mock, retries=2)
+    def flaky_func(x: int) -> Result[int, str]:
+        nonlocal attempts
+        attempts += 1
+        if attempts < 2:
+            raise Exception("Temporary failure")
+        return Ok(x + 1)
+    
+    task = FunctionTask(flaky_func, retries=3)
     result = task(1)
     assert result.is_ok()
-    assert result.value == 2
-    assert mock.call_count == 2
+    assert result.unwrap() == 2
 
-def test_task_exception_handling_failure(mocker):
-    # Test a task that raises exceptions and fails after all retries
-    mock = mocker.MagicMock()
-    mock.__name__ = "mock"
-    mock.side_effect = [Exception("Test exception"), Exception("Test exception")]
+def test_container_task_success():
+    container = MockContainerTask(factor=2)
+    task = ContainerTask(container, retries=3)
+    result = task(2)
+    assert result.is_ok()
+    assert result.unwrap() == 4
 
-    task = Task(mock, retries=2)
-    result = task(1)
+def test_container_task_failure():
+    container = MockContainerTask(factor=2)
+    task = ContainerTask(container, retries=3)
+    result = task(0)
     assert result.is_err()
-    assert result.error == "Task mock failed after 2 attempts: Test exception"
-    assert mock.call_count == 2
+    assert result.unwrap_err() == "Invalid input"
 
-def test_task_logging(mocker, caplog):
-    # Test logging output
-    def success_task(data):
-        return Ok(data + 1)
+def test_container_task_retries():
+    class FlakyContainerTask(ContainerTaskBase):
+        def __init__(self):
+            self.attempt = 0
+        
+        def __call__(self, x: int) -> Result[int, str]:
+            self.attempt += 1
+            if self.attempt < 3:
+                raise Exception("Temporary failure")
+            return Ok(x * 2)
 
-    mocker.patch('time.sleep', return_value=None)  # To avoid actual sleep during tests
-    task = Task(success_task, retries=1)
-
-    with caplog.at_level(logging.INFO):
-        result = task(1)
-
+    container = FlakyContainerTask()
+    task = ContainerTask(container, retries=3)
+    result = task(2)
     assert result.is_ok()
-    assert "Task success_task succeeded on attempt 1" in caplog.text
+    assert result.unwrap() == 4
 
+def test_container_task_eventually_succeeds():
+    class FlakyContainerTask(ContainerTaskBase):
+        def __init__(self):
+            self.attempt = 0
+        
+        def __call__(self, x: int) -> Result[int, str]:
+            self.attempt += 1
+            if self.attempt < 2:
+                raise Exception("Temporary failure")
+            return Ok(x * 2)
 
-
-def dummy_task(data):
-    return Ok(data)
-
-def test_task_str():
-    task = Task(dummy_task, retries=3)
-    expected_str = "Task(dummy_task, retries=3)"
-    assert str(task) == expected_str
-
-def test_task_repr():
-    task = Task(dummy_task, retries=3)
-    expected_repr = "Task(dummy_task, retries=3)"
-    assert repr(task) == expected_repr
+    container = FlakyContainerTask()
+    task = ContainerTask(container, retries=3)
+    result = task(2)
+    assert result.is_ok()
+    assert result.unwrap() == 4
