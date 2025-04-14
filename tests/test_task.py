@@ -1,103 +1,107 @@
 import pytest
-from unittest.mock import MagicMock
-from neopipe.task import Task
-from neopipe.result import Ok, Err
-import logging
+from typing import Any
+from neopipe.result import Result, Ok, Err
+from neopipe.task import FunctionSyncTask, ClassSyncTask
+import asyncio
 
-def test_task_success():
-    # Test a task that succeeds
-    def success_task(data):
-        return Ok(data + 1)
 
-    task = Task(success_task)
-    result = task(1)
-    assert result.is_ok()
-    assert result.value == 2
+# ------------------------
+# FunctionSyncTask Tests
+# ------------------------
 
-def test_task_failure():
-    # Test a task that fails
-    def failure_task(data):
-        return Err("Failure")
+@FunctionSyncTask.decorator(retries=2)
+def add_one(x: int) -> Result[int, str]:
+    return Ok(x + 1)
 
-    task = Task(failure_task)
-    result = task(1)
+@FunctionSyncTask.decorator(retries=2)
+def always_fails(_: Any) -> Result[int, str]:
+    return Err("always fails")
+
+@FunctionSyncTask.decorator(retries=2)
+def raises_exception(_: Any) -> Result[int, str]:
+    raise ValueError("unexpected error")
+
+
+def test_function_sync_task_success():
+    result = add_one(4)
+    assert result == Ok(5)
+
+
+def test_function_sync_task_failure_err():
+    result = always_fails("anything")
     assert result.is_err()
-    assert result.error == "Failure"
-
-def test_task_retries_success(mocker):
-    # Test a task that succeeds after a retry
-    mock = mocker.MagicMock()
-    mock.__name__ = "mock"
-    mock.side_effect = [Exception("Test exception"), Ok(2)]
-    task = Task(mock, retries=2)
-    result = task(1)
-    assert result.is_ok()
-    assert result.value == 2
-    assert mock.call_count == 2
+    assert result.err() == "always fails"
 
 
-def test_task_retries_failure(mocker):
-    # Test a task that raises an exception and retries
-    mock = mocker.MagicMock()
-    mock.__name__ = "mock"
-    mock.side_effect = [Exception("Test exception"), Exception("Test exception")]
-
-    task = Task(mock, retries=2)
-    result = task(1)
+def test_function_sync_task_failure_exception():
+    result = raises_exception("input")
     assert result.is_err()
-    assert result.error == "Task mock failed after 2 attempts: Test exception"
-    assert mock.call_count == 2
+    assert "failed after 2 retries" in result.err()
 
-def test_task_exception_handling(mocker):
-    # Test a task that raises an exception and retries
-    mock = mocker.MagicMock()
-    mock.__name__ = "mock"
-    mock.side_effect = [Exception("Test exception"), Ok(2)]
 
-    task = Task(mock, retries=2)
-    result = task(1)
-    assert result.is_ok()
-    assert result.value == 2
-    assert mock.call_count == 2
+# ------------------------
+# ClassSyncTask Tests
+# ------------------------
 
-def test_task_exception_handling_failure(mocker):
-    # Test a task that raises exceptions and fails after all retries
-    mock = mocker.MagicMock()
-    mock.__name__ = "mock"
-    mock.side_effect = [Exception("Test exception"), Exception("Test exception")]
+class AddTenTask(ClassSyncTask[int, str]):
+    def __init__(self, val: int, fail=False):
+        super().__init__(retries=3)
+        self.val = val
+        self.fail = fail
 
-    task = Task(mock, retries=2)
-    result = task(1)
+    def execute(self) -> Result[int, str]:
+        if self.fail:
+            raise RuntimeError("Intentional failure")
+        return Ok(self.val + 10)
+
+
+def test_class_sync_task_success():
+    task = AddTenTask(5)
+    result = task()
+    assert result == Ok(15)
+
+
+def test_class_sync_task_exception_retry():
+    task = AddTenTask(1, fail=True)
+    result = task()
     assert result.is_err()
-    assert result.error == "Task mock failed after 2 attempts: Test exception"
-    assert mock.call_count == 2
-
-def test_task_logging(mocker, caplog):
-    # Test logging output
-    def success_task(data):
-        return Ok(data + 1)
-
-    mocker.patch('time.sleep', return_value=None)  # To avoid actual sleep during tests
-    task = Task(success_task, retries=1)
-
-    with caplog.at_level(logging.INFO):
-        result = task(1)
-
-    assert result.is_ok()
-    assert "Executing task success_task" in caplog.text
-    assert "Task success_task succeeded on attempt 1" in caplog.text
+    assert "failed after" in result.err()
 
 
+# ------------------------
+# Task ID Check
+# ------------------------
 
-def dummy_task(data):
-    return Ok(data)
+def test_task_has_unique_id():
+    t1 = AddTenTask(1)
+    t2 = AddTenTask(2)
+    assert t1.task_id != t2.task_id
 
-def test_task_str():
-    task = Task(dummy_task, retries=3)
-    expected_str = "Task(dummy_task, retries=3)"
-    assert str(task) == expected_str
+    f1 = FunctionSyncTask(lambda x: Ok(x * 2))
+    f2 = FunctionSyncTask(lambda x: Ok(x * 2))
+    assert f1.task_id != f2.task_id
 
-def test_task_repr():
-    task = Task(dummy_task, retries=3)
-    expected_repr = "Task(dummy_task, retries=3)"
-    assert repr(task) == expected_repr
+
+# # ----------------------------
+# # FunctionAsyncTask Tests
+# # ----------------------------
+
+# @FunctionAsyncTask.decorator(retries=2)
+# async def multiply_by_two(x: int) -> Result[int, str]:
+#     await asyncio.sleep(0.01)
+#     return Ok(x * 2)
+
+
+# @FunctionAsyncTask.decorator(retries=2)
+# async def always_err(_: int) -> Result[int, str]:
+#     return Err("always fails")
+
+# @FunctionAsyncTask.decorator(retries=2)
+# async def raises_exception(_: int) -> Result[int, str]:
+#     raise RuntimeError("boom")
+
+
+# @pytest.mark.asyncio
+# async def test_async_function_success():
+#     result = await multiply_by_two(5)
+#     assert result == Ok(10)
