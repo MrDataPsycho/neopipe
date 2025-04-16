@@ -1,11 +1,12 @@
-import uuid
 import asyncio
 import logging
-from abc import ABC, abstractmethod
-from typing import Callable, Generic, Optional, TypeVar, Self, Awaitable
-from functools import wraps
-from neopipe.result import Result, Err
 import time
+import uuid
+from abc import ABC, abstractmethod
+from functools import wraps
+from typing import Awaitable, Callable, Generic, Optional, Self, TypeVar
+
+from neopipe.result import Err, Result
 
 T = TypeVar("T")  # Input success type
 E = TypeVar("E")  # Error type
@@ -49,7 +50,9 @@ class BaseSyncTask(ABC, Generic[T, E]):
 
         for attempt in range(1, self.retries + 1):
             try:
-                logger.info(f"[{self.task_name}] Attempt {attempt} - Task ID: {self.task_id}")
+                logger.info(
+                    f"[{self.task_name}] Attempt {attempt} - Task ID: {self.task_id}"
+                )
                 result = self.execute(input_result)
 
                 if result.is_ok():
@@ -64,7 +67,9 @@ class BaseSyncTask(ABC, Generic[T, E]):
                 logger.error(f"[{self.task_name}] Exception: {e}")
                 time.sleep(2 ** (attempt - 1))  # Exponential backoff
 
-        return Err(f"[{self.task_name}] failed after {self.retries} retries: {last_exception}")
+        return Err(
+            f"[{self.task_name}] failed after {self.retries} retries: {last_exception}"
+        )
 
     @abstractmethod
     def execute(self, input_result: Result[T, E]) -> Result[U, E]:
@@ -120,6 +125,7 @@ class FunctionSyncTask(BaseSyncTask[T, E]):
         Returns:
             Callable: A decorator that wraps the function in a FunctionSyncTask.
         """
+
         def wrapper(func: Callable[[Result[T, E]], Result[U, E]]) -> Self:
             task = cls(func, retries)
 
@@ -188,7 +194,9 @@ class BaseAsyncTask(ABC, Generic[T, E]):
 
         for attempt in range(1, self.retries + 1):
             try:
-                logger.info(f"[{self.task_name}] Attempt {attempt} - Task ID: {self.task_id}")
+                logger.info(
+                    f"[{self.task_name}] Attempt {attempt} - Task ID: {self.task_id}"
+                )
                 result = await self.execute(input_result)
 
                 if result.is_ok():
@@ -203,7 +211,9 @@ class BaseAsyncTask(ABC, Generic[T, E]):
                 logger.error(f"[{self.task_name}] Exception: {e}")
                 await asyncio.sleep(2 ** (attempt - 1))  # exponential backoff
 
-        return Err(f"[{self.task_name}] failed after {self.retries} retries: {last_exception}")
+        return Err(
+            f"[{self.task_name}] failed after {self.retries} retries: {last_exception}"
+        )
 
     @abstractmethod
     async def execute(self, input_result: Result[T, E]) -> Result[U, E]:
@@ -225,21 +235,20 @@ class BaseAsyncTask(ABC, Generic[T, E]):
         return self.__str__()
 
 
-
-
 class FunctionAsyncTask(BaseAsyncTask[T, E]):
     """
     Wraps an async function that takes a Result[T, E] and returns a Result[U, E].
     """
 
-    def __init__(self, func: Callable[[Result[T, E]], Awaitable[Result[U, E]]], retries: int = 1):
+    def __init__(
+        self, func: Callable[[Result[T, E]], Awaitable[Result[U, E]]], retries: int = 1
+    ):
         super().__init__(retries)
         self.func = func
 
     @property
     def task_name(self) -> str:
         return self.func.__name__
-
 
     async def execute(self, input_result: Result[T, E]) -> Result[U, E]:
         return await self.func(input_result)
@@ -257,6 +266,7 @@ class FunctionAsyncTask(BaseAsyncTask[T, E]):
         Returns:
             FunctionAsyncTask[T, E]
         """
+
         def wrapper(func: Callable[[Result[T, E]], Awaitable[Result[U, E]]]) -> Self:
             task = cls(func, retries)
 

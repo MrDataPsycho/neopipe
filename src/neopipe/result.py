@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass
-from typing import Awaitable, Callable, Generic, TypeVar, Union, Self
+from typing import Awaitable, Callable, Generic, Self, TypeVar, Union
 
 T = TypeVar("T")  # Success type
 E = TypeVar("E")  # Error type

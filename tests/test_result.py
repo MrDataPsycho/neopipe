@@ -1,6 +1,8 @@
-import pytest
 import asyncio
-from neopipe.result import Result, Ok, Err, UnwrapError
+
+import pytest
+
+from neopipe.result import Err, Ok, Result, UnwrapError
 
 
 def test_ok_and_err():
@@ -134,6 +136,7 @@ def test_match_branching():
 
 def test_to_dict_and_json():
     import json
+
     r = Ok({"a": 1, "b": 2})
     as_dict = r.to_dict()
     assert as_dict["_is_ok"] is True

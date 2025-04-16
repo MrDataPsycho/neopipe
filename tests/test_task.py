@@ -1,16 +1,17 @@
-from neopipe.result import Result, Ok, Err
-from neopipe.task import FunctionSyncTask, ClassSyncTask
-
+from neopipe.result import Err, Ok, Result
+from neopipe.task import ClassSyncTask, FunctionSyncTask
 
 # -----------------------------
 # FunctionSyncTask definitions
 # -----------------------------
+
 
 @FunctionSyncTask.decorator(retries=2)
 def add_10(result: Result[int, str]) -> Result[int, str]:
     if result.is_ok():
         return Ok(result.unwrap() + 10)
     return result
+
 
 @FunctionSyncTask.decorator(retries=2)
 def fail_on_zero(result: Result[int, str]) -> Result[int, str]:
@@ -22,6 +23,7 @@ def fail_on_zero(result: Result[int, str]) -> Result[int, str]:
 # -----------------------------
 # ClassSyncTask definitions
 # -----------------------------
+
 
 class MultiplyTask(ClassSyncTask[int, str]):
     def __init__(self, multiplier: int):
@@ -42,6 +44,7 @@ class AlwaysFailTask(ClassSyncTask[int, str]):
 # -----------------------------
 # Tests for FunctionSyncTask
 # -----------------------------
+
 
 def test_function_sync_task_success():
     input_result = Ok(5)
@@ -64,6 +67,7 @@ def test_function_sync_task_fails_on_zero():
 # -----------------------------
 # Tests for ClassSyncTask
 # -----------------------------
+
 
 def test_class_sync_task_success():
     task = MultiplyTask(multiplier=3)
@@ -88,8 +92,10 @@ def test_class_sync_task_always_fails():
 # Task Name Checks
 # -----------------------------
 
+
 def test_function_task_name():
     assert add_10.task_name == "add_10"
+
 
 def test_class_task_name():
     task = MultiplyTask(2)

@@ -1,17 +1,19 @@
 import pytest
-from neopipe.result import Result, Ok, Err
-from neopipe.task import FunctionAsyncTask, ClassAsyncTask
 
+from neopipe.result import Err, Ok, Result
+from neopipe.task import ClassAsyncTask, FunctionAsyncTask
 
 # -----------------------------
 # FunctionAsyncTask definitions
 # -----------------------------
+
 
 @FunctionAsyncTask.decorator(retries=2)
 async def append_exclaim(result: Result[str, str]) -> Result[str, str]:
     if result.is_ok():
         return Ok(result.unwrap() + "!")
     return result
+
 
 @FunctionAsyncTask.decorator(retries=2)
 async def fail_if_empty(result: Result[str, str]) -> Result[str, str]:
@@ -29,6 +31,7 @@ async def raise_exception(result: Result[str, str]) -> Result[str, str]:
 # ClassAsyncTask definitions
 # -----------------------------
 
+
 class ToUpperTask(ClassAsyncTask[str, str]):
     async def execute(self, result: Result[str, str]) -> Result[str, str]:
         if result.is_ok():
@@ -44,6 +47,7 @@ class AlwaysFailAsyncTask(ClassAsyncTask[str, str]):
 # -----------------------------
 # Async Function Task Tests
 # -----------------------------
+
 
 @pytest.mark.asyncio
 async def test_function_async_success():
@@ -75,6 +79,7 @@ async def test_function_async_exception_retry():
 # Async Class Task Tests
 # -----------------------------
 
+
 @pytest.mark.asyncio
 async def test_class_async_task_success():
     task = ToUpperTask()
@@ -101,8 +106,10 @@ async def test_class_async_task_always_fails():
 # Task Name Checks
 # -----------------------------
 
+
 def test_function_async_task_name():
     assert append_exclaim.task_name == "append_exclaim"
+
 
 def test_class_async_task_name():
     task = ToUpperTask()

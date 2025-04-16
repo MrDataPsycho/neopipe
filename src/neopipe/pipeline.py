@@ -1,9 +1,10 @@
+import inspect
 import logging
 import uuid
-from typing import List, Optional, Tuple, TypeVar, Generic, Union, get_origin
-from neopipe.result import Result, Ok, Err
+from typing import Generic, List, Optional, Tuple, TypeVar, Union, get_origin
+
+from neopipe.result import Err, Ok, Result
 from neopipe.task import BaseSyncTask
-import inspect
 
 T = TypeVar("T")
 E = TypeVar("E")
@@ -28,16 +29,19 @@ class SyncPipeline(Generic[T, E]):
         self.name = name or f"SyncPipeline-{self.pipeline_id}"
 
     @classmethod
-    def from_tasks(cls, tasks: List[BaseSyncTask], name: Optional[str] = None) -> "SyncPipeline":
+    def from_tasks(
+        cls, tasks: List[BaseSyncTask], name: Optional[str] = None
+    ) -> "SyncPipeline":
         pipeline = cls(name)
         for task in tasks:
             pipeline.add_task(task)
         return pipeline
 
-
     def add_task(self, task: BaseSyncTask) -> None:
         if not isinstance(task, BaseSyncTask):
-            raise TypeError(f"Only BaseSyncTask instances can be added. Got {type(task)}")
+            raise TypeError(
+                f"Only BaseSyncTask instances can be added. Got {type(task)}"
+            )
 
         sig = inspect.signature(task.execute)
         params = list(sig.parameters.values())
@@ -57,11 +61,8 @@ class SyncPipeline(Generic[T, E]):
 
         self.tasks.append(task)
 
-
     def run(
-        self,
-        input_result: Result[T, E],
-        debug: bool = False
+        self, input_result: Result[T, E], debug: bool = False
     ) -> Union[Result[U, E], Result[Tuple[Optional[U], List[Tuple[str, Result]]], E]]:
         """
         Run the pipeline sequentially.
@@ -83,7 +84,7 @@ class SyncPipeline(Generic[T, E]):
 
         for idx, task in enumerate(self.tasks):
             task_name = task.task_name
-            logger.info(f"[{self.name}] Task {idx+1}/{len(self.tasks)} → {task_name}")
+            logger.info(f"[{self.name}] Task {idx + 1}/{len(self.tasks)} → {task_name}")
 
             try:
                 result = task(result)
