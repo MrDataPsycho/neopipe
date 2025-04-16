@@ -1,107 +1,96 @@
-import pytest
-from typing import Any
 from neopipe.result import Result, Ok, Err
 from neopipe.task import FunctionSyncTask, ClassSyncTask
-import asyncio
 
 
-# ------------------------
-# FunctionSyncTask Tests
-# ------------------------
-
-@FunctionSyncTask.decorator(retries=2)
-def add_one(x: int) -> Result[int, str]:
-    return Ok(x + 1)
+# -----------------------------
+# FunctionSyncTask definitions
+# -----------------------------
 
 @FunctionSyncTask.decorator(retries=2)
-def always_fails(_: Any) -> Result[int, str]:
-    return Err("always fails")
+def add_10(result: Result[int, str]) -> Result[int, str]:
+    if result.is_ok():
+        return Ok(result.unwrap() + 10)
+    return result
 
 @FunctionSyncTask.decorator(retries=2)
-def raises_exception(_: Any) -> Result[int, str]:
-    raise ValueError("unexpected error")
+def fail_on_zero(result: Result[int, str]) -> Result[int, str]:
+    if result.is_ok() and result.unwrap() == 0:
+        return Err("Cannot be zero")
+    return result
 
+
+# -----------------------------
+# ClassSyncTask definitions
+# -----------------------------
+
+class MultiplyTask(ClassSyncTask[int, str]):
+    def __init__(self, multiplier: int):
+        super().__init__()
+        self.multiplier = multiplier
+
+    def execute(self, result: Result[int, str]) -> Result[int, str]:
+        if result.is_ok():
+            return Ok(result.unwrap() * self.multiplier)
+        return result
+
+
+class AlwaysFailTask(ClassSyncTask[int, str]):
+    def execute(self, result: Result[int, str]) -> Result[int, str]:
+        return Err("Always fails")
+
+
+# -----------------------------
+# Tests for FunctionSyncTask
+# -----------------------------
 
 def test_function_sync_task_success():
-    result = add_one(4)
-    assert result == Ok(5)
+    input_result = Ok(5)
+    output = add_10(input_result)
+    assert output == Ok(15)
 
 
-def test_function_sync_task_failure_err():
-    result = always_fails("anything")
+def test_function_sync_task_propagates_err():
+    err = Err("bad input")
+    output = add_10(err)
+    assert output == err
+
+
+def test_function_sync_task_fails_on_zero():
+    result = fail_on_zero(Ok(0))
     assert result.is_err()
-    assert result.err() == "always fails"
+    assert result.err() == "Cannot be zero"
 
 
-def test_function_sync_task_failure_exception():
-    result = raises_exception("input")
-    assert result.is_err()
-    assert "failed after 2 retries" in result.err()
-
-
-# ------------------------
-# ClassSyncTask Tests
-# ------------------------
-
-class AddTenTask(ClassSyncTask[int, str]):
-    def __init__(self, val: int, fail=False):
-        super().__init__(retries=3)
-        self.val = val
-        self.fail = fail
-
-    def execute(self) -> Result[int, str]:
-        if self.fail:
-            raise RuntimeError("Intentional failure")
-        return Ok(self.val + 10)
-
+# -----------------------------
+# Tests for ClassSyncTask
+# -----------------------------
 
 def test_class_sync_task_success():
-    task = AddTenTask(5)
-    result = task()
-    assert result == Ok(15)
+    task = MultiplyTask(multiplier=3)
+    output = task(Ok(7))
+    assert output == Ok(21)
 
 
-def test_class_sync_task_exception_retry():
-    task = AddTenTask(1, fail=True)
-    result = task()
+def test_class_sync_task_propagates_err():
+    task = MultiplyTask(2)
+    output = task(Err("upstream error"))
+    assert output == Err("upstream error")
+
+
+def test_class_sync_task_always_fails():
+    task = AlwaysFailTask()
+    result = task(Ok(123))
     assert result.is_err()
-    assert "failed after" in result.err()
+    assert result.err() == "Always fails"
 
 
-# ------------------------
-# Task ID Check
-# ------------------------
+# -----------------------------
+# Task Name Checks
+# -----------------------------
 
-def test_task_has_unique_id():
-    t1 = AddTenTask(1)
-    t2 = AddTenTask(2)
-    assert t1.task_id != t2.task_id
+def test_function_task_name():
+    assert add_10.task_name == "add_10"
 
-    f1 = FunctionSyncTask(lambda x: Ok(x * 2))
-    f2 = FunctionSyncTask(lambda x: Ok(x * 2))
-    assert f1.task_id != f2.task_id
-
-
-# # ----------------------------
-# # FunctionAsyncTask Tests
-# # ----------------------------
-
-# @FunctionAsyncTask.decorator(retries=2)
-# async def multiply_by_two(x: int) -> Result[int, str]:
-#     await asyncio.sleep(0.01)
-#     return Ok(x * 2)
-
-
-# @FunctionAsyncTask.decorator(retries=2)
-# async def always_err(_: int) -> Result[int, str]:
-#     return Err("always fails")
-
-# @FunctionAsyncTask.decorator(retries=2)
-# async def raises_exception(_: int) -> Result[int, str]:
-#     raise RuntimeError("boom")
-
-
-# @pytest.mark.asyncio
-# async def test_async_function_success():
-#     result = await multiply_by_two(5)
-#     assert result == Ok(10)
+def test_class_task_name():
+    task = MultiplyTask(2)
+    assert task.task_name == "MultiplyTask"

@@ -1,104 +1,109 @@
 import pytest
-import asyncio
 from neopipe.result import Result, Ok, Err
 from neopipe.task import FunctionAsyncTask, ClassAsyncTask
 
 
-# ----------------------------
-# FunctionAsyncTask Tests
-# ----------------------------
+# -----------------------------
+# FunctionAsyncTask definitions
+# -----------------------------
 
 @FunctionAsyncTask.decorator(retries=2)
-async def multiply_by_two(x: int) -> Result[int, str]:
-    await asyncio.sleep(0.01)
-    return Ok(x * 2)
+async def append_exclaim(result: Result[str, str]) -> Result[str, str]:
+    if result.is_ok():
+        return Ok(result.unwrap() + "!")
+    return result
 
 @FunctionAsyncTask.decorator(retries=2)
-async def always_err(_: int) -> Result[int, str]:
-    return Err("always fails")
+async def fail_if_empty(result: Result[str, str]) -> Result[str, str]:
+    if result.is_ok() and result.unwrap().strip() == "":
+        return Err("Input is empty")
+    return result
+
 
 @FunctionAsyncTask.decorator(retries=2)
-async def raises_exception(_: int) -> Result[int, str]:
-    raise RuntimeError("boom")
+async def raise_exception(result: Result[str, str]) -> Result[str, str]:
+    raise RuntimeError("Something went wrong")
+
+
+# -----------------------------
+# ClassAsyncTask definitions
+# -----------------------------
+
+class ToUpperTask(ClassAsyncTask[str, str]):
+    async def execute(self, result: Result[str, str]) -> Result[str, str]:
+        if result.is_ok():
+            return Ok(result.unwrap().upper())
+        return result
+
+
+class AlwaysFailAsyncTask(ClassAsyncTask[str, str]):
+    async def execute(self, result: Result[str, str]) -> Result[str, str]:
+        return Err("Always fails")
+
+
+# -----------------------------
+# Async Function Task Tests
+# -----------------------------
+
+@pytest.mark.asyncio
+async def test_function_async_success():
+    res = await append_exclaim(Ok("hello"))
+    assert res == Ok("hello!")
 
 
 @pytest.mark.asyncio
-async def test_async_function_success():
-    result = await multiply_by_two(5)
-    assert result == Ok(10)
+async def test_function_async_err_propagation():
+    res = await append_exclaim(Err("bad input"))
+    assert res == Err("bad input")
 
 
 @pytest.mark.asyncio
-async def test_async_function_returns_err():
-    result = await always_err(1)
-    assert result.is_err()
-    assert result.err() == "always fails"
+async def test_function_async_validation_failure():
+    res = await fail_if_empty(Ok("  "))
+    assert res.is_err()
+    assert res.err() == "Input is empty"
 
 
 @pytest.mark.asyncio
-async def test_async_function_exception_retry():
-    result = await raises_exception(1)
-    assert result.is_err()
-    assert "failed after 2 retries" in result.err().lower()
+async def test_function_async_exception_retry():
+    res = await raise_exception(Ok("boom"))
+    assert res.is_err()
+    assert "failed after 2 retries" in res.err().lower()
 
 
-# ----------------------------
-# ClassAsyncTask Tests
-# ----------------------------
-
-class AddTenTask(ClassAsyncTask[int, str]):
-    def __init__(self, value: int, fail_first: bool = False):
-        super().__init__(retries=2)
-        self.value = value
-        self.fail_first = fail_first
-        self.attempts = 0
-
-    async def execute(self) -> Result[int, str]:
-        await asyncio.sleep(0.01)
-        self.attempts += 1
-        if self.fail_first and self.attempts == 1:
-            raise ValueError("fail once")
-        return Ok(self.value + 10)
-
+# -----------------------------
+# Async Class Task Tests
+# -----------------------------
 
 @pytest.mark.asyncio
 async def test_class_async_task_success():
-    task = AddTenTask(15)
-    result = await task()
-    assert result == Ok(25)
+    task = ToUpperTask()
+    res = await task(Ok("test"))
+    assert res == Ok("TEST")
 
 
 @pytest.mark.asyncio
-async def test_class_async_task_retries_on_exception():
-    task = AddTenTask(5, fail_first=True)
-    result = await task()
-    assert result == Ok(15)
-    assert task.attempts == 2
-
-
-class ExplodingTask(ClassAsyncTask[int, str]):
-    async def execute(self) -> Result[int, str]:
-        raise RuntimeError("always boom")
+async def test_class_async_task_err_passthrough():
+    task = ToUpperTask()
+    res = await task(Err("bad"))
+    assert res == Err("bad")
 
 
 @pytest.mark.asyncio
-async def test_class_async_task_permanent_failure():
-    task = ExplodingTask(retries=3)
-    result = await task()
-    assert result.is_err()
-    assert "failed after 3 retries" in result.err()
+async def test_class_async_task_always_fails():
+    task = AlwaysFailAsyncTask()
+    res = await task(Ok("something"))
+    assert res.is_err()
+    assert res.err() == "Always fails"
 
 
-# ----------------------------
-# Metadata Tests
-# ----------------------------
+# -----------------------------
+# Task Name Checks
+# -----------------------------
 
-@pytest.mark.asyncio
-async def test_async_task_ids_are_unique():
-    t1 = AddTenTask(1)
-    t2 = AddTenTask(2)
-    assert t1.task_id != t2.task_id
+def test_function_async_task_name():
+    assert append_exclaim.task_name == "append_exclaim"
 
-    f1 = FunctionAsyncTask(lambda x: Ok(x))
-    f2 = FunctionAsyncTask(lambda x: Ok(x))
-    assert f1.task_id != f2.task_id
+def test_class_async_task_name():
+    task = ToUpperTask()
+    assert task.task_name == "ToUpperTask"

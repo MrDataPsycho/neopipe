@@ -1,150 +1,109 @@
 import logging
-from typing import Callable, List, Any, TypeVar, Self
-from functools import wraps
-from neopipe.result import Result, Ok
-from tqdm import tqdm
-from neopipe.task import Task
-
-
-logger = logging.getLogger(__name__)
+import uuid
+from typing import List, Optional, Tuple, TypeVar, Generic, Union, get_origin
+from neopipe.result import Result, Ok, Err
+from neopipe.task import BaseSyncTask
+import inspect
 
 T = TypeVar("T")
 E = TypeVar("E")
+U = TypeVar("U")
 
-class Pipeline:
-    def __init__(self):
-        """Create a Pipeline instance."""
-        self.registry: List[Callable[..., Result[Any, Any]]] = []
+logger = logging.getLogger(__name__)
+
+
+class SyncPipeline(Generic[T, E]):
+    """
+    A pipeline that executes BaseSyncTasks sequentially, passing Result[T, E] through each step.
+
+    Attributes:
+        tasks (List[BaseSyncTask]): Registered tasks.
+        pipeline_id (UUID): Unique ID for the pipeline.
+        name (str): Optional name for logging/debugging.
+    """
+
+    def __init__(self, name: Optional[str] = None):
+        self.tasks: List[BaseSyncTask] = []
+        self.pipeline_id = uuid.uuid4()
+        self.name = name or f"SyncPipeline-{self.pipeline_id}"
 
     @classmethod
-    def from_tasks(cls, tasks: List[Task]) -> Self:
-        """
-        Create a Pipeline instance from a list of Task objects.
-
-        Args:
-            tasks (List[Task]): A list of Task objects.
-
-        Returns:
-            Pipeline: A new Pipeline instance.
-        """
-        pipeline = cls()
-        pipeline.registry.extend(tasks)
+    def from_tasks(cls, tasks: List[BaseSyncTask], name: Optional[str] = None) -> "SyncPipeline":
+        pipeline = cls(name)
+        for task in tasks:
+            pipeline.add_task(task)
         return pipeline
 
-    def register(self, retries: int = 1) -> Callable[..., Callable[..., Result[T, E]]]:
-        """
-        Create a task decorator to register a function as a task.
 
-        Args:
-            retries (int, optional): The number of times to retry the task. Defaults to 1.
+    def add_task(self, task: BaseSyncTask) -> None:
+        if not isinstance(task, BaseSyncTask):
+            raise TypeError(f"Only BaseSyncTask instances can be added. Got {type(task)}")
 
-        Returns:
-            Callable[..., Callable[..., Result[T, E]]]: A task decorator.
-        """
-        def decorator(func: Callable[..., Result[T, E]]) -> Callable[..., Result[T, E]]:
-            task_instance = Task(func, retries=retries)
-            self.registry.append(task_instance)
+        sig = inspect.signature(task.execute)
+        params = list(sig.parameters.values())
+        non_self_params = [p for p in params if p.name != "self"]
 
-            @wraps(func)
-            def wrapped_func(*args, **kwargs) -> Result[T, E]:
-                return task_instance(*args, **kwargs)
-
-            return wrapped_func
-
-        return decorator
-
-    def append_function_to_registry(
-        self, func: Callable[..., Result[T, E]], retries: int = 1
-    ) -> None:
-        """
-        Append a function as a task to the registry.
-
-        Args:
-            func (Callable[..., Result[T, E]]): The function to be appended as a task.
-            retries (int, optional): The number of times to retry the task. Defaults to 1.
-
-        Returns:
-            None
-        """
-        task_instance = Task(func, retries=retries)
-        self.registry.append(task_instance)
-
-    def append_task_to_registry(self, task: Task) -> None:
-        """
-        Append a Task object to the registry.
-
-        Args:
-            task (Task): The task to be appended.
-
-        Returns:
-            None
-        """
-        if not isinstance(task, Task):
-            raise ValueError(
-                "task must be an instance of Task not a {}".format(type(task))
+        if len(non_self_params) < 1:
+            raise TypeError(
+                f"Task '{task.task_name}' must define an 'execute(self, input_result: Result)' method "
+                "with at least one input parameter."
             )
-        self.registry.append(task)
 
-    def run(self, initial_value: Any, show_progress: bool = False) -> Result:
+        param = non_self_params[0]
+        if get_origin(param.annotation) is not Result:
+            raise TypeError(
+                f"Task '{task.task_name}' first argument must be of type Result[T, E]. Found: {param.annotation}"
+            )
+
+        self.tasks.append(task)
+
+
+    def run(
+        self,
+        input_result: Result[T, E],
+        debug: bool = False
+    ) -> Union[Result[U, E], Result[Tuple[Optional[U], List[Tuple[str, Result]]], E]]:
         """
-        Execute the pipeline with the initial value.
+        Run the pipeline sequentially.
 
         Args:
-            initial_value (Any): The initial value to start the pipeline with.
-            show_progress (bool, optional): Whether to show a progress bar. Defaults to False.
+            input_result (Result): Initial input wrapped in Result.
+            debug (bool): If True, returns execution trace as well.
 
         Returns:
-            Result: The result of the pipeline execution.
+            Result: Final output or failure, with optional trace in debug mode.
         """
-        result = Ok(initial_value)
-        task_iter = (
-            self.registry
-            if not show_progress
-            else tqdm(
-                self.registry,
-                desc="Pipeline Progress",
-                bar_format="{l_bar}{bar} [ {elapsed} ]",
-            )
-        )
+        trace: List[Tuple[str, Result]] = []
+        result: Result = input_result
 
-        for task in task_iter:
-            if result.is_ok():
-                result = task(result.value)
-                if result.is_err():
-                    logger.error(f"Pipeline stopped due to error: {result.error}")
-                    return result
-        return result
+        if debug:
+            trace.append((self.name, result))
 
-    def print_execution_plan(self) -> None:
-        """
-        Print the execution plan of the pipeline, showing the sequence of tasks and 
-        the expected input/output data types.
-        """
-        if not self.registry:
-            print("Pipeline is empty.")
-            return
+        logger.info(f"[{self.name}] Starting with {len(self.tasks)} task(s)")
 
-        print("Pipeline Execution Plan:")
-        print("="*30)
-        for i, task in enumerate(self.registry):
-            func_name = task.func.__name__
-            input_type = task.func.__annotations__.get('return', 'Any')
-            output_type = list(task.func.__annotations__.values())[0] if task.func.__annotations__ else 'Any'
-            
-            print(f"{func_name} : {output_type} -> {input_type}")
-            
-            if i < len(self.registry) - 1:
-                print(" |")
-                print(" |")
-                print(" V")
-        print("="*30)
+        for idx, task in enumerate(self.tasks):
+            task_name = task.task_name
+            logger.info(f"[{self.name}] Task {idx+1}/{len(self.tasks)} → {task_name}")
 
+            try:
+                result = task(result)
+            except Exception as e:
+                logger.exception(f"[{self.name}] Exception in task {task_name}")
+                return Err(f"Exception in task {task_name}: {e}")
+
+            if debug:
+                trace.append((task_name, result))
+
+            if result.is_err():
+                logger.error(f"[{self.name}] Failed at {task_name}: {result.err()}")
+                return Ok((None, trace)) if debug else result
+
+        logger.info(f"[{self.name}] Completed successfully")
+        return result if not debug else Ok((result.unwrap(), trace))
 
     def __str__(self) -> str:
-        """Return a string representation of the pipeline."""
-        tasks_str = "\n  ".join(str(task) for task in self.registry)
-        return f"Pipeline with {len(self.registry)} tasks:\n  {tasks_str}"
+        task_list = "\n  ".join(task.task_name for task in self.tasks)
+        return f"{self.name} with {len(self.tasks)} task(s):\n  {task_list}"
 
     def __repr__(self) -> str:
-        """Return a string representation of the pipeline."""
         return self.__str__()

@@ -1,160 +1,80 @@
-# Task Module — Usage Examples
+# 🧰 Basic Usage: Tasks as Functions and Classes
 
-The `Task` module provides a robust way to wrap both **synchronous** and **asynchronous** computations with:
-- ✅ Automatic retry logic
-- ✅ Consistent `Result[Ok, Err]` handling
-- ✅ Functional and object-oriented patterns
-- ✅ Support for structured AI workflows (e.g., OpenAI SDK)
+The Task system lets you define **reliable, retryable units of work**. Tasks are always wrapped in a standardized structure that returns a `Result[T, E]` instead of throwing exceptions.
+
+This ensures predictable control flow and composability — ideal for pipelines and automated workflows.
 
 ---
 
-## 🔍 Use Case
+## ✅ Sync Function-Based Task
 
-We want to analyze a piece of text and extract structured data such as:
-- Title
-- Tags
-- Summary
-
-We'll simulate calling the OpenAI SDK to generate structured JSON from a prompt and response.
-
----
-
-## ⚙️ Setup
-
-For these examples, assume you have:
+Use `FunctionSyncTask.decorator(...)` to turn a plain function into a task with retries and error handling.
 
 ```python
 from result import Result, Ok, Err
-from task import SyncTask, AsyncTask, AbstractSyncTask, AbstractAsyncTask
+from sync_task import FunctionSyncTask
 
-TEXT = """
-The Future of AI: How Generative Models Are Changing Creativity.
-Artificial intelligence is rapidly evolving. In this post, we explore its implications in art, music, and writing.
-"""
+@FunctionSyncTask.decorator(retries=2)
+def double(x: int) -> Result[int, str]:
+    if x < 0:
+        return Err("Negative not allowed")
+    return Ok(x * 2)
 
+result = double(5)  # Ok(10)
 ```
 
-## 🛠️ Synchronous Task Example as Function
+✅ Sync Class-Based Task
+
+Extend ClassSyncTask and implement execute():
 
 ```python
-import json
+from result import Result, Ok
+from sync_task import ClassSyncTask
 
-@SyncTask
-def simulate_structure_sync(text: str) -> Result[dict, str]:
-    try:
-        return Ok({
-            "title": "The Future of AI",
-            "summary": "Explores AI's role in creativity.",
-            "tags": ["AI", "Generative", "Creativity"]
-        })
-    except Exception as e:
-        return Err(f"Failed to simulate structure: {e}")
-
-result = simulate_structure_sync(TEXT)
-if result.is_ok():
-    structured_data = result.unwrap()
-    print(json.dumps(structured_data, indent=2))
-else:
-    print(f"Error: {result.unwrap_err()}")
-```
-
-## 🛠️ Synchronous Task Example as Class
-
-```python
-from task import AbstractSyncTask
-
-class SimulatedSyncTask(AbstractSyncTask[dict, str]):
-    def __init__(self, text: str):
-        super().__init__()
-        self.text = text
-
-    def run(self) -> Result[dict, str]:
-        return Ok({
-            "title": "The Future of AI",
-            "summary": "Explores AI's role in creativity.",
-            "tags": ["AI", "Generative", "Creativity"]
-        })
-
-task = SimulatedSyncTask(TEXT)
-result = task()
-if result.is_ok():
-    structured_data = result.unwrap()
-    print(json.dumps(structured_data, indent=2))
-else:
-    print(f"Error: {result.unwrap_err()}")
-```
-
-## 🛠️ Asynchronous Task Example as Function
-
-```python
-import openai
-from task import AsyncTask
-
-@AsyncTask
-async def extract_structure(text: str) -> Result[dict, str]:
-    try:
-        response = await openai.ChatCompletion.acreate(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "Extract title, summary, and tags from input text. Return JSON."},
-                {"role": "user", "content": text},
-            ]
-        )
-        content = response.choices[0].message.content
-        data = json.loads(content)
-        return Ok(data)
-    except Exception as e:
-        return Err(f"Failed to extract structure: {e}")
-
-async def main():
-    result = await extract_structure(TEXT)
-    if result.is_ok():
-        structured_data = result.unwrap()
-        print(json.dumps(structured_data, indent=2))
-    else:
-        print(f"Error: {result.unwrap_err()}")
-
-import asyncio
-asyncio.run(main())
-```
-
-## 🛠️ Asynchronous Task Example as Class
-
-```python
-from task import AbstractAsyncTask
-
-class ExtractAsyncTask(AbstractAsyncTask[dict, str]):
-    def __init__(self, text: str):
+class AddFiveTask(ClassSyncTask[int, str]):
+    def __init__(self, x: int):
         super().__init__(retries=2)
-        self.text = text
+        self.x = x
 
-    async def run(self) -> Result[dict, str]:
-        try:
-            response = await openai.ChatCompletion.acreate(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": "Extract title, summary, and tags. Return JSON."},
-                    {"role": "user", "content": self.text},
-                ]
-            )
-            return Ok(json.loads(response.choices[0].message.content))
-        except Exception as e:
-            return Err(str(e))
+    def execute(self) -> Result[int, str]:
+        return Ok(self.x + 5)
 
-async def main():
-    task = ExtractAsyncTask(TEXT)
-    result = await task()
-    if result.is_ok():
-        structured_data = result.unwrap()
-        print(json.dumps(structured_data, indent=2))
-    else:
-        print(f"Error: {result.unwrap_err()}")
-
-import asyncio
-asyncio.run(main())
+task = AddFiveTask(10)
+result = task()  # Ok(15)
 ```
 
+## ✅ Async Function-Based Task
+Use `FunctionAsyncTask.decorator(...)` to turn a plain async function into a task with retries and error handling.
 
-The `Task` module provides a powerful way to handle both synchronous and asynchronous tasks with built-in error handling and retry logic. You can choose between function-based or class-based implementations based on your needs. The examples above demonstrate how to extract structured data from text using both approaches.
-This allows for flexibility in how you design your tasks, making it easier to integrate with existing codebases or frameworks.
-The `Task` module is particularly useful for wrapping SDK calls, such as OpenAI's API, where you may want to handle retries and errors gracefully.
+```python
+from result import Result, Ok, Err
+from async_task import FunctionAsyncTask
+
+@FunctionAsyncTask.decorator(retries=3)
+async def fetch(x: int) -> Result[str, str]:
+    if x == 0:
+        return Err("Bad input")
+    return Ok(f"Data-{x}")
+
+result = await fetch(42)  # Ok("Data-42")
+```
+
+## ✅ Async Class-Based Task
+
+Extend ClassAsyncTask and implement execute():
+
+```python
+from result import Result, Ok
+from async_task import ClassAsyncTask
+
+class MultiplyAsyncTask(ClassAsyncTask[int, str]):
+    def __init__(self, val: int):
+        super().__init__(retries=2)
+        self.val = val
+
+    async def execute(self) -> Result[int, str]:
+        return Ok(self.val * 10)
+
+task = MultiplyAsyncTask(3)
+result = await task()  # Ok(30)
+```
