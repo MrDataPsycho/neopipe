@@ -2,11 +2,13 @@ site_name: NeoPipe Documentation
 nav:
   - Home: index.md
   - Examples: 
-      - Basic Use Pipeline: examples/basic_use_pipeline_model.md
+      - Basic Use Pipeline: examples/basic_use_pipeline_module.md
+      - Basic Use Async Pipeline: examples/basic_use_async_pipeline_module.md
       - Basic Use Task: examples/basic_use_task_module.md
-      - Basic Use Result: examples/basic_use_result.md
+      - Basic Use Result: examples/basic_use_result_module.md
   - API Reference:
       - Pipeline: api/pipeline.md
+      - Async Pipeline: api/async_pipeline.md
       - Result: api/result.md
       - Task: api/task.md
 
