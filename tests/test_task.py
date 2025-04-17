@@ -1,103 +1,102 @@
-import pytest
-from unittest.mock import MagicMock
-from neopipe.task import Task
-from neopipe.result import Ok, Err
-import logging
+from neopipe.result import Err, Ok, Result
+from neopipe.task import ClassSyncTask, FunctionSyncTask
 
-def test_task_success():
-    # Test a task that succeeds
-    def success_task(data):
-        return Ok(data + 1)
+# -----------------------------
+# FunctionSyncTask definitions
+# -----------------------------
 
-    task = Task(success_task)
-    result = task(1)
-    assert result.is_ok()
-    assert result.value == 2
 
-def test_task_failure():
-    # Test a task that fails
-    def failure_task(data):
-        return Err("Failure")
+@FunctionSyncTask.decorator(retries=2)
+def add_10(result: Result[int, str]) -> Result[int, str]:
+    if result.is_ok():
+        return Ok(result.unwrap() + 10)
+    return result
 
-    task = Task(failure_task)
-    result = task(1)
+
+@FunctionSyncTask.decorator(retries=2)
+def fail_on_zero(result: Result[int, str]) -> Result[int, str]:
+    if result.is_ok() and result.unwrap() == 0:
+        return Err("Cannot be zero")
+    return result
+
+
+# -----------------------------
+# ClassSyncTask definitions
+# -----------------------------
+
+
+class MultiplyTask(ClassSyncTask[int, str]):
+    def __init__(self, multiplier: int):
+        super().__init__()
+        self.multiplier = multiplier
+
+    def execute(self, result: Result[int, str]) -> Result[int, str]:
+        if result.is_ok():
+            return Ok(result.unwrap() * self.multiplier)
+        return result
+
+
+class AlwaysFailTask(ClassSyncTask[int, str]):
+    def execute(self, result: Result[int, str]) -> Result[int, str]:
+        return Err("Always fails")
+
+
+# -----------------------------
+# Tests for FunctionSyncTask
+# -----------------------------
+
+
+def test_function_sync_task_success():
+    input_result = Ok(5)
+    output = add_10(input_result)
+    assert output == Ok(15)
+
+
+def test_function_sync_task_propagates_err():
+    err = Err("bad input")
+    output = add_10(err)
+    assert output == err
+
+
+def test_function_sync_task_fails_on_zero():
+    result = fail_on_zero(Ok(0))
     assert result.is_err()
-    assert result.error == "Failure"
-
-def test_task_retries_success(mocker):
-    # Test a task that succeeds after a retry
-    mock = mocker.MagicMock()
-    mock.__name__ = "mock"
-    mock.side_effect = [Exception("Test exception"), Ok(2)]
-    task = Task(mock, retries=2)
-    result = task(1)
-    assert result.is_ok()
-    assert result.value == 2
-    assert mock.call_count == 2
+    assert result.err() == "Cannot be zero"
 
 
-def test_task_retries_failure(mocker):
-    # Test a task that raises an exception and retries
-    mock = mocker.MagicMock()
-    mock.__name__ = "mock"
-    mock.side_effect = [Exception("Test exception"), Exception("Test exception")]
+# -----------------------------
+# Tests for ClassSyncTask
+# -----------------------------
 
-    task = Task(mock, retries=2)
-    result = task(1)
+
+def test_class_sync_task_success():
+    task = MultiplyTask(multiplier=3)
+    output = task(Ok(7))
+    assert output == Ok(21)
+
+
+def test_class_sync_task_propagates_err():
+    task = MultiplyTask(2)
+    output = task(Err("upstream error"))
+    assert output == Err("upstream error")
+
+
+def test_class_sync_task_always_fails():
+    task = AlwaysFailTask()
+    result = task(Ok(123))
     assert result.is_err()
-    assert result.error == "Task mock failed after 2 attempts: Test exception"
-    assert mock.call_count == 2
-
-def test_task_exception_handling(mocker):
-    # Test a task that raises an exception and retries
-    mock = mocker.MagicMock()
-    mock.__name__ = "mock"
-    mock.side_effect = [Exception("Test exception"), Ok(2)]
-
-    task = Task(mock, retries=2)
-    result = task(1)
-    assert result.is_ok()
-    assert result.value == 2
-    assert mock.call_count == 2
-
-def test_task_exception_handling_failure(mocker):
-    # Test a task that raises exceptions and fails after all retries
-    mock = mocker.MagicMock()
-    mock.__name__ = "mock"
-    mock.side_effect = [Exception("Test exception"), Exception("Test exception")]
-
-    task = Task(mock, retries=2)
-    result = task(1)
-    assert result.is_err()
-    assert result.error == "Task mock failed after 2 attempts: Test exception"
-    assert mock.call_count == 2
-
-def test_task_logging(mocker, caplog):
-    # Test logging output
-    def success_task(data):
-        return Ok(data + 1)
-
-    mocker.patch('time.sleep', return_value=None)  # To avoid actual sleep during tests
-    task = Task(success_task, retries=1)
-
-    with caplog.at_level(logging.INFO):
-        result = task(1)
-
-    assert result.is_ok()
-    assert "Executing task success_task" in caplog.text
-    assert "Task success_task succeeded on attempt 1" in caplog.text
+    assert result.err() == "Always fails"
 
 
+# -----------------------------
+# Task Name Checks
+# -----------------------------
 
-def dummy_task(data):
-    return Ok(data)
 
-def test_task_str():
-    task = Task(dummy_task, retries=3)
-    expected_str = "Task(dummy_task, retries=3)"
-    assert str(task) == expected_str
+def test_function_task_name():
+    assert add_10.task_name == "add_10"
 
-def test_task_repr():
-    task = Task(dummy_task, retries=3)
-    expected_repr = "Task(dummy_task, retries=3)"
-    assert repr(task) == expected_repr
+
+def test_class_task_name():
+    task = MultiplyTask(2)
+    assert task.task_name == "MultiplyTask"

@@ -29,12 +29,14 @@ dependencies = ["tqdm>=4.66.4"]
 testing = [
     "pytest",
     "pytest-cov",
-    "pytest-mock"
+    "pytest-mock",
+    "pytest-asyncio",
 ]
 
 dev = [
   "ruff",
   "mypy",
+  "isort",
 ]
 docs = [
   "mkdocs",
