@@ -2,8 +2,9 @@ site_name: NeoPipe Documentation
 nav:
   - Home: index.md
   - Examples: 
-      - Basic Use: examples/basic_use.md
-      - Lambda Function: examples/lambda_function.md
+      - Basic Use Pipeline: examples/basic_use_pipeline_model.md
+      - Basic Use Task: examples/basic_use_task_module.md
+      - Basic Use Result: examples/basic_use_result.md
   - API Reference:
       - Pipeline: api/pipeline.md
       - Result: api/result.md

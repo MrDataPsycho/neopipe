@@ -1,80 +1,117 @@
-# 🧰 Basic Usage: Tasks as Functions and Classes
+# Task Module
 
-The Task system lets you define **reliable, retryable units of work**. Tasks are always wrapped in a standardized structure that returns a `Result[T, E]` instead of throwing exceptions.
-
-This ensures predictable control flow and composability — ideal for pipelines and automated workflows.
+The **Sync Task** system provides a uniform, retryable wrapper around functions and classes that operate on `Result[T, E]`. Instead of raising exceptions, every task consumes a `Result` and returns a new `Result`, enabling safe, composable pipelines.
 
 ---
 
-## ✅ Sync Function-Based Task
+## Overview
 
-Use `FunctionSyncTask.decorator(...)` to turn a plain function into a task with retries and error handling.
+- **BaseSyncTask**  
+  Abstract base that handles:
+  - Retry with exponential backoff  
+  - Task identification (`task_id`, `task_name`)  
+  - Logging on attempts, success, and failure  
+
+## FunctionSyncTask
+  Decorator wrapper for free functions:
+  ```python
+  @FunctionSyncTask.decorator(retries=2)
+  def my_task(res: Result[int, str]) -> Result[int, str]:
+      if res.is_ok():
+          return Ok(res.unwrap() + 1)
+      return res
+```
+
+## ClassSyncTask
+Subclass for stateful or multi‑step logic:
 
 ```python
-from result import Result, Ok, Err
-from sync_task import FunctionSyncTask
+class MultiplyTask(ClassSyncTask[int, str]):
+    def __init__(self, multiplier: int):
+        super().__init__(retries=3)
+        self.multiplier = multiplier
+
+    def execute(self, res: Result[int, str]) -> Result[int, str]:
+        if res.is_ok():
+            return Ok(res.unwrap() * self.multiplier)
+        return res
+
+```
+
+# BaseSyncTask
+```python
+from neopipe.task import BaseSyncTask
+from neopipe.result import Result, Ok, Err
+
+class EchoTask(BaseSyncTask[str, str]):
+    def execute(self, res: Result[str, str]) -> Result[str, str]:
+        return Ok(res.unwrap()) if res.is_ok() else res
+
+task = EchoTask()
+print(task(Ok("hello")))  # Ok("hello")
+
+```
+
+# FunctionSyncTask
+```python
+from neopipe.task import FunctionSyncTask
+from neopipe.result import Result, Ok, Err
 
 @FunctionSyncTask.decorator(retries=2)
-def double(x: int) -> Result[int, str]:
-    if x < 0:
-        return Err("Negative not allowed")
-    return Ok(x * 2)
+def add_ten(res: Result[int, str]) -> Result[int, str]:
+    if res.is_ok():
+        return Ok(res.unwrap() + 10)
+    return res
 
-result = double(5)  # Ok(10)
+print(add_ten(Ok(5)))  # Ok(15)
 ```
 
-✅ Sync Class-Based Task
-
-Extend ClassSyncTask and implement execute():
-
+## ClassSyncTask
 ```python
-from result import Result, Ok
-from sync_task import ClassSyncTask
 
-class AddFiveTask(ClassSyncTask[int, str]):
-    def __init__(self, x: int):
-        super().__init__(retries=2)
-        self.x = x
+from neopipe.task import ClassSyncTask
+from neopipe.result import Result, Ok
 
-    def execute(self) -> Result[int, str]:
-        return Ok(self.x + 5)
+class SquareTask(ClassSyncTask[int, str]):
+    def execute(self, res: Result[int, str]) -> Result[int, str]:
+        if res.is_ok():
+            return Ok(res.unwrap() ** 2)
+        return res
 
-task = AddFiveTask(10)
-result = task()  # Ok(15)
+task = SquareTask()
+print(task(Ok(3)))  # Ok(9)
 ```
 
-## ✅ Async Function-Based Task
-Use `FunctionAsyncTask.decorator(...)` to turn a plain async function into a task with retries and error handling.
+Read the Pipeline Basics to see how to chain Sync Tasks.
+
+
+# FunctionAsyncTask
 
 ```python
-from result import Result, Ok, Err
-from async_task import FunctionAsyncTask
+from neopipe.async_task import FunctionAsyncTask
+from neopipe.result import Result, Ok, Err
 
-@FunctionAsyncTask.decorator(retries=3)
-async def fetch(x: int) -> Result[str, str]:
-    if x == 0:
-        return Err("Bad input")
-    return Ok(f"Data-{x}")
+@FunctionAsyncTask.decorator(retries=2)
+async def shout(res: Result[str, str]) -> Result[str, str]:
+    if res.is_ok():
+        return Ok(res.unwrap().upper())
+    return res
 
-result = await fetch(42)  # Ok("Data-42")
+print(await shout(Ok("hello")))  # Ok("HELLO")
+
 ```
 
-## ✅ Async Class-Based Task
-
-Extend ClassAsyncTask and implement execute():
-
+# ClassAsyncTask
 ```python
-from result import Result, Ok
-from async_task import ClassAsyncTask
+from neopipe.async_task import ClassAsyncTask
+from neopipe.result import Result, Ok
 
-class MultiplyAsyncTask(ClassAsyncTask[int, str]):
-    def __init__(self, val: int):
-        super().__init__(retries=2)
-        self.val = val
+class ReverseTask(ClassAsyncTask[str, str]):
+    async def execute(self, res: Result[str, str]) -> Result[str, str]:
+        if res.is_ok():
+            return Ok(res.unwrap()[::-1])
+        return res
 
-    async def execute(self) -> Result[int, str]:
-        return Ok(self.val * 10)
-
-task = MultiplyAsyncTask(3)
-result = await task()  # Ok(30)
+task = ReverseTask()
+print(await task(Ok("abc")))  # Ok("cba")
 ```
