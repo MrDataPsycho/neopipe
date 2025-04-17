@@ -9,14 +9,14 @@
       
       
       
-        <link rel="prev" href="../pipeline/">
+        <link rel="prev" href="../async_pipeline/">
       
       
         <link rel="next" href="../task/">
       
       
       <link rel="icon" href="../../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.27">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.6543a935.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2afb09e1.min.css">
       
       
 
@@ -45,7 +45,7 @@
     
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -87,7 +87,7 @@
     </a>
     <label class="md-header__button md-icon" for="__drawer">
       
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -107,30 +107,32 @@
     </div>
     
     
-      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
     
-      <label class="md-header__button md-icon" for="__search">
-        
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
-      </label>
-      <div class="md-search" data-md-component="search" role="dialog">
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
       <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
         
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
         
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
       </label>
       <nav class="md-search__options" aria-label="Search">
         
         <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
       
@@ -147,6 +149,7 @@
     </div>
   </div>
 </div>
+      
     
     
   </nav>
@@ -194,8 +197,10 @@
       <a href="../.." class="md-nav__link">
         
   
+  
   <span class="md-ellipsis">
     Home
+    
   </span>
   
 
@@ -214,6 +219,7 @@
     
     
     
+    
     <li class="md-nav__item md-nav__item--nested">
       
         
@@ -224,8 +230,10 @@
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
+  
   <span class="md-ellipsis">
     Examples
+    
   </span>
   
 
@@ -246,11 +254,13 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/basic_use/" class="md-nav__link">
+      <a href="../../examples/basic_use_pipeline_module/" class="md-nav__link">
         
   
+  
   <span class="md-ellipsis">
-    Basic Use
+    Basic Use Pipeline
+    
   </span>
   
 
@@ -267,11 +277,59 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/lambda_function/" class="md-nav__link">
+      <a href="../../examples/basic_use_async_pipeline_module/" class="md-nav__link">
         
   
+  
   <span class="md-ellipsis">
-    Lambda Function
+    Basic Use Async Pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/basic_use_task_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Use Task
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/basic_use_result_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Use Result
+    
   </span>
   
 
@@ -300,6 +358,7 @@
     
     
     
+    
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
@@ -310,8 +369,10 @@
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
+  
   <span class="md-ellipsis">
     API Reference
+    
   </span>
   
 
@@ -335,8 +396,33 @@
       <a href="../pipeline/" class="md-nav__link">
         
   
+  
   <span class="md-ellipsis">
     Pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../async_pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Async Pipeline
+    
   </span>
   
 
@@ -365,8 +451,10 @@
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
   
+  
   <span class="md-ellipsis">
     Result
+    
   </span>
   
 
@@ -376,8 +464,10 @@
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
+  
   <span class="md-ellipsis">
     Result
+    
   </span>
   
 
@@ -418,6 +508,69 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#neopipe.result.Result.Err" class="md-nav__link">
+    <span class="md-ellipsis">
+      Err
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.Ok" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ok
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.__repr__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __repr__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.and_then" class="md-nav__link">
+    <span class="md-ellipsis">
+      and_then
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.and_then_async" class="md-nav__link">
+    <span class="md-ellipsis">
+      and_then_async
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.err" class="md-nav__link">
+    <span class="md-ellipsis">
+      err
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.expect" class="md-nav__link">
+    <span class="md-ellipsis">
+      expect
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#neopipe.result.Result.is_err" class="md-nav__link">
     <span class="md-ellipsis">
       is_err
@@ -430,6 +583,60 @@
   <a href="#neopipe.result.Result.is_ok" class="md-nav__link">
     <span class="md-ellipsis">
       is_ok
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.map" class="md-nav__link">
+    <span class="md-ellipsis">
+      map
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.map_async" class="md-nav__link">
+    <span class="md-ellipsis">
+      map_async
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.map_err" class="md-nav__link">
+    <span class="md-ellipsis">
+      map_err
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.map_err_async" class="md-nav__link">
+    <span class="md-ellipsis">
+      map_err_async
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.match" class="md-nav__link">
+    <span class="md-ellipsis">
+      match
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.ok" class="md-nav__link">
+    <span class="md-ellipsis">
+      ok
     </span>
   </a>
   
@@ -463,9 +670,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#neopipe.result.Result.unwrap_err" class="md-nav__link">
+  <a href="#neopipe.result.Result.unwrap_or" class="md-nav__link">
     <span class="md-ellipsis">
-      unwrap_err
+      unwrap_or
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.unwrap_or_else" class="md-nav__link">
+    <span class="md-ellipsis">
+      unwrap_or_else
     </span>
   </a>
   
@@ -473,6 +689,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#neopipe.result.UnwrapError" class="md-nav__link">
+    <span class="md-ellipsis">
+      UnwrapError
+    </span>
+  </a>
   
 </li>
       
@@ -513,8 +738,10 @@
       <a href="../task/" class="md-nav__link">
         
   
+  
   <span class="md-ellipsis">
     Task
+    
   </span>
   
 
@@ -577,6 +804,69 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#neopipe.result.Result.Err" class="md-nav__link">
+    <span class="md-ellipsis">
+      Err
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.Ok" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ok
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.__repr__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __repr__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.and_then" class="md-nav__link">
+    <span class="md-ellipsis">
+      and_then
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.and_then_async" class="md-nav__link">
+    <span class="md-ellipsis">
+      and_then_async
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.err" class="md-nav__link">
+    <span class="md-ellipsis">
+      err
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.expect" class="md-nav__link">
+    <span class="md-ellipsis">
+      expect
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#neopipe.result.Result.is_err" class="md-nav__link">
     <span class="md-ellipsis">
       is_err
@@ -589,6 +879,60 @@
   <a href="#neopipe.result.Result.is_ok" class="md-nav__link">
     <span class="md-ellipsis">
       is_ok
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.map" class="md-nav__link">
+    <span class="md-ellipsis">
+      map
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.map_async" class="md-nav__link">
+    <span class="md-ellipsis">
+      map_async
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.map_err" class="md-nav__link">
+    <span class="md-ellipsis">
+      map_err
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.map_err_async" class="md-nav__link">
+    <span class="md-ellipsis">
+      map_err_async
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.match" class="md-nav__link">
+    <span class="md-ellipsis">
+      match
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.ok" class="md-nav__link">
+    <span class="md-ellipsis">
+      ok
     </span>
   </a>
   
@@ -622,9 +966,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#neopipe.result.Result.unwrap_err" class="md-nav__link">
+  <a href="#neopipe.result.Result.unwrap_or" class="md-nav__link">
     <span class="md-ellipsis">
-      unwrap_err
+      unwrap_or
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neopipe.result.Result.unwrap_or_else" class="md-nav__link">
+    <span class="md-ellipsis">
+      unwrap_or_else
     </span>
   </a>
   
@@ -632,6 +985,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#neopipe.result.UnwrapError" class="md-nav__link">
+    <span class="md-ellipsis">
+      UnwrapError
+    </span>
+  </a>
   
 </li>
       
@@ -668,6 +1030,7 @@
                   
 
 
+
 <h1 id="result">Result<a class="headerlink" href="#result" title="Permanent link">&para;</a></h1>
 
 
@@ -677,6 +1040,12 @@
 
 <a id="neopipe.result"></a>
     <div class="doc doc-contents first">
+
+
+
+
+
+
 
 
 
@@ -709,113 +1078,491 @@
               Bases: <code><span title="typing.Generic">Generic</span>[<span title="neopipe.result.T">T</span>, <span title="neopipe.result.E">E</span>]</code></p>
 
 
-      <p>Result type for the neopipe package.</p>
+        <p>A Rust-style Result type for monadic error handling in Python.</p>
+
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>neopipe/result.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">Result</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result type for the neopipe package.&quot;&quot;&quot;</span>
-    <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">E</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Result</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A Rust-style Result type for monadic error handling in Python.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">is_ok</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks if the Result is an Ok value.</span>
+    <span class="n">_is_ok</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">Ok</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a Result representing a successful value.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: The success value.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bool: True if the Result is an Ok value, False otherwise</span>
+<span class="sd">            Result[T, E]: An Ok variant.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">Result</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">is_err</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks if the Result is an Err value.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">Err</span><span class="p">(</span><span class="n">error</span><span class="p">:</span> <span class="n">E</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a Result representing an error.</span>
 
-    <span class="k">def</span> <span class="nf">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unwraps the Result value if it is an Ok value, otherwise raises a ValueError.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            error: The error value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Result[T, E]: An Err variant.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Result</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_ok</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if the result is Ok.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if Ok, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_err</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if the result is Err.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if Err, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ok</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the success value if available.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            T | None: The Ok value or None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">err</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the error value if available.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            E | None: The Err value or None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply a function to the Ok value.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            op: A function that transforms the success value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Result[U, E]: A new Result with transformed success or the original error.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+        <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Err</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">map_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">U</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Asynchronously apply a function to the Ok value.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            op: An async function that transforms the success value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Result[U, E]: A new Result with transformed success or the original error.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">await</span> <span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+        <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Err</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">map_err</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">E</span><span class="p">],</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply a function to the Err value.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            op: A function that transforms the error value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Result[T, U]: A new Result with transformed error or the original success.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Ok</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Err</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">map_err_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">E</span><span class="p">],</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">U</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Asynchronously apply a function to the Err value.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            op: An async function that transforms the error value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Result[T, U]: A new Result with transformed error or the original success.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Ok</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Err</span><span class="p">(</span><span class="k">await</span> <span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">and_then</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Chain another Result-returning function if current is Ok.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            op: A function that takes a success value and returns a new Result.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Result[U, E]: The new chained result, or the original error.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Err</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">and_then_async</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Asynchronously chain another Result-returning function if current is Ok.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            op: An async function that takes a success value and returns a new Result.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Result[U, E]: The new chained result, or the original error.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Err</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract the success value or raise an error.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            T: The Ok value.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: If the Result is an Err value</span>
+<span class="sd">            UnwrapError: If the result is Err.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span>  <span class="c1"># type: ignore</span>
+        <span class="k">raise</span> <span class="n">UnwrapError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Called unwrap on Err: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">unwrap_or</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the success value or a default.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            default: The fallback value.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            T: The unwrapped value</span>
+<span class="sd">            T: The Ok value or the default.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Called unwrap on an Err value: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span> <span class="k">else</span> <span class="n">default</span>  <span class="c1"># type: ignore</span>
 
-    <span class="k">def</span> <span class="nf">unwrap_err</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">E</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unwraps the Result error if it is an Err value, otherwise raises a ValueError.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unwrap_or_else</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">E</span><span class="p">],</span> <span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the success value or a value generated from the error.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            op: A function that maps the error to a fallback value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            T: The Ok value or a fallback derived from the error.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span> <span class="k">else</span> <span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">expect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract the success value or raise with a custom message.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            msg: The message to include in the exception.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            T: The Ok value.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: If the Result is an Ok value</span>
+<span class="sd">            UnwrapError: If the result is Err.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span>  <span class="c1"># type: ignore</span>
+        <span class="k">raise</span> <span class="n">UnwrapError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ok_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">U</span><span class="p">],</span> <span class="n">err_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">E</span><span class="p">],</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pattern match to handle both Ok and Err branches.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ok_fn: Function to handle Ok.</span>
+<span class="sd">            err_fn: Function to handle Err.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            E: The unwrapped error</span>
+<span class="sd">            U: Result of executing the appropriate handler.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_ok</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Called unwrap_err on an Ok value: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ok_fn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="k">return</span> <span class="n">err_fn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 
-    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts the Result to a dictionary.</span>
 
 <span class="sd">        Returns:</span>
@@ -823,13 +1570,23 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts the Result to a JSON string.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The Result as a JSON string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a string representation of the Result.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Ok(value) or Err(error).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">variant</span> <span class="o">=</span> <span class="s2">&quot;Ok&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span> <span class="k">else</span> <span class="s2">&quot;Err&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="si">!r}</span><span class="s2">)&quot;</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
@@ -848,6 +1605,694 @@
 <div class="doc doc-object doc-function">
 
 
+<h3 id="neopipe.result.Result.Err" class="doc doc-heading">
+            <code class=" language-python"><span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+<a href="#neopipe.result.Result.Err" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create a Result representing an error.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>error</code>
+            </td>
+            <td>
+                  <code><span title="neopipe.result.E">E</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The error value.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Self">Self</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Result[T, E]: An Err variant.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>neopipe/result.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">Err</span><span class="p">(</span><span class="n">error</span><span class="p">:</span> <span class="n">E</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a Result representing an error.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        error: The error value.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Result[T, E]: An Err variant.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="neopipe.result.Result.Ok" class="doc doc-heading">
+            <code class=" language-python"><span class="n">Ok</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+<a href="#neopipe.result.Result.Ok" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create a Result representing a successful value.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>value</code>
+            </td>
+            <td>
+                  <code><span title="neopipe.result.T">T</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The success value.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Self">Self</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Result[T, E]: An Ok variant.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>neopipe/result.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">Ok</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a Result representing a successful value.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        value: The success value.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Result[T, E]: An Ok variant.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="neopipe.result.Result.__repr__" class="doc doc-heading">
+            <code class=" language-python"><span class="fm">__repr__</span><span class="p">()</span></code>
+
+<a href="#neopipe.result.Result.__repr__" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return a string representation of the Result.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>str</code></td>            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Ok(value) or Err(error).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>neopipe/result.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a string representation of the Result.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Ok(value) or Err(error).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">variant</span> <span class="o">=</span> <span class="s2">&quot;Ok&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span> <span class="k">else</span> <span class="s2">&quot;Err&quot;</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="si">!r}</span><span class="s2">)&quot;</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="neopipe.result.Result.and_then" class="doc doc-heading">
+            <code class=" language-python"><span class="n">and_then</span><span class="p">(</span><span class="n">op</span><span class="p">)</span></code>
+
+<a href="#neopipe.result.Result.and_then" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Chain another Result-returning function if current is Ok.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>op</code>
+            </td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span>[[<span title="neopipe.result.T">T</span>], <a class="autorefs autorefs-internal" title="Result
+
+
+  
+      dataclass
+   (neopipe.result.Result)" href="#neopipe.result.Result">Result</a>[<span title="neopipe.result.U">U</span>, <span title="neopipe.result.E">E</span>]]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A function that takes a success value and returns a new Result.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="Result
+
+
+  
+      dataclass
+   (neopipe.result.Result)" href="#neopipe.result.Result">Result</a>[<span title="neopipe.result.U">U</span>, <span title="neopipe.result.E">E</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Result[U, E]: The new chained result, or the original error.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>neopipe/result.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">and_then</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Chain another Result-returning function if current is Ok.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        op: A function that takes a success value and returns a new Result.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Result[U, E]: The new chained result, or the original error.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Err</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="neopipe.result.Result.and_then_async" class="doc doc-heading">
+            <code class=" language-python"><span class="n">and_then_async</span><span class="p">(</span><span class="n">op</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#neopipe.result.Result.and_then_async" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Asynchronously chain another Result-returning function if current is Ok.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>op</code>
+            </td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span>[[<span title="neopipe.result.T">T</span>], <span title="typing.Awaitable">Awaitable</span>[<a class="autorefs autorefs-internal" title="Result
+
+
+  
+      dataclass
+   (neopipe.result.Result)" href="#neopipe.result.Result">Result</a>[<span title="neopipe.result.U">U</span>, <span title="neopipe.result.E">E</span>]]]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>An async function that takes a success value and returns a new Result.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="Result
+
+
+  
+      dataclass
+   (neopipe.result.Result)" href="#neopipe.result.Result">Result</a>[<span title="neopipe.result.U">U</span>, <span title="neopipe.result.E">E</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Result[U, E]: The new chained result, or the original error.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>neopipe/result.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">and_then_async</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]]]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Asynchronously chain another Result-returning function if current is Ok.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        op: An async function that takes a success value and returns a new Result.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Result[U, E]: The new chained result, or the original error.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Err</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="neopipe.result.Result.err" class="doc doc-heading">
+            <code class=" language-python"><span class="n">err</span><span class="p">()</span></code>
+
+<a href="#neopipe.result.Result.err" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the error value if available.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Union">Union</span>[<span title="neopipe.result.E">E</span>, None]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>E | None: The Err value or None.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>neopipe/result.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">err</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">E</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the error value if available.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        E | None: The Err value or None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span> <span class="k">else</span> <span class="kc">None</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="neopipe.result.Result.expect" class="doc doc-heading">
+            <code class=" language-python"><span class="n">expect</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></code>
+
+<a href="#neopipe.result.Result.expect" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Extract the success value or raise with a custom message.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>msg</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The message to include in the exception.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>T</code></td>            <td>
+                  <code><span title="neopipe.result.T">T</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The Ok value.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="UnwrapError (neopipe.result.UnwrapError)" href="#neopipe.result.UnwrapError">UnwrapError</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the result is Err.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>neopipe/result.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">expect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract the success value or raise with a custom message.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        msg: The message to include in the exception.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        T: The Ok value.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        UnwrapError: If the result is Err.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span>  <span class="c1"># type: ignore</span>
+    <span class="k">raise</span> <span class="n">UnwrapError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
 <h3 id="neopipe.result.Result.is_err" class="doc doc-heading">
             <code class=" language-python"><span class="n">is_err</span><span class="p">()</span></code>
 
@@ -856,15 +2301,49 @@
 
     <div class="doc doc-contents ">
 
-      <p>Checks if the Result is an Err value.</p>
+        <p>Check if the result is Err.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>bool</code></td>            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>True if Err, False otherwise.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
             <details class="quote">
               <summary>Source code in <code>neopipe/result.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">is_err</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if the Result is an Err value.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_err</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if the result is Err.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if Err, False otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -882,7 +2361,7 @@
 
     <div class="doc doc-contents ">
 
-      <p>Checks if the Result is an Ok value.</p>
+        <p>Check if the result is Ok.</p>
 
 
     <p><span class="doc-section-title">Returns:</span></p>
@@ -896,32 +2375,646 @@
       <tbody>
           <tr class="doc-section-item">
 <td><code>bool</code></td>            <td>
-                  <code>bool</code>
+                  <code><span title="bool">bool</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>True if the Result is an Ok value, False otherwise</p>
+                <p>True if Ok, False otherwise.</p>
               </div>
             </td>
           </tr>
       </tbody>
     </table>
 
+
             <details class="quote">
               <summary>Source code in <code>neopipe/result.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">is_ok</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if the Result is an Ok value.</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_ok</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if the result is Ok.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        bool: True if the Result is an Ok value, False otherwise</span>
+<span class="sd">        bool: True if Ok, False otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="neopipe.result.Result.map" class="doc doc-heading">
+            <code class=" language-python"><span class="nb">map</span><span class="p">(</span><span class="n">op</span><span class="p">)</span></code>
+
+<a href="#neopipe.result.Result.map" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Apply a function to the Ok value.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>op</code>
+            </td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span>[[<span title="neopipe.result.T">T</span>], <span title="neopipe.result.U">U</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A function that transforms the success value.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="Result
+
+
+  
+      dataclass
+   (neopipe.result.Result)" href="#neopipe.result.Result">Result</a>[<span title="neopipe.result.U">U</span>, <span title="neopipe.result.E">E</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Result[U, E]: A new Result with transformed success or the original error.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>neopipe/result.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span>
+<span class="normal">93</span>
+<span class="normal">94</span>
+<span class="normal">95</span>
+<span class="normal">96</span>
+<span class="normal">97</span>
+<span class="normal">98</span>
+<span class="normal">99</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Apply a function to the Ok value.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        op: A function that transforms the success value.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Result[U, E]: A new Result with transformed success or the original error.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Err</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="neopipe.result.Result.map_async" class="doc doc-heading">
+            <code class=" language-python"><span class="n">map_async</span><span class="p">(</span><span class="n">op</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#neopipe.result.Result.map_async" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Asynchronously apply a function to the Ok value.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>op</code>
+            </td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span>[[<span title="neopipe.result.T">T</span>], <span title="typing.Awaitable">Awaitable</span>[<span title="neopipe.result.U">U</span>]]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>An async function that transforms the success value.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="Result
+
+
+  
+      dataclass
+   (neopipe.result.Result)" href="#neopipe.result.Result">Result</a>[<span title="neopipe.result.U">U</span>, <span title="neopipe.result.E">E</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Result[U, E]: A new Result with transformed success or the original error.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>neopipe/result.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">map_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">U</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Asynchronously apply a function to the Ok value.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        op: An async function that transforms the success value.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Result[U, E]: A new Result with transformed success or the original error.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">await</span> <span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Err</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="neopipe.result.Result.map_err" class="doc doc-heading">
+            <code class=" language-python"><span class="n">map_err</span><span class="p">(</span><span class="n">op</span><span class="p">)</span></code>
+
+<a href="#neopipe.result.Result.map_err" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Apply a function to the Err value.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>op</code>
+            </td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span>[[<span title="neopipe.result.E">E</span>], <span title="neopipe.result.U">U</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A function that transforms the error value.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="Result
+
+
+  
+      dataclass
+   (neopipe.result.Result)" href="#neopipe.result.Result">Result</a>[<span title="neopipe.result.T">T</span>, <span title="neopipe.result.U">U</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Result[T, U]: A new Result with transformed error or the original success.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>neopipe/result.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">map_err</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">E</span><span class="p">],</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Apply a function to the Err value.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        op: A function that transforms the error value.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Result[T, U]: A new Result with transformed error or the original success.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Ok</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Err</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="neopipe.result.Result.map_err_async" class="doc doc-heading">
+            <code class=" language-python"><span class="n">map_err_async</span><span class="p">(</span><span class="n">op</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#neopipe.result.Result.map_err_async" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Asynchronously apply a function to the Err value.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>op</code>
+            </td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span>[[<span title="neopipe.result.E">E</span>], <span title="typing.Awaitable">Awaitable</span>[<span title="neopipe.result.U">U</span>]]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>An async function that transforms the error value.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="Result
+
+
+  
+      dataclass
+   (neopipe.result.Result)" href="#neopipe.result.Result">Result</a>[<span title="neopipe.result.T">T</span>, <span title="neopipe.result.U">U</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Result[T, U]: A new Result with transformed error or the original success.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>neopipe/result.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">map_err_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">E</span><span class="p">],</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">U</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Asynchronously apply a function to the Err value.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        op: An async function that transforms the error value.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Result[T, U]: A new Result with transformed error or the original success.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Ok</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">Err</span><span class="p">(</span><span class="k">await</span> <span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="neopipe.result.Result.match" class="doc doc-heading">
+            <code class=" language-python"><span class="k">match</span><span class="p">(</span><span class="n">ok_fn</span><span class="p">,</span> <span class="n">err_fn</span><span class="p">)</span></code>
+
+<a href="#neopipe.result.Result.match" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Pattern match to handle both Ok and Err branches.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>ok_fn</code>
+            </td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span>[[<span title="neopipe.result.T">T</span>], <span title="neopipe.result.U">U</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Function to handle Ok.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>err_fn</code>
+            </td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span>[[<span title="neopipe.result.E">E</span>], <span title="neopipe.result.U">U</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Function to handle Err.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>U</code></td>            <td>
+                  <code><span title="neopipe.result.U">U</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Result of executing the appropriate handler.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>neopipe/result.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ok_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">U</span><span class="p">],</span> <span class="n">err_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">E</span><span class="p">],</span> <span class="n">U</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">U</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pattern match to handle both Ok and Err branches.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ok_fn: Function to handle Ok.</span>
+<span class="sd">        err_fn: Function to handle Err.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        U: Result of executing the appropriate handler.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ok_fn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+    <span class="k">return</span> <span class="n">err_fn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="neopipe.result.Result.ok" class="doc doc-heading">
+            <code class=" language-python"><span class="n">ok</span><span class="p">()</span></code>
+
+<a href="#neopipe.result.Result.ok" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the success value if available.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Union">Union</span>[<span title="neopipe.result.T">T</span>, None]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>T | None: The Ok value or None.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>neopipe/result.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">ok</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the success value if available.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        T | None: The Ok value or None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span> <span class="k">else</span> <span class="kc">None</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -939,7 +3032,7 @@
 
     <div class="doc doc-contents ">
 
-      <p>Converts the Result to a dictionary.</p>
+        <p>Converts the Result to a dictionary.</p>
 
 
     <p><span class="doc-section-title">Returns:</span></p>
@@ -953,7 +3046,7 @@
       <tbody>
           <tr class="doc-section-item">
 <td><code>dict</code></td>            <td>
-                  <code>dict</code>
+                  <code><span title="dict">dict</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -964,15 +3057,16 @@
       </tbody>
     </table>
 
+
             <details class="quote">
               <summary>Source code in <code>neopipe/result.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts the Result to a dictionary.</span>
 
 <span class="sd">    Returns:</span>
@@ -996,7 +3090,7 @@
 
     <div class="doc doc-contents ">
 
-      <p>Converts the Result to a JSON string.</p>
+        <p>Converts the Result to a JSON string.</p>
 
 
     <p><span class="doc-section-title">Returns:</span></p>
@@ -1010,7 +3104,7 @@
       <tbody>
           <tr class="doc-section-item">
 <td><code>str</code></td>            <td>
-                  <code>str</code>
+                  <code><span title="str">str</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1021,15 +3115,16 @@
       </tbody>
     </table>
 
+
             <details class="quote">
               <summary>Source code in <code>neopipe/result.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts the Result to a JSON string.</span>
 
 <span class="sd">    Returns:</span>
@@ -1053,7 +3148,30 @@
 
     <div class="doc doc-contents ">
 
-      <p>Unwraps the Result value if it is an Ok value, otherwise raises a ValueError.</p>
+        <p>Extract the success value or raise an error.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>T</code></td>            <td>
+                  <code><span title="neopipe.result.T">T</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The Ok value.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
 <p><span class="doc-section-title">Raises:</span></p>
@@ -1067,12 +3185,90 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code>ValueError</code>
+                  <code><a class="autorefs autorefs-internal" title="UnwrapError (neopipe.result.UnwrapError)" href="#neopipe.result.UnwrapError">UnwrapError</a></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>If the Result is an Err value</p>
+                <p>If the result is Err.</p>
               </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>neopipe/result.py</code></summary>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract the success value or raise an error.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        T: The Ok value.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        UnwrapError: If the result is Err.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span>  <span class="c1"># type: ignore</span>
+    <span class="k">raise</span> <span class="n">UnwrapError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Called unwrap on Err: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="neopipe.result.Result.unwrap_or" class="doc doc-heading">
+            <code class=" language-python"><span class="n">unwrap_or</span><span class="p">(</span><span class="n">default</span><span class="p">)</span></code>
+
+<a href="#neopipe.result.Result.unwrap_or" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return the success value or a default.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>default</code>
+            </td>
+            <td>
+                  <code><span title="neopipe.result.T">T</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The fallback value.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
             </td>
           </tr>
       </tbody>
@@ -1094,38 +3290,37 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The unwrapped value</p>
+                <p>The Ok value or the default.</p>
               </div>
             </td>
           </tr>
       </tbody>
     </table>
 
+
             <details class="quote">
               <summary>Source code in <code>neopipe/result.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unwraps the Result value if it is an Ok value, otherwise raises a ValueError.</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">unwrap_or</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the success value or a default.</span>
 
-<span class="sd">    Raises:</span>
-<span class="sd">        ValueError: If the Result is an Err value</span>
+<span class="sd">    Args:</span>
+<span class="sd">        default: The fallback value.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        T: The unwrapped value</span>
+<span class="sd">        T: The Ok value or the default.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Called unwrap on an Err value: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span> <span class="k">else</span> <span class="n">default</span>  <span class="c1"># type: ignore</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1135,34 +3330,42 @@
 <div class="doc doc-object doc-function">
 
 
-<h3 id="neopipe.result.Result.unwrap_err" class="doc doc-heading">
-            <code class=" language-python"><span class="n">unwrap_err</span><span class="p">()</span></code>
+<h3 id="neopipe.result.Result.unwrap_or_else" class="doc doc-heading">
+            <code class=" language-python"><span class="n">unwrap_or_else</span><span class="p">(</span><span class="n">op</span><span class="p">)</span></code>
 
-<a href="#neopipe.result.Result.unwrap_err" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#neopipe.result.Result.unwrap_or_else" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
     <div class="doc doc-contents ">
 
-      <p>Unwraps the Result error if it is an Err value, otherwise raises a ValueError.</p>
+        <p>Return the success value or a value generated from the error.</p>
 
 
-<p><span class="doc-section-title">Raises:</span></p>
+<p><span class="doc-section-title">Parameters:</span></p>
     <table>
       <thead>
         <tr>
+          <th>Name</th>
           <th>Type</th>
           <th>Description</th>
+          <th>Default</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code>ValueError</code>
+                <code>op</code>
+            </td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span>[[<span title="neopipe.result.E">E</span>], <span title="neopipe.result.T">T</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>If the Result is an Ok value</p>
+                <p>A function that maps the error to a fallback value.</p>
               </div>
+            </td>
+            <td>
+                <em>required</em>
             </td>
           </tr>
       </tbody>
@@ -1179,43 +3382,42 @@
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>E</code></td>            <td>
-                  <code><span title="neopipe.result.E">E</span></code>
+<td><code>T</code></td>            <td>
+                  <code><span title="neopipe.result.T">T</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The unwrapped error</p>
+                <p>The Ok value or a fallback derived from the error.</p>
               </div>
             </td>
           </tr>
       </tbody>
     </table>
 
+
             <details class="quote">
               <summary>Source code in <code>neopipe/result.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">unwrap_err</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">E</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unwraps the Result error if it is an Err value, otherwise raises a ValueError.</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">unwrap_or_else</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">E</span><span class="p">],</span> <span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the success value or a value generated from the error.</span>
 
-<span class="sd">    Raises:</span>
-<span class="sd">        ValueError: If the Result is an Ok value</span>
+<span class="sd">    Args:</span>
+<span class="sd">        op: A function that maps the error to a fallback value.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        E: The unwrapped error</span>
+<span class="sd">        T: The Ok value or a fallback derived from the error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_ok</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Called unwrap_err on an Ok value: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ok</span> <span class="k">else</span> <span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1225,6 +3427,46 @@
 
 
   </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="neopipe.result.UnwrapError" class="doc doc-heading">
+            <code>UnwrapError</code>
+
+
+<a href="#neopipe.result.UnwrapError" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="Exception">Exception</span></code></p>
+
+
+        <p>Raised when unwrap is called on an Err value.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>neopipe/result.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">UnwrapError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when unwrap is called on an Err value.&quot;&quot;&quot;</span>
+
+    <span class="k">pass</span>
+</code></pre></div></td></tr></table></div>
+              </details>
 
     </div>
 
@@ -1242,15 +3484,16 @@
 
     <div class="doc doc-contents ">
 
-      <p>Creates an Err Result with the given error.</p>
+        <p>Creates an Err Result with the given error.</p>
+
 
             <details class="quote">
               <summary>Source code in <code>neopipe/result.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">Err</span><span class="p">(</span><span class="n">error</span><span class="p">:</span> <span class="n">E</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">Err</span><span class="p">(</span><span class="n">error</span><span class="p">:</span> <span class="n">E</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an Err Result with the given error.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">Result</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1268,15 +3511,16 @@
 
     <div class="doc doc-contents ">
 
-      <p>Creates an Ok Result with the given value.</p>
+        <p>Creates an Ok Result with the given value.</p>
+
 
             <details class="quote">
               <summary>Source code in <code>neopipe/result.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">Ok</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">Ok</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an Ok Result with the given value.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">Result</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1336,10 +3580,12 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.ad660dcc.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
       
     
   </body>
