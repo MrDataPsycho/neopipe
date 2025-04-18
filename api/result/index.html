@@ -498,6 +498,24 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#neopipe.result.PipelineResult" class="md-nav__link">
+    <span class="md-ellipsis">
+      PipelineResult
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#neopipe.result.PipelineTrace" class="md-nav__link">
+    <span class="md-ellipsis">
+      PipelineTrace
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#neopipe.result.Result" class="md-nav__link">
     <span class="md-ellipsis">
       Result
@@ -689,6 +707,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#neopipe.result.SinglePipelineTrace" class="md-nav__link">
+    <span class="md-ellipsis">
+      SinglePipelineTrace
+    </span>
+  </a>
   
 </li>
       
@@ -794,6 +821,24 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#neopipe.result.PipelineResult" class="md-nav__link">
+    <span class="md-ellipsis">
+      PipelineResult
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#neopipe.result.PipelineTrace" class="md-nav__link">
+    <span class="md-ellipsis">
+      PipelineTrace
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#neopipe.result.Result" class="md-nav__link">
     <span class="md-ellipsis">
       Result
@@ -989,6 +1034,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#neopipe.result.SinglePipelineTrace" class="md-nav__link">
+    <span class="md-ellipsis">
+      SinglePipelineTrace
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#neopipe.result.UnwrapError" class="md-nav__link">
     <span class="md-ellipsis">
       UnwrapError
@@ -1057,6 +1111,216 @@
 
 
 
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="neopipe.result.PipelineResult" class="doc doc-heading">
+            <code>PipelineResult</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#neopipe.result.PipelineResult" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="typing.Generic">Generic</span>[<span title="neopipe.result.U">U</span>]</code></p>
+
+
+        <p>Represents the final outcome of a single pipeline run.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="neopipe.result.PipelineResult.name">name</span></code></td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Name of the pipeline.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="neopipe.result.PipelineResult.result">result</span></code></td>
+            <td>
+                  <code><span title="neopipe.result.U">U</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The final output value of type U.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>neopipe/result.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PipelineResult</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">U</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents the final outcome of a single pipeline run.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        name: Name of the pipeline.</span>
+<span class="sd">        result: The final output value of type U.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">U</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="neopipe.result.PipelineTrace" class="doc doc-heading">
+            <code>PipelineTrace</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#neopipe.result.PipelineTrace" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="typing.Generic">Generic</span>[<span title="neopipe.result.E">E</span>]</code></p>
+
+
+        <p>Aggregates traces from multiple pipelines.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="neopipe.result.PipelineTrace.pipelines">pipelines</span></code></td>
+            <td>
+                  <code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="SinglePipelineTrace
+
+
+  
+      dataclass
+   (neopipe.result.SinglePipelineTrace)" href="#neopipe.result.SinglePipelineTrace">SinglePipelineTrace</a>[<span title="neopipe.result.E">E</span>]]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of SinglePipelineTrace instances.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>neopipe/result.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PipelineTrace</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">E</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Aggregates traces from multiple pipelines.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        pipelines: A list of SinglePipelineTrace instances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pipelines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SinglePipelineTrace</span><span class="p">[</span><span class="n">E</span><span class="p">]]</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
 
 <div class="doc doc-object doc-class">
 
@@ -3423,6 +3687,121 @@
     </div>
 
 </div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="neopipe.result.SinglePipelineTrace" class="doc doc-heading">
+            <code>SinglePipelineTrace</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#neopipe.result.SinglePipelineTrace" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="typing.Generic">Generic</span>[<span title="neopipe.result.E">E</span>]</code></p>
+
+
+        <p>Captures the per-step trace for one pipeline.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="neopipe.result.SinglePipelineTrace.name">name</span></code></td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Name of the pipeline.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="neopipe.result.SinglePipelineTrace.tasks">tasks</span></code></td>
+            <td>
+                  <code><span title="typing.List">List</span>[<span title="typing.Tuple">Tuple</span>[<span title="str">str</span>, <a class="autorefs autorefs-internal" title="Result
+
+
+  
+      dataclass
+   (neopipe.result.Result)" href="#neopipe.result.Result">Result</a>[<span title="typing.Any">Any</span>, <span title="neopipe.result.E">E</span>]]]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>List of (task_name, Result) tuples for each step.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>neopipe/result.py</code></summary>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SinglePipelineTrace</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">E</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Captures the per-step trace for one pipeline.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        name: Name of the pipeline.</span>
+<span class="sd">        tasks: List of (task_name, Result) tuples for each step.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">tasks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Result</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">E</span><span class="p">]]]</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
 
 
 

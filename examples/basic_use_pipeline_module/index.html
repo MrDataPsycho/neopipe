@@ -405,6 +405,39 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="4. Chaining Pipelines in Parallel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-define-your-pipelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 Define your pipelines
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-run-in-parallel-nondebug" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Run in parallel (non‑debug)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-run-in-parallel-debug-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3 Run in parallel (debug mode)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -755,6 +788,39 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="4. Chaining Pipelines in Parallel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-define-your-pipelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 Define your pipelines
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-run-in-parallel-nondebug" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Run in parallel (non‑debug)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-run-in-parallel-debug-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3 Run in parallel (debug mode)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -873,29 +939,80 @@
 
 <hr />
 <h2 id="4-chaining-pipelines-in-parallel">4. Chaining Pipelines in Parallel<a class="headerlink" href="#4-chaining-pipelines-in-parallel" title="Permanent link">&para;</a></h2>
-<p>You can also run two pipelines in parallel and merge their outputs.</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># Pipeline A: load &amp; filter active</span>
-<span class="n">p1</span> <span class="o">=</span> <span class="n">SyncPipeline</span><span class="o">.</span><span class="n">from_tasks</span><span class="p">([</span><span class="n">load_users</span><span class="p">,</span> <span class="n">filter_active</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;LoadFilter&quot;</span><span class="p">)</span>
+<p>You can execute multiple <code>SyncPipeline</code> instances concurrently with <code>run_parallel</code>. Each pipeline runs in its own thread and returns a list of <code>PipelineResult</code> objects (and, in debug mode, a <code>PipelineTrace</code> with per‑task details).</p>
+<hr />
+<h3 id="41-define-your-pipelines">4.1 Define your pipelines<a class="headerlink" href="#41-define-your-pipelines" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">neopipe.result</span><span class="w"> </span><span class="kn">import</span> <span class="n">Result</span><span class="p">,</span> <span class="n">Ok</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neopipe.task</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionSyncTask</span><span class="p">,</span> <span class="n">ClassSyncTask</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neopipe.sync_pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">SyncPipeline</span>
 
-<span class="c1"># Pipeline B: load &amp; extract names</span>
 <span class="nd">@FunctionSyncTask</span><span class="o">.</span><span class="n">decorator</span><span class="p">()</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">extract_ids</span><span class="p">(</span><span class="n">res</span><span class="p">:</span> <span class="n">Result</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">str</span><span class="p">]:</span>
-    <span class="k">return</span> <span class="n">Ok</span><span class="p">([</span><span class="n">u</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">res</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()])</span> <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">is_ok</span><span class="p">()</span> <span class="k">else</span> <span class="n">res</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_length</span><span class="p">(</span><span class="n">res</span><span class="p">:</span> <span class="n">Result</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="c1"># returns the length of the string</span>
+    <span class="k">return</span> <span class="n">Ok</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()))</span> <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">is_ok</span><span class="p">()</span> <span class="k">else</span> <span class="n">res</span>
 
-<span class="n">p2</span> <span class="o">=</span> <span class="n">SyncPipeline</span><span class="o">.</span><span class="n">from_tasks</span><span class="p">([</span><span class="n">load_users</span><span class="p">,</span> <span class="n">extract_ids</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;LoadIDs&quot;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MultiplyTask</span><span class="p">(</span><span class="n">ClassSyncTask</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">factor</span> <span class="o">=</span> <span class="n">factor</span>
 
-<span class="c1"># Run in parallel</span>
-<span class="n">parallel</span> <span class="o">=</span> <span class="n">SyncPipeline</span><span class="o">.</span><span class="n">run_parallel</span><span class="p">(</span>
-    <span class="n">pipelines</span><span class="o">=</span><span class="p">[</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">],</span>
-    <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">Ok</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="n">Ok</span><span class="p">(</span><span class="kc">None</span><span class="p">)]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">:</span> <span class="n">Result</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="c1"># multiplies the integer by the given factor</span>
+        <span class="k">return</span> <span class="n">Ok</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">factor</span><span class="p">)</span> <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">is_ok</span><span class="p">()</span> <span class="k">else</span> <span class="n">res</span>
+
+<span class="c1"># Pipeline A: compute length → multiply by 2</span>
+<span class="n">pA</span> <span class="o">=</span> <span class="n">SyncPipeline</span><span class="o">.</span><span class="n">from_tasks</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">compute_length</span><span class="p">,</span> <span class="n">MultiplyTask</span><span class="p">(</span><span class="mi">2</span><span class="p">)],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;LengthX2&quot;</span>
 <span class="p">)</span>
 
-<span class="k">if</span> <span class="n">parallel</span><span class="o">.</span><span class="n">is_ok</span><span class="p">():</span>
-    <span class="n">active_users</span><span class="p">,</span> <span class="n">user_ids</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Active users:&quot;</span><span class="p">,</span> <span class="n">active_users</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;User IDs:&quot;</span><span class="p">,</span> <span class="n">user_ids</span><span class="p">)</span>
+<span class="c1"># Pipeline B: compute length → multiply by 3</span>
+<span class="n">pB</span> <span class="o">=</span> <span class="n">SyncPipeline</span><span class="o">.</span><span class="n">from_tasks</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">compute_length</span><span class="p">,</span> <span class="n">MultiplyTask</span><span class="p">(</span><span class="mi">3</span><span class="p">)],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;LengthX3&quot;</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<h3 id="42-run-in-parallel-nondebug">4.2 Run in parallel (non‑debug)<a class="headerlink" href="#42-run-in-parallel-nondebug" title="Permanent link">&para;</a></h3>
+<p>You can run the pipelines in parallel by passing a list of inputs, one for each pipeline:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">),</span> <span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;world!&quot;</span><span class="p">)]</span>  <span class="c1"># one input per pipeline</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">SyncPipeline</span><span class="o">.</span><span class="n">run_parallel</span><span class="p">([</span><span class="n">pA</span><span class="p">,</span> <span class="n">pB</span><span class="p">],</span> <span class="n">inputs</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">():</span>
+    <span class="n">pipeline_results</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+    <span class="c1"># pipeline_results is a List[PipelineResult]:</span>
+    <span class="c1"># [</span>
+    <span class="c1">#   PipelineResult(name=&quot;LengthX2&quot;, result=10),</span>
+    <span class="c1">#   PipelineResult(name=&quot;LengthX3&quot;, result=18)</span>
+    <span class="c1"># ]</span>
+    <span class="k">for</span> <span class="n">pr</span> <span class="ow">in</span> <span class="n">pipeline_results</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pr</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> → </span><span class="si">{</span><span class="n">pr</span><span class="o">.</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Parallel pipelines failed:&quot;</span><span class="p">,</span> <span class="n">parallel</span><span class="o">.</span><span class="n">err</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">err</span><span class="p">())</span>
+</code></pre></div>
+
+<h3 id="43-run-in-parallel-debug-mode">4.3 Run in parallel (debug mode)<a class="headerlink" href="#43-run-in-parallel-debug-mode" title="Permanent link">&para;</a></h3>
+<p>Capture a full per‑task trace alongside the final results:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">res_debug</span> <span class="o">=</span> <span class="n">SyncPipeline</span><span class="o">.</span><span class="n">run_parallel</span><span class="p">([</span><span class="n">pA</span><span class="p">,</span> <span class="n">pB</span><span class="p">],</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">res_debug</span><span class="o">.</span><span class="n">is_ok</span><span class="p">():</span>
+    <span class="n">pipeline_results</span><span class="p">,</span> <span class="n">trace</span> <span class="o">=</span> <span class="n">res_debug</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+
+    <span class="c1"># pipeline_results same as above</span>
+    <span class="c1"># trace is a PipelineTrace(pipelines=[SinglePipelineTrace(...), ...])</span>
+
+    <span class="c1"># Print results</span>
+    <span class="k">for</span> <span class="n">pr</span> <span class="ow">in</span> <span class="n">pipeline_results</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pr</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> final → </span><span class="si">{</span><span class="n">pr</span><span class="o">.</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Inspect per‑task trace</span>
+    <span class="k">for</span> <span class="n">single</span> <span class="ow">in</span> <span class="n">trace</span><span class="o">.</span><span class="n">pipelines</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Trace for </span><span class="si">{</span><span class="n">single</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">task_res</span> <span class="ow">in</span> <span class="n">single</span><span class="o">.</span><span class="n">tasks</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s2"> → </span><span class="si">{</span><span class="n">task_res</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error:&quot;</span><span class="p">,</span> <span class="n">res_debug</span><span class="o">.</span><span class="n">err</span><span class="p">())</span>
 </code></pre></div>
 
 
