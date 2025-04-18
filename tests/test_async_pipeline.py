@@ -1,8 +1,7 @@
 import pytest
-from neopipe.result import Result, Ok, Err
+from neopipe.result import Result, Ok, Err, PipelineResult, PipelineTrace
 from neopipe.task import FunctionAsyncTask, ClassAsyncTask
 from neopipe.async_pipeline import AsyncPipeline
-from typing import Any
 
 # ----------------------------
 # Task Definitions
@@ -154,7 +153,8 @@ async def test_run_parallel_success():
     p2 = AsyncPipeline.from_tasks([multiply_two, add_one])
     inputs = [Ok(1), Ok(2)]
     res = await AsyncPipeline.run_parallel([p1, p2], inputs)
-    assert res == Ok([[2, 4], [4, 5]])
+    res_value = [item.result for item in res.unwrap()]
+    assert res_value == [4, 5]
 
 @pytest.mark.asyncio
 async def test_run_parallel_input_mismatch():
@@ -164,17 +164,39 @@ async def test_run_parallel_input_mismatch():
         res = await AsyncPipeline.run_parallel([p1, p1], [Ok(1)])
         assert res.is_err()
 
+
 @pytest.mark.asyncio
 async def test_run_parallel_debug_trace_and_short_circuit():
-    p1 = AsyncPipeline.from_tasks([add_one])
-    p2 = AsyncPipeline.from_tasks([fail_task])
+    p1 = AsyncPipeline.from_tasks([add_one], name="P1")
+    p2 = AsyncPipeline.from_tasks([fail_task], name="P2")
+
     inputs = [Ok(3), Ok(4)]
     res = await AsyncPipeline.run_parallel([p1, p2], inputs, debug=True)
+
     assert res.is_ok()
-    outputs, trace = res.unwrap()
-    assert outputs[0] == 4
-    assert outputs[1] is None
-    assert any(entry[0] == fail_task.task_name and entry[1] == Err("error occurred") for entry in trace)
+    pipeline_results, pipeline_trace = res.unwrap()
+
+    # -- PipelineResult checks --
+    assert isinstance(pipeline_results, list)
+    # First pipeline succeeded
+    assert pipeline_results[0] == PipelineResult(name="P1", result=4)
+    # Second pipeline short‑circuited, so result is None
+    assert pipeline_results[1] == PipelineResult(name="P2", result=None)
+
+    # -- PipelineTrace checks --
+    assert isinstance(pipeline_trace, PipelineTrace)
+    # We should have two SinglePipelineTrace entries
+    names = [t.name for t in pipeline_trace.pipelines]
+    assert "P1" in names and "P2" in names
+
+    # Extract the trace for each pipeline
+    trace_map = {t.name: t.tasks for t in pipeline_trace.pipelines}
+
+    # p1 ran add_one → Ok(4)
+    assert trace_map["P1"] == [(add_one.task_name, Ok(4))]
+
+    # p2 ran fail_task → Err("error occurred")
+    assert trace_map["P2"] == [(fail_task.task_name, Err("error occurred"))]
 
 @pytest.mark.asyncio
 async def test_run_parallel_unhandled_exception():

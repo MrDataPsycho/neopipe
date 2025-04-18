@@ -129,29 +129,89 @@ Trace:
 
 ## 4. Chaining Pipelines in Parallel
 
-You can also run two pipelines in parallel and merge their outputs.
+
+You can execute multiple `SyncPipeline` instances concurrently with `run_parallel`. Each pipeline runs in its own thread and returns a list of `PipelineResult` objects (and, in debug mode, a `PipelineTrace` with per‑task details).
+
+---
+
+### 4.1 Define your pipelines
 
 ```python
-# Pipeline A: load & filter active
-p1 = SyncPipeline.from_tasks([load_users, filter_active], name="LoadFilter")
+from neopipe.result import Result, Ok
+from neopipe.task import FunctionSyncTask, ClassSyncTask
+from neopipe.sync_pipeline import SyncPipeline
 
-# Pipeline B: load & extract names
 @FunctionSyncTask.decorator()
-def extract_ids(res: Result[list[dict], str]) -> Result[list[int], str]:
-    return Ok([u["id"] for u in res.unwrap()]) if res.is_ok() else res
+def compute_length(res: Result[str, str]) -> Result[int, str]:
+    # returns the length of the string
+    return Ok(len(res.unwrap())) if res.is_ok() else res
 
-p2 = SyncPipeline.from_tasks([load_users, extract_ids], name="LoadIDs")
+class MultiplyTask(ClassSyncTask[int, str]):
+    def __init__(self, factor: int):
+        super().__init__()
+        self.factor = factor
 
-# Run in parallel
-parallel = SyncPipeline.run_parallel(
-    pipelines=[p1, p2],
-    inputs=[Ok(None), Ok(None)]
+    def execute(self, res: Result[int, str]) -> Result[int, str]:
+        # multiplies the integer by the given factor
+        return Ok(res.unwrap() * self.factor) if res.is_ok() else res
+
+# Pipeline A: compute length → multiply by 2
+pA = SyncPipeline.from_tasks(
+    [compute_length, MultiplyTask(2)],
+    name="LengthX2"
 )
 
-if parallel.is_ok():
-    active_users, user_ids = parallel.unwrap()
-    print("Active users:", active_users)
-    print("User IDs:", user_ids)
-else:
-    print("Parallel pipelines failed:", parallel.err())
+# Pipeline B: compute length → multiply by 3
+pB = SyncPipeline.from_tasks(
+    [compute_length, MultiplyTask(3)],
+    name="LengthX3"
+)
 ```
+
+### 4.2 Run in parallel (non‑debug)
+You can run the pipelines in parallel by passing a list of inputs, one for each pipeline:
+
+```python
+inputs = [Ok("hello"), Ok("world!")]  # one input per pipeline
+
+result = SyncPipeline.run_parallel([pA, pB], inputs)
+
+if result.is_ok():
+    pipeline_results = result.unwrap()
+    # pipeline_results is a List[PipelineResult]:
+    # [
+    #   PipelineResult(name="LengthX2", result=10),
+    #   PipelineResult(name="LengthX3", result=18)
+    # ]
+    for pr in pipeline_results:
+        print(f"{pr.name} → {pr.result}")
+else:
+    print("Error:", result.err())
+```
+
+### 4.3 Run in parallel (debug mode)
+
+Capture a full per‑task trace alongside the final results:
+
+```python
+res_debug = SyncPipeline.run_parallel([pA, pB], inputs, debug=True)
+
+if res_debug.is_ok():
+    pipeline_results, trace = res_debug.unwrap()
+    
+    # pipeline_results same as above
+    # trace is a PipelineTrace(pipelines=[SinglePipelineTrace(...), ...])
+    
+    # Print results
+    for pr in pipeline_results:
+        print(f"{pr.name} final → {pr.result}")
+
+    # Inspect per‑task trace
+    for single in trace.pipelines:
+        print(f"\nTrace for {single.name}:")
+        for task_name, task_res in single.tasks:
+            print(f"  {task_name} → {task_res}")
+else:
+    print("Error:", res_debug.err())
+```
+

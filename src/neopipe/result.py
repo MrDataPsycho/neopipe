@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass
-from typing import Awaitable, Callable, Generic, Self, TypeVar, Union
+from typing import Awaitable, Callable, Generic, Self, TypeVar, Union, List, Tuple, Any
 
 T = TypeVar("T")  # Success type
 E = TypeVar("E")  # Error type
@@ -275,3 +275,40 @@ def Ok(value: T) -> Result[T, None]:
 def Err(error: E) -> Result[None, E]:
     """Creates an Err Result with the given error."""
     return Result(False, error)
+
+
+@dataclass
+class PipelineResult(Generic[U]):
+    """
+    Represents the final outcome of a single pipeline run.
+
+    Attributes:
+        name: Name of the pipeline.
+        result: The final output value of type U.
+    """
+    name: str
+    result: U
+
+
+@dataclass
+class SinglePipelineTrace(Generic[E]):
+    """
+    Captures the per-step trace for one pipeline.
+
+    Attributes:
+        name: Name of the pipeline.
+        tasks: List of (task_name, Result) tuples for each step.
+    """
+    name: str
+    tasks: List[Tuple[str, Result[Any, E]]]
+
+
+@dataclass
+class PipelineTrace(Generic[E]):
+    """
+    Aggregates traces from multiple pipelines.
+
+    Attributes:
+        pipelines: A list of SinglePipelineTrace instances.
+    """
+    pipelines: List[SinglePipelineTrace[E]]

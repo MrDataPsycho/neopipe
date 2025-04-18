@@ -122,10 +122,153 @@ async def debug_main():
 
 asyncio.run(debug_main())
 ```
+## 4. Async Pipeline Parallel Execution
+
+You can run multiple **`AsyncPipeline`** instances concurrently with `run_parallel()`. Each pipeline executes its sequence of tasks (via `run_sequence`) with its own input, and you get back a list of `PipelineResult` objects—and, in debug mode, a full `PipelineTrace`.
 
 ---
 
-## 4. Notes
+### 4.1. Define your pipelines
+
+```python
+import asyncio
+from neopipe.result import Result, Ok, Err
+from neopipe.async_task import FunctionAsyncTask, ClassAsyncTask
+from neopipe.async_pipeline import AsyncPipeline
+
+# — Sequential pipeline: load → filter → extract names
+@FunctionAsyncTask.decorator()
+async def load_users(res: Result[None, str]) -> Result[list[dict], str]:
+    return Ok([
+        {"id": 1, "name": "Alice", "active": True},
+        {"id": 2, "name": "Bob",   "active": False},
+        {"id": 3, "name": "Carol", "active": True},
+    ])
+
+@FunctionAsyncTask.decorator()
+async def filter_active(res: Result[list[dict], str]) -> Result[list[dict], str]:
+    if res.is_err():
+        return res
+    return Ok([u for u in res.unwrap() if u["active"]])
+
+class ExtractNamesTask(ClassAsyncTask[list[dict], str]):
+    async def execute(self, res: Result[list[dict], str]) -> Result[list[str], str]:
+        if res.is_err():
+            return res
+        return Ok([u["name"] for u in res.unwrap()])
+
+seq_pipeline = AsyncPipeline.from_tasks(
+    [load_users, filter_active, ExtractNamesTask()],
+    name="UserSeq"
+)
+
+# — Independent pipelines: fetch and validate
+@FunctionAsyncTask.decorator()
+async def fetch_user(res: Result[int, str]) -> Result[dict, str]:
+    if res.is_ok():
+        await asyncio.sleep(0.05)
+        uid = res.unwrap()
+        return Ok({"id": uid, "name": f"User{uid}"})
+    return res
+
+@FunctionAsyncTask.decorator()
+async def validate_user(res: Result[dict, str]) -> Result[dict, str]:
+    if res.is_ok():
+        user = res.unwrap()
+        if not user.get("id") or not user.get("name"):
+            return Err("Invalid")
+        return Ok(user)
+    return res
+
+fetch_pipeline    = AsyncPipeline.from_tasks([fetch_user],    name="FetchUser")
+validate_pipeline = AsyncPipeline.from_tasks([validate_user], name="ValidateUser")
+```
+
+### 4.2. Run the pipelines in parallel
+
+```python
+async def main():
+    inputs = [
+        Ok(None),                  # seq_pipeline: needs None
+        Ok(42),                    # fetch_pipeline: user ID
+        Ok({"id": 99, "name": "X"})# validate_pipeline: user dict
+    ]
+
+    # debug=False ⇒ Ok[List[PipelineResult]]
+    res = await AsyncPipeline.run_parallel(
+        [seq_pipeline, fetch_pipeline, validate_pipeline],
+        inputs
+    )
+
+    if res.is_ok():
+        for pr in res.unwrap():
+            print(f"{pr.name} → {pr.result}")
+    else:
+        print("Error:", res.err())
+
+asyncio.run(main())
+
+```
+
+Expected Output:
+
+```
+UserSeq      → ['Alice', 'Carol']
+FetchUser    → {'id':42, 'name':'User42'}
+ValidateUser → {'id':99, 'name':'X'}
+```
+
+### 4.3. Run the pipelines in parallel (debug mode)
+
+```python
+async def debug_main():
+    inputs = [Ok(None), Ok(7), Ok({"id":7,"name":"User7"})]
+
+    # debug=True ⇒ Ok((List[PipelineResult], PipelineTrace))
+    res = await AsyncPipeline.run_parallel(
+        [seq_pipeline, fetch_pipeline, validate_pipeline],
+        inputs,
+        debug=True
+    )
+
+    if res.is_ok():
+        results, trace = res.unwrap()
+
+        # Print final results
+        for pr in results:
+            print(f"{pr.name} → {pr.result}")
+
+        # Print per-pipeline, per-task trace
+        for single in trace.pipelines:
+            print(f"\nTrace for {single.name}:")
+            for task_name, task_res in single.tasks:
+                print(f"  {task_name} → {task_res}")
+    else:
+        print("Error:", res.err())
+
+asyncio.run(debug_main())
+```
+Expected Output:
+
+```
+UserSeq      → ['Alice', 'Carol']
+FetchUser    → {'id':7, 'name':'User7'}
+ValidateUser → {'id':7, 'name':'User7'}
+
+Trace for UserSeq:
+  load_users       → Ok([...])
+  filter_active    → Ok([...])
+  ExtractNamesTask → Ok(['Alice','Carol'])
+
+Trace for FetchUser:
+  fetch_user       → Ok({'id':7,'name':'User7'})
+
+Trace for ValidateUser:
+  validate_user    → Ok({'id':7,'name':'User7'})
+```
+---
+
+## 5. Notes
 
 - **1:1 matching**: The `inputs` list must be the same length as your `tasks` list.  
 - **Short‑circuit**: The first `Err` stops the entire pipeline (unless you inspect partial trace).  
