@@ -3,7 +3,7 @@ import logging
 import uuid
 from typing import Generic, List, Optional, Tuple, TypeVar, Union, get_origin, Any
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from neopipe.result import Err, Ok, Result
+from neopipe.result import Err, Ok, Result, PipelineResult, PipelineTrace, SinglePipelineTrace
 from neopipe.task import BaseSyncTask
 
 T = TypeVar("T")
@@ -106,33 +106,45 @@ class SyncPipeline(Generic[T, E]):
     def run_parallel(
         pipelines: List["SyncPipeline[T, E]"],
         inputs: List[Result[T, E]],
-        max_workers: int = 4
-    ) -> Result[List[Any], E]:
+        max_workers: int = 4,
+        debug: bool = False
+    ) -> Result[
+        Union[
+            List[PipelineResult[U]],
+            Tuple[List[PipelineResult[U]], PipelineTrace[E]]
+        ],
+        E
+    ]:
         """
-        Run multiple SyncPipelines in parallel threads.
+        Execute multiple SyncPipelines in parallel threads.
 
         Args:
             pipelines: one SyncPipeline per thread
-            inputs:    initial Result[T, E] input for each pipeline
+            inputs:    initial Result[T, E] for each pipeline
             max_workers: size of thread pool
+            debug: whether to capture per-pipeline, per-task traces
 
         Returns:
-            Ok([out1, out2, …]) if all succeed, or the first Err encountered.
+            - debug=False: Ok([PipelineResult(name, result), ...])
+            - debug=True:  Ok(( [PipelineResult(...)], PipelineTrace(…)))
+            - Err on first pipeline failure or unhandled exception.
         """
         if len(pipelines) != len(inputs):
             raise AssertionError("Each pipeline needs a corresponding input Result")
 
-        results: List[Any] = [None] * len(pipelines)
+        results: List[PipelineResult[U]] = [None] * len(pipelines)
+        traces: List[SinglePipelineTrace[E]] = []
 
         with ThreadPoolExecutor(max_workers=max_workers) as pool:
-            futures = {
-                pool.submit(p.run, inp): idx
+            future_to_idx = {
+                pool.submit(p.run, inp, debug): idx
                 for idx, (p, inp) in enumerate(zip(pipelines, inputs))
             }
 
-            for fut in as_completed(futures):
-                idx = futures[fut]
+            for fut in as_completed(future_to_idx):
+                idx = future_to_idx[fut]
                 pipe = pipelines[idx]
+
                 try:
                     res = fut.result()
                 except Exception as ex:
@@ -142,8 +154,18 @@ class SyncPipeline(Generic[T, E]):
                 if res.is_err():
                     logger.error(f"[{pipe.name}] Failed: {res.err()}")
                     return Err(res.err())
-                results[idx] = res.unwrap()
 
+                # unwrap the Result from run(...)
+                if debug:
+                    val, trace = res.unwrap()  # (output, trace_list)
+                    results[idx] = PipelineResult(name=pipe.name, result=val)
+                    traces.append(SinglePipelineTrace(name=pipe.name, tasks=trace))
+                else:
+                    val = res.unwrap()
+                    results[idx] = PipelineResult(name=pipe.name, result=val)
+
+        if debug:
+            return Ok((results, PipelineTrace(pipelines=traces)))
         return Ok(results)
 
     def __str__(self) -> str:

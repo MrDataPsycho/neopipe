@@ -1,5 +1,5 @@
 import pytest
-from neopipe.result import Ok, Err, Result
+from neopipe.result import Ok, Err, Result, PipelineResult
 from neopipe.task import FunctionSyncTask, ClassSyncTask
 from neopipe.pipeline import SyncPipeline
 from typing import Any
@@ -31,16 +31,22 @@ class AddTask(ClassSyncTask[int, str]):
 # --- Tests ---
 
 def test_parallel_success():
-    # pipeline1: starts from None → 1 → +5 = 6
+    # pipeline1: None → to_one → AddTask(5) = 1 → 6
     p1 = SyncPipeline.from_tasks([to_one, AddTask(5)], name="P1")
-    # pipeline2: starts from None → 2 → +3 = 5
+    # pipeline2: None → to_two → AddTask(3) = 2 → 5
     p2 = SyncPipeline.from_tasks([to_two, AddTask(3)], name="P2")
 
     inputs = [Ok(None), Ok(None)]
-    result = SyncPipeline.run_parallel([p1, p2], inputs)
+    res = SyncPipeline.run_parallel([p1, p2], inputs)
 
-    assert result.is_ok()
-    assert result.unwrap() == [6, 5]
+    assert res.is_ok()
+    pipeline_results = res.unwrap()
+
+    expected = [
+        PipelineResult(name="P1", result=6),
+        PipelineResult(name="P2", result=5),
+    ]
+    assert pipeline_results == expected
 
 
 def test_parallel_short_circuits_on_error():
