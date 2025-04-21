@@ -1,106 +1,101 @@
-import pytest
-from neopipe.result import Result, Ok, Err
-from neopipe.task import FunctionTask, ContainerTask, ContainerTaskBase
+from neopipe.result import Err, Ok, Result
+from neopipe.task import ClassSyncTask, FunctionSyncTask
 
-# Mock function for testing
-def success_func(x: int) -> Result[int, str]:
-    return Ok(x + 1)
+# -----------------------------
+# FunctionSyncTask definitions
+# -----------------------------
 
-def failure_func(x: int) -> Result[int, str]:
-    return Err("Failed to process")
 
-# Mock container task for testing
-class MockContainerTask(ContainerTaskBase):
-    def __init__(self, factor: int):
-        self.factor = factor
+@FunctionSyncTask.decorator(retries=2)
+def add_10(result: Result[int, str]) -> Result[int, str]:
+    if result.is_ok():
+        return Ok(result.unwrap() + 10)
+    return result
 
-    def __call__(self, x: int) -> Result[int, str]:
-        if x > 0:
-            return Ok(x * self.factor)
-        return Err("Invalid input")
 
-def test_function_task_success():
-    task = FunctionTask(success_func, retries=3)
-    result = task(1)
-    assert result.is_ok()
-    assert result.unwrap() == 2
+@FunctionSyncTask.decorator(retries=2)
+def fail_on_zero(result: Result[int, str]) -> Result[int, str]:
+    if result.is_ok() and result.unwrap() == 0:
+        return Err("Cannot be zero")
+    return result
 
-def test_function_task_failure():
-    task = FunctionTask(failure_func, retries=3)
-    result = task(1)
+
+# -----------------------------
+# ClassSyncTask definitions
+# -----------------------------
+
+
+class MultiplyTask(ClassSyncTask[int, str]):
+    def __init__(self, multiplier: int):
+        super().__init__()
+        self.multiplier = multiplier
+
+    def execute(self, result: Result[int, str]) -> Result[int, str]:
+        if result.is_ok():
+            return Ok(result.unwrap() * self.multiplier)
+        return result
+
+
+class AlwaysFailTask(ClassSyncTask[int, str]):
+    def execute(self, result: Result[int, str]) -> Result[int, str]:
+        return Err("Always fails")
+
+
+# -----------------------------
+# Tests for FunctionSyncTask
+# -----------------------------
+
+
+def test_function_sync_task_success():
+    input_result = Ok(5)
+    output = add_10(input_result)
+    assert output == Ok(15)
+
+
+def test_function_sync_task_propagates_err():
+    err = Err("bad input")
+    output = add_10(err)
+    assert output == err
+
+
+def test_function_sync_task_fails_on_zero():
+    result = fail_on_zero(Ok(0))
     assert result.is_err()
-    assert result.unwrap_err() == "Failed to process"
+    assert result.err() == "Cannot be zero"
 
-def test_function_task_retries():
-    def flaky_func(x: int) -> Result[int, str]:
-        if x == 1:
-            raise Exception("Random failure")
-        return Ok(x + 1)
-    
-    task = FunctionTask(flaky_func, retries=3)
-    result = task(1)
+
+# -----------------------------
+# Tests for ClassSyncTask
+# -----------------------------
+
+
+def test_class_sync_task_success():
+    task = MultiplyTask(multiplier=3)
+    output = task(Ok(7))
+    assert output == Ok(21)
+
+
+def test_class_sync_task_propagates_err():
+    task = MultiplyTask(2)
+    output = task(Err("upstream error"))
+    assert output == Err("upstream error")
+
+
+def test_class_sync_task_always_fails():
+    task = AlwaysFailTask()
+    result = task(Ok(123))
     assert result.is_err()
-    assert "Random failure" in result.unwrap_err()
+    assert result.err() == "Always fails"
 
-def test_function_task_eventually_succeeds():
-    attempts = 0
+# -----------------------------
+# Task Name Checks
+# -----------------------------
 
-    def flaky_func(x: int) -> Result[int, str]:
-        nonlocal attempts
-        attempts += 1
-        if attempts < 2:
-            raise Exception("Temporary failure")
-        return Ok(x + 1)
-    
-    task = FunctionTask(flaky_func, retries=3)
-    result = task(1)
-    assert result.is_ok()
-    assert result.unwrap() == 2
 
-def test_container_task_success():
-    container = MockContainerTask(factor=2)
-    task = ContainerTask(container, retries=3)
-    result = task(2)
-    assert result.is_ok()
-    assert result.unwrap() == 4
+def test_function_task_name():
+    assert add_10.task_name == "add_10"
 
-def test_container_task_failure():
-    container = MockContainerTask(factor=2)
-    task = ContainerTask(container, retries=3)
-    result = task(0)
-    assert result.is_err()
-    assert result.unwrap_err() == "Invalid input"
 
-def test_container_task_retries():
-    class FlakyContainerTask(ContainerTaskBase):
-        def __init__(self):
-            self.attempt = 0
-        
-        def __call__(self, x: int) -> Result[int, str]:
-            self.attempt += 1
-            if self.attempt < 3:
-                raise Exception("Temporary failure")
-            return Ok(x * 2)
-
-    container = FlakyContainerTask()
-    task = ContainerTask(container, retries=3)
-    result = task(2)
-    assert result.is_ok()
-    assert result.unwrap() == 4
-
-def test_container_task_eventually_succeeds():
-    class FlakyContainerTask(ContainerTaskBase):
-        def __init__(self):
-            self.attempt = 0
-        
-        def __call__(self, x: int) -> Result[int, str]:
-            self.attempt += 1
-            if self.attempt < 2:
-                raise Exception("Temporary failure")
-            return Ok(x * 2)
-
-    container = FlakyContainerTask()
-    task = ContainerTask(container, retries=3)
-    result = task(2)
-    assert result.is_ok()
-    assert result.unwrap() == 4
+def test_class_task_name():
+    task = MultiplyTask(2)
+    assert task.task_name == "MultiplyTask"

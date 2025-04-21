@@ -1,140 +1,177 @@
 import inspect
 import logging
 import uuid
-from functools import wraps
-from typing import (Any, Callable, List, Self, Type, TypeVar, Union,
-                    get_type_hints)
-
-from neopipe.result import Ok, Result
-from neopipe.task import ContainerTask, ContainerTaskBase, FunctionTask, Task
-
-logger = logging.getLogger(__name__)
+from typing import Generic, List, Optional, Tuple, TypeVar, Union, get_origin, Any
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from neopipe.result import Err, Ok, Result, PipelineResult, PipelineTrace, SinglePipelineTrace
+from neopipe.task import BaseSyncTask
 
 T = TypeVar("T")
 E = TypeVar("E")
+U = TypeVar("U")
+
+logger = logging.getLogger(__name__)
 
 
-class Pipeline:
-    def __init__(self):
-        """Create a Pipeline instance."""
-        self.registry: List[Task[Any, Any]] = []
-        self.uuid = uuid.uuid4()
+class SyncPipeline(Generic[T, E]):
+    """
+    A pipeline that executes BaseSyncTasks sequentially, passing Result[T, E] through each step.
+
+    Attributes:
+        tasks (List[BaseSyncTask]): Registered tasks.
+        pipeline_id (UUID): Unique ID for the pipeline.
+        name (str): Optional name for logging/debugging.
+    """
+
+    def __init__(self, name: Optional[str] = None):
+        self.tasks: List[BaseSyncTask] = []
+        self.pipeline_id = uuid.uuid4()
+        self.name = name or f"SyncPipeline-{self.pipeline_id}"
 
     @classmethod
-    def from_tasks(cls, tasks: List[Task[T, E]]) -> Self:
-        """
-        Create a Pipeline instance from a list of Task objects.
-
-        Args:
-            tasks (List[Task[Any, Any]]): A list of Task objects.
-
-        Returns:
-            Pipeline: A new Pipeline instance.
-        """
+    def from_tasks(
+        cls, tasks: List[BaseSyncTask], name: Optional[str] = None
+    ) -> "SyncPipeline":
+        pipeline = cls(name)
         for task in tasks:
-            if not isinstance(task, Task):
-                raise TypeError(f"Only Task objects can be registered but received {type(task)}.")
-        pipeline = cls()
-        pipeline.registry.extend(tasks)
+            pipeline.add_task(task)
         return pipeline
 
-    def register(self, retries: int = 1) -> Callable[..., Callable[..., Result[T, E]]]:
+    def add_task(self, task: BaseSyncTask) -> None:
+        if not isinstance(task, BaseSyncTask):
+            raise TypeError(
+                f"Only BaseSyncTask instances can be added. Got {type(task)}"
+            )
+
+        sig = inspect.signature(task.execute)
+        params = list(sig.parameters.values())
+        non_self_params = [p for p in params if p.name != "self"]
+
+        if len(non_self_params) < 1:
+            raise TypeError(
+                f"Task '{task.task_name}' must define an 'execute(self, input_result: Result)' method "
+                "with at least one input parameter."
+            )
+
+        param = non_self_params[0]
+        if get_origin(param.annotation) is not Result:
+            raise TypeError(
+                f"Task '{task.task_name}' first argument must be of type Result[T, E]. Found: {param.annotation}"
+            )
+
+        self.tasks.append(task)
+
+    def run(
+        self, input_result: Result[T, E], debug: bool = False
+    ) -> Union[Result[U, E], Result[Tuple[Optional[U], List[Tuple[str, Result]]], E]]:
         """
-        Create a task decorator to register a function or a ContainerTask as a task.
+        Run the pipeline sequentially.
 
         Args:
-            retries (int, optional): The number of times to retry the task. Defaults to 1.
+            input_result (Result): Initial input wrapped in Result.
+            debug (bool): If True, returns execution trace as well.
 
         Returns:
-            Callable[..., Callable[..., Result[T, E]]]: A task decorator.
+            Result: Final output or failure, with optional trace in debug mode.
         """
-        def decorator(func_or_class: Union[Callable[..., Result[T, E]], Type[ContainerTaskBase]]) -> Callable[..., Result[T, E]]:
-            if isinstance(func_or_class, type) and issubclass(func_or_class, ContainerTaskBase):
-                task_instance = ContainerTask(func_or_class(), retries=retries)
-            elif callable(func_or_class) and inspect.isfunction(func_or_class):
-                task_instance = FunctionTask(func_or_class, retries=retries)
-            else:
-                raise TypeError("Only functions or subclasses of ContainerTaskBase can be registered.")
+        trace: List[Tuple[str, Result]] = []
+        result: Result = input_result
 
-            self.registry.append(task_instance)
+        if debug:
+            trace.append((self.name, result))
 
-            @wraps(func_or_class)
-            def wrapped_func(*args, **kwargs) -> Result[T, E]:
-                return task_instance(*args, **kwargs)
+        logger.info(f"[{self.name}] Starting with {len(self.tasks)} task(s)")
 
-            return wrapped_func
+        for idx, task in enumerate(self.tasks):
+            task_name = task.task_name
+            logger.info(f"[{self.name}] Task {idx + 1}/{len(self.tasks)} → {task_name}")
 
-        return decorator
+            try:
+                result = task(result)
+            except Exception as e:
+                logger.exception(f"[{self.name}] Exception in task {task_name}")
+                return Err(f"Exception in task {task_name}: {e}")
 
-    def append_task(self, task: Task[T, E]) -> None:
+            if debug:
+                trace.append((task_name, result))
+
+            if result.is_err():
+                logger.error(f"[{self.name}] Failed at {task_name}: {result.err()}")
+                return Ok((None, trace)) if debug else result
+
+        logger.info(f"[{self.name}] Completed successfully")
+        return result if not debug else Ok((result.unwrap(), trace))
+
+    @staticmethod
+    def run_parallel(
+        pipelines: List["SyncPipeline[T, E]"],
+        inputs: List[Result[T, E]],
+        max_workers: int = 4,
+        debug: bool = False
+    ) -> Result[
+        Union[
+            List[PipelineResult[U]],
+            Tuple[List[PipelineResult[U]], PipelineTrace[E]]
+        ],
+        E
+    ]:
         """
-        Append a Task object, FunctionTask or ContainerTask to the registry.
+        Execute multiple SyncPipelines in parallel threads.
 
         Args:
-            task (Task[Any, Any]): The task to be appended.
+            pipelines: one SyncPipeline per thread
+            inputs:    initial Result[T, E] for each pipeline
+            max_workers: size of thread pool
+            debug: whether to capture per-pipeline, per-task traces
 
         Returns:
-            None
+            - debug=False: Ok([PipelineResult(name, result), ...])
+            - debug=True:  Ok(( [PipelineResult(...)], PipelineTrace(…)))
+            - Err on first pipeline failure or unhandled exception.
         """
-        if not isinstance(task, Task):
-            raise TypeError(f"task must be an instance of Task, FunctionTask, or ContainerTask but got {type(task)}.")
-        self.registry.append(task)
+        if len(pipelines) != len(inputs):
+            raise AssertionError("Each pipeline needs a corresponding input Result")
 
-    def run(self, initial_value: Any, show_progress: bool = False) -> Result[Any, Any]:
-        """
-        Execute the pipeline with the initial value.
+        results: List[PipelineResult[U]] = [None] * len(pipelines)
+        traces: List[SinglePipelineTrace[E]] = []
 
-        Args:
-            initial_value (Any): The initial value to start the pipeline with.
-            show_progress (bool, optional): Whether to show the task completion progress. Defaults to False.
+        with ThreadPoolExecutor(max_workers=max_workers) as pool:
+            future_to_idx = {
+                pool.submit(p.run, inp, debug): idx
+                for idx, (p, inp) in enumerate(zip(pipelines, inputs))
+            }
 
-        Returns:
-            Result[Any, Any]: The result of the pipeline execution.
-        """
-        logger.info(f"Pipeline started (UUID: {self.uuid})")
-        result = Ok(initial_value)
-        total_tasks = len(self.registry)
+            for fut in as_completed(future_to_idx):
+                idx = future_to_idx[fut]
+                pipe = pipelines[idx]
 
-        for i, task in enumerate(self.registry):
-            if result.is_ok():
-                result = task(result.unwrap())
-                if show_progress:
-                    logger.info(f"{i + 1}/{total_tasks} is complete")
-                if result.is_err():
-                    logger.error(f"Pipeline stopped due to error: {result.error}")
-                    return result
-        return result
+                try:
+                    res = fut.result()
+                except Exception as ex:
+                    logger.exception(f"[{pipe.name}] Unhandled exception")
+                    return Err(f"Exception in pipeline '{pipe.name}': {ex}")
 
+                if res.is_err():
+                    logger.error(f"[{pipe.name}] Failed: {res.err()}")
+                    return Err(res.err())
 
-    def show_execution_plan(self) -> None:
-        """
-        Print the execution plan of the pipeline, showing the sequence of tasks and
-        the expected input/output data types.
-        """
-        if not self.registry:
-            print("Pipeline is empty.")
-            return
+                # unwrap the Result from run(...)
+                if debug:
+                    val, trace = res.unwrap()  # (output, trace_list)
+                    results[idx] = PipelineResult(name=pipe.name, result=val)
+                    traces.append(SinglePipelineTrace(name=pipe.name, tasks=trace))
+                else:
+                    val = res.unwrap()
+                    results[idx] = PipelineResult(name=pipe.name, result=val)
 
-        print("Pipeline Execution Plan:")
-        print("=" * 30)
-        for i, task in enumerate(self.registry):
-            func_name = task.func.__name__ if isinstance(task, FunctionTask) else task.container.__class__.__name__
-            type_hints = get_type_hints(task.func if isinstance(task, FunctionTask) else task.container.__call__)
-            input_type = list(type_hints.values())[0] if type_hints else 'Any'
-            output_type = type_hints.get('return', 'Any')
-
-            print(f"{func_name} : {input_type} -> {output_type}")
-
-            if i < len(self.registry) - 1:
-                print(" |")
-                print(" V")
-        print("=" * 30)
+        if debug:
+            return Ok((results, PipelineTrace(pipelines=traces)))
+        return Ok(results)
 
     def __str__(self) -> str:
-        """Return a string representation of the pipeline."""
-        tasks_str = "\n  ".join(str(task) for task in self.registry)
-        return f"Pipeline with {len(self.registry)} tasks:\n  {tasks_str}"
+        task_list = "\n  ".join(task.task_name for task in self.tasks)
+        return f"{self.name} with {len(self.tasks)} task(s):\n  {task_list}"
 
     def __repr__(self) -> str:
-        """Return a string representation of the pipeline."""
         return self.__str__()
+

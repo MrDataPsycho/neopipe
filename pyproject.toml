@@ -29,7 +29,8 @@ dependencies = []
 testing = [
     "pytest",
     "pytest-cov",
-    "pytest-mock"
+    "pytest-mock",
+    "pytest-asyncio",
 ]
 
 dev = [
