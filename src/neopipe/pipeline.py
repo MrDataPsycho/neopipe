@@ -1,9 +1,17 @@
 import inspect
 import logging
 import uuid
-from typing import Generic, List, Optional, Tuple, TypeVar, Union, get_origin, Any
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from neopipe.result import Err, Ok, Result, PipelineResult, PipelineTrace, SinglePipelineTrace
+from typing import Any, Generic, List, Optional, Tuple, TypeVar, Union, get_origin
+
+from neopipe.result import (
+    Err,
+    Ok,
+    PipelineResult,
+    PipelineTrace,
+    Result,
+    SinglePipelineTrace,
+)
 from neopipe.task import BaseSyncTask
 
 T = TypeVar("T")
@@ -107,13 +115,12 @@ class SyncPipeline(Generic[T, E]):
         pipelines: List["SyncPipeline[T, E]"],
         inputs: List[Result[T, E]],
         max_workers: int = 4,
-        debug: bool = False
+        debug: bool = False,
     ) -> Result[
         Union[
-            List[PipelineResult[U]],
-            Tuple[List[PipelineResult[U]], PipelineTrace[E]]
+            List[PipelineResult[U]], Tuple[List[PipelineResult[U]], PipelineTrace[E]]
         ],
-        E
+        E,
     ]:
         """
         Execute multiple SyncPipelines in parallel threads.
@@ -174,4 +181,3 @@ class SyncPipeline(Generic[T, E]):
 
     def __repr__(self) -> str:
         return self.__str__()
-

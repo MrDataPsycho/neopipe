@@ -1,9 +1,17 @@
-import uuid
 import asyncio
-import logging
 import inspect
-from typing import Any, List, Optional, TypeVar, Generic, Tuple, Union
-from neopipe.result import Result, Ok, Err, PipelineResult, PipelineTrace, SinglePipelineTrace
+import logging
+import uuid
+from typing import Any, Generic, List, Optional, Tuple, TypeVar, Union
+
+from neopipe.result import (
+    Err,
+    Ok,
+    PipelineResult,
+    PipelineTrace,
+    Result,
+    SinglePipelineTrace,
+)
 from neopipe.task import BaseAsyncTask
 
 T = TypeVar("T")  # Input success type
@@ -33,9 +41,7 @@ class AsyncPipeline(Generic[T, E]):
 
     @classmethod
     def from_tasks(
-        cls,
-        tasks: List[BaseAsyncTask[T, E]],
-        name: Optional[str] = None
+        cls, tasks: List[BaseAsyncTask[T, E]], name: Optional[str] = None
     ) -> "AsyncPipeline[T, E]":
         pipeline = cls(name)
         for task in tasks:
@@ -50,18 +56,22 @@ class AsyncPipeline(Generic[T, E]):
         if not isinstance(task, BaseAsyncTask):
             raise TypeError(f"Only BaseAsyncTask instances allowed, got {type(task)}")
         sig = inspect.signature(task.execute)
-        params = [p for p in sig.parameters.values() if p.name != 'self']
+        params = [p for p in sig.parameters.values() if p.name != "self"]
         if len(params) != 1:
-            raise TypeError(f"Task '{task.task_name}' must have exactly one input parameter")
-        origin = getattr(params[0].annotation, '__origin__', None)
+            raise TypeError(
+                f"Task '{task.task_name}' must have exactly one input parameter"
+            )
+        origin = getattr(params[0].annotation, "__origin__", None)
         if origin is not Result:
-            raise TypeError(f"Task '{task.task_name}' first arg must be Result[T, E], got {params[0].annotation}")
+            raise TypeError(
+                f"Task '{task.task_name}' first arg must be Result[T, E], got {params[0].annotation}"
+            )
 
     async def run(
-        self,
-        inputs: List[Result[T, E]],
-        debug: bool = False
-    ) -> Result[Union[List[U], Tuple[Optional[List[U]], List[Tuple[str, Result[T, E]]]]], E]:
+        self, inputs: List[Result[T, E]], debug: bool = False
+    ) -> Result[
+        Union[List[U], Tuple[Optional[List[U]], List[Tuple[str, Result[T, E]]]]], E
+    ]:
         """
         Concurrently execute registered tasks with matching inputs.
 
@@ -90,9 +100,7 @@ class AsyncPipeline(Generic[T, E]):
         return Ok((outputs, trace)) if debug else Ok(outputs)
 
     async def run_sequence(
-        self,
-        input_result: Result[T, E],
-        debug: bool = False
+        self, input_result: Result[T, E], debug: bool = False
     ) -> Result[Union[U, Tuple[Optional[U], List[Tuple[str, Result[T, E]]]]], E]:
         """
         Execute registered tasks in sequence.
@@ -103,7 +111,9 @@ class AsyncPipeline(Generic[T, E]):
             try:
                 res: Result[U, E] = await task(current)
             except Exception as e:
-                logger.exception(f"[{self.name}] run_sequence exception in {task.task_name}")
+                logger.exception(
+                    f"[{self.name}] run_sequence exception in {task.task_name}"
+                )
                 return Err(str(e))
             trace.append((task.task_name, res))
             if res.is_err():
@@ -118,8 +128,13 @@ class AsyncPipeline(Generic[T, E]):
     async def run_parallel(
         pipelines: List["AsyncPipeline[T, E]"],
         inputs: List[Result[T, E]],
-        debug: bool = False
-    ) -> Result[Union[List[PipelineResult], Tuple[Optional[List[PipelineResult]], PipelineTrace]], E]:
+        debug: bool = False,
+    ) -> Result[
+        Union[
+            List[PipelineResult], Tuple[Optional[List[PipelineResult]], PipelineTrace]
+        ],
+        E,
+    ]:
         """
         Execute multiple pipelines concurrently, each with its own input.
 
@@ -148,7 +163,9 @@ class AsyncPipeline(Generic[T, E]):
                 pipeline_results.append(PipelineResult(name=pipeline.name, result=val))
                 all_traces.append(SinglePipelineTrace(name=pipeline.name, tasks=trace))
             else:
-                pipeline_results.append(PipelineResult(name=pipeline.name, result=res.unwrap()))
+                pipeline_results.append(
+                    PipelineResult(name=pipeline.name, result=res.unwrap())
+                )
 
         if debug:
             return Ok((pipeline_results, PipelineTrace(pipelines=all_traces)))
