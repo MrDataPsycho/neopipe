@@ -1,11 +1,11 @@
 import asyncio
 import logging
 import time
+import traceback
 import uuid
 from abc import ABC, abstractmethod
 from functools import wraps
 from typing import Awaitable, Callable, Generic, Optional, Self, TypeVar
-import traceback
 
 from neopipe.result import Err, Result
 
@@ -67,9 +67,9 @@ class BaseSyncTask(ABC, Generic[T, E]):
                 last_exception = e
                 logger.exception(f"[{self.task_name}] Exception on attempt {attempt}")
                 time.sleep(2 ** (attempt - 1))  # Exponential backoff
-        tb = traceback.format_exception(last_exception.__class__, last_exception, last_exception.__traceback__)
+
         return Err(
-            f"[{self.task_name}] failed after {self.retries} retries: {last_exception}\n{''.join(tb)}"
+            f"[{self.task_name}] failed after {self.retries} retries and raised Error: {last_exception} with Exception type: {last_exception.__class__.__name__}."
         )
 
     @abstractmethod
@@ -211,8 +211,12 @@ class BaseAsyncTask(ABC, Generic[T, E]):
                 last_exception = e
                 logger.exception(f"[{self.task_name}] Exception on attempt {attempt}")
                 await asyncio.sleep(2 ** (attempt - 1))  # exponential backoff
-        tb = traceback.format_exception(last_exception.__class__, last_exception, last_exception.__traceback__)
-        return Err(f"[{self.task_name}] failed after {self.retries} retries: {last_exception}\n{''.join(tb)}")
+        # tb = traceback.format_exception(
+        #     last_exception.__class__, last_exception, last_exception.__traceback__
+        # )
+        return Err(
+            f"[{self.task_name}] failed after {self.retries} retries and raised Error: {last_exception} with Exception type: {last_exception.__class__.__name__}."
+        )
 
     @abstractmethod
     async def execute(self, input_result: Result[T, E]) -> Result[U, E]:

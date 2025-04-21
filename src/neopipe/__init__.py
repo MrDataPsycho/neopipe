@@ -8,12 +8,13 @@ logging.basicConfig(
 )
 
 # # Import necessary modules
-from .result import Result, Ok, Err
+from .result import Err, Ok, Result
+
 # from .task import AsyncTask, SyncTask, AbstractAsyncTask, AbstractSyncTask
 # from .pipeline import Pipeline
 
 
 # Specify what is available for import from this package
-__all__ = ['Result', 'Ok', 'Err']
+__all__ = ["Result", "Ok", "Err"]
 
 from .__about__ import __version__
