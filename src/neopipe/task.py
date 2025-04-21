@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import time
+import traceback
 import uuid
 from abc import ABC, abstractmethod
 from functools import wraps
@@ -59,16 +60,16 @@ class BaseSyncTask(ABC, Generic[T, E]):
                     logger.info(f"[{self.task_name}] Success on attempt {attempt}")
                     return result
                 else:
-                    logger.warning(f"[{self.task_name}] Returned Err: {result.err()}")
+                    logger.error(f"[{self.task_name}] Returned Err: {result.err()}")
                     return result
 
             except Exception as e:
                 last_exception = e
-                logger.error(f"[{self.task_name}] Exception: {e}")
+                logger.exception(f"[{self.task_name}] Exception on attempt {attempt}")
                 time.sleep(2 ** (attempt - 1))  # Exponential backoff
 
         return Err(
-            f"[{self.task_name}] failed after {self.retries} retries: {last_exception}"
+            f"[{self.task_name}] failed after {self.retries} retries and raised Error: {last_exception} with Exception type: {last_exception.__class__.__name__}."
         )
 
     @abstractmethod
@@ -208,11 +209,13 @@ class BaseAsyncTask(ABC, Generic[T, E]):
 
             except Exception as e:
                 last_exception = e
-                logger.error(f"[{self.task_name}] Exception: {e}")
+                logger.exception(f"[{self.task_name}] Exception on attempt {attempt}")
                 await asyncio.sleep(2 ** (attempt - 1))  # exponential backoff
-
+        # tb = traceback.format_exception(
+        #     last_exception.__class__, last_exception, last_exception.__traceback__
+        # )
         return Err(
-            f"[{self.task_name}] failed after {self.retries} retries: {last_exception}"
+            f"[{self.task_name}] failed after {self.retries} retries and raised Error: {last_exception} with Exception type: {last_exception.__class__.__name__}."
         )
 
     @abstractmethod

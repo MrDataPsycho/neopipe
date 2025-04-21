@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass
-from typing import Awaitable, Callable, Generic, Self, TypeVar, Union, List, Tuple, Any
+from typing import Any, Awaitable, Callable, Generic, List, Self, Tuple, TypeVar, Union
 
 T = TypeVar("T")  # Success type
 E = TypeVar("E")  # Error type
@@ -286,6 +286,7 @@ class PipelineResult(Generic[U]):
         name: Name of the pipeline.
         result: The final output value of type U.
     """
+
     name: str
     result: U
 
@@ -299,6 +300,7 @@ class SinglePipelineTrace(Generic[E]):
         name: Name of the pipeline.
         tasks: List of (task_name, Result) tuples for each step.
     """
+
     name: str
     tasks: List[Tuple[str, Result[Any, E]]]
 
@@ -311,4 +313,5 @@ class PipelineTrace(Generic[E]):
     Attributes:
         pipelines: A list of SinglePipelineTrace instances.
     """
+
     pipelines: List[SinglePipelineTrace[E]]

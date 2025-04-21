@@ -87,7 +87,6 @@ def test_class_sync_task_always_fails():
     assert result.is_err()
     assert result.err() == "Always fails"
 
-
 # -----------------------------
 # Task Name Checks
 # -----------------------------
