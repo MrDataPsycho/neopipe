@@ -38,6 +38,14 @@ dev = [
   "mypy",
   "isort",
 ]
+
+example = [
+  "httpx",
+  "pydantic",
+  "openai",
+  "dotenv",
+]
+
 docs = [
   "mkdocs",
   "mkdocs-material",
