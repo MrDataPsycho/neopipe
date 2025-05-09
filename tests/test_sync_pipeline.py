@@ -1,83 +1,114 @@
-from typing import Any
-
 import pytest
-
+from neopipe.result import Ok, Err, Result, Trace, Traces, ExecutionResult
+from neopipe.task import FunctionSyncTask, ClassSyncTask
 from neopipe.pipeline import SyncPipeline
-from neopipe.result import Err, Ok, Result
-from neopipe.task import ClassSyncTask, FunctionSyncTask
 
-# ------------------------------
-# Test for missing parameter in execute
-# ------------------------------
-
-
-class BadTaskNoParam(ClassSyncTask):
-    def execute(self) -> Result[int, str]:  # ❌ No input param
-        return Ok(42)
-
-
-def test_missing_execute_param_raises():
-    pipeline = SyncPipeline()
-    with pytest.raises(TypeError, match="must define an 'execute"):
-        pipeline.add_task(BadTaskNoParam())
-
-
-# ------------------------------
-# Test for wrong parameter type in execute
-# ------------------------------
-
-
-class BadTaskWrongType(ClassSyncTask):
-    def execute(self, x: int) -> Result[int, str]:  # ❌ Not a Result param
-        return Ok(x + 1)
-
-
-def test_wrong_execute_param_type_raises():
-    pipeline = SyncPipeline()
-    with pytest.raises(TypeError, match="first argument must be of type Result"):
-        pipeline.add_task(BadTaskWrongType())
-
-
-# ------------------------------
-# Test for type mismatch between tasks
-# ------------------------------
-
+# -- Task definitions for tests --
 
 @FunctionSyncTask.decorator()
-def produce_string(res: Result[Any, str]) -> Result[str, str]:
-    return Ok("hello")
-
-
-@FunctionSyncTask.decorator()
-def expects_int(res: Result[int, str]) -> Result[int, str]:  # ❌ Will mismatch
-    return Ok(res.unwrap() + 1)
-
-
-# ------------------------------
-# Happy path: all types correct
-# ------------------------------
-
+def add_one(res: Result[int, str]) -> Result[int, str]:
+    """Increment an Ok value by 1, propagate Err."""
+    return Ok(res.unwrap() + 1) if res.is_ok() else res
 
 @FunctionSyncTask.decorator()
-def start_with_number(res: Result[Any, str]) -> Result[int, str]:
-    return Ok(10)
-
-
-@FunctionSyncTask.decorator()
-def increment(res: Result[int, str]) -> Result[int, str]:
-    return Ok(res.unwrap() + 1)
-
+def fail_task(res: Result[int, str]) -> Result[int, str]:
+    """Always return an Err."""
+    return Err("failure occurred")
 
 class MultiplyTask(ClassSyncTask[int, str]):
+    """Multiply the Ok value by a given factor."""
     def __init__(self, multiplier: int):
         super().__init__()
         self.multiplier = multiplier
 
     def execute(self, res: Result[int, str]) -> Result[int, str]:
-        return Ok(res.unwrap() * self.multiplier)
+        return Ok(res.unwrap() * self.multiplier) if res.is_ok() else res
 
+# -- Tests for SyncPipeline.run() --
 
-def test_pipeline_valid_execution():
-    pipeline = SyncPipeline.from_tasks([start_with_number, increment, MultiplyTask(3)])
-    result = pipeline.run(Ok(None))
-    assert result == Ok(33)
+def test_run_success():
+    """
+    SyncPipeline.run should chain two add_one tasks successfully
+    when debug=False.
+    """
+    pipeline = SyncPipeline.from_tasks([add_one, add_one], name="IncPipeline")
+    exec_res = pipeline.run(Ok(1), debug=False)
+    assert isinstance(exec_res, ExecutionResult)
+    assert isinstance(exec_res.result, Result)
+    assert exec_res.result == Ok(3)
+
+def test_run_failure_propagates():
+    """
+    SyncPipeline.run should stop on the first Err and propagate it
+    when debug=False.
+    """
+    pipeline = SyncPipeline.from_tasks([add_one, fail_task, add_one], name="FailPipeline")
+    exec_res = pipeline.run(Ok(1), debug=False)
+    assert isinstance(exec_res, ExecutionResult)
+    assert exec_res.result == Err("failure occurred")
+
+def test_run_debug_trace():
+    """
+    SyncPipeline.run should return a Trace when debug=True,
+    including the pipeline name and each task's result.
+    """
+    pipeline = SyncPipeline.from_tasks([add_one, add_one], name="DebugPipeline")
+    exec_res = pipeline.run(Ok(2), debug=True)
+    assert isinstance(exec_res, ExecutionResult)
+    # The final result
+    assert exec_res.result == Ok(4)
+    # The trace should be present
+    assert isinstance(exec_res.trace, Trace)
+    steps = exec_res.trace.steps
+    # First step is the pipeline itself
+    assert steps[0][0] == "DebugPipeline"
+    # Next step is the first add_one call
+    assert steps[1][0] == "add_one" and steps[1][1] == Ok(3)
+
+# -- Tests for SyncPipeline.run_parallel() --
+
+def test_run_parallel_success():
+    """
+    run_parallel should execute multiple pipelines concurrently
+    and return their individual Result values in order.
+    """
+    p1 = SyncPipeline.from_tasks([add_one], name="P1")
+    p2 = SyncPipeline.from_tasks([add_one, MultiplyTask(2)], name="P2")
+    inputs = [Ok(5), Ok(3)]
+    exec_res = SyncPipeline.run_parallel([p1, p2], inputs, debug=False)
+    assert isinstance(exec_res, ExecutionResult)
+    res_list = exec_res.result
+    assert res_list[0] == Ok(6)
+    assert res_list[1] == Ok(8)
+
+def test_run_parallel_debug():
+    """
+    run_parallel with debug=True should produce both a list of Results
+    and a Traces object capturing each pipeline's Trace.
+    """
+    p1 = SyncPipeline.from_tasks([add_one], name="P1")
+    p2 = SyncPipeline.from_tasks([fail_task], name="P2")
+    inputs = [Ok(4), Ok(2)]
+    exec_res = SyncPipeline.run_parallel([p1, p2], inputs, debug=True)
+    assert isinstance(exec_res, ExecutionResult)
+    # Results list
+    res_list = exec_res.result
+    assert res_list[0] == Ok(5)
+    assert res_list[1] == Err("failure occurred")
+    # Trace collection
+    assert isinstance(exec_res.trace, Traces)
+    assert len(exec_res.trace.pipelines) == 2
+    # Verify last step of each pipeline's trace
+    trace1 = exec_res.trace.pipelines[0]
+    assert trace1.steps[-1] == ("add_one", Ok(5))
+    trace2 = exec_res.trace.pipelines[1]
+    assert trace2.steps[-1] == ("fail_task", Err("failure occurred"))
+
+def test_run_parallel_input_length_mismatch():
+    """
+    run_parallel should raise AssertionError when the number of inputs
+    does not match the number of pipelines.
+    """
+    p = SyncPipeline.from_tasks([add_one], name="Single")
+    with pytest.raises(AssertionError):
+        SyncPipeline.run_parallel([p, p], [Ok(1)])

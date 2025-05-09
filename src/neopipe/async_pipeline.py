@@ -1,16 +1,16 @@
 import asyncio
 import inspect
+import time
 import logging
 import uuid
-from typing import Any, Generic, List, Optional, Tuple, TypeVar, Union
+from typing import Any, Generic, List, Optional, Tuple, TypeVar
 
 from neopipe.result import (
     Err,
-    Ok,
-    PipelineResult,
-    PipelineTrace,
     Result,
-    SinglePipelineTrace,
+    ExecutionResult,
+    Trace,
+    Traces
 )
 from neopipe.task import BaseAsyncTask
 
@@ -68,18 +68,20 @@ class AsyncPipeline(Generic[T, E]):
             )
 
     async def run(
-        self, inputs: List[Result[T, E]], debug: bool = False
-    ) -> Result[
-        Union[List[U], Tuple[Optional[List[U]], List[Tuple[str, Result[T, E]]]]], E
-    ]:
+        self,
+        inputs: List[Result[T, E]],
+        debug: bool = False
+    ) -> ExecutionResult[List[Result[U, E]], E]:
         """
-        Concurrently execute registered tasks with matching inputs.
-
-        Returns a list of outputs or a debug trace.
+        Execute each task concurrently (1:1 to inputs).
+        Returns:
+          - .result: List[Result[U,E]]
+          - .trace:  None or Trace[List[Result],E]
         """
         if len(inputs) != len(self.tasks):
             return Err("Number of inputs must match number of tasks")
 
+        start = time.perf_counter()
         coros = [task(inp) for task, inp in zip(self.tasks, inputs)]
         try:
             results: List[Result[U, E]] = await asyncio.gather(*coros)
@@ -87,89 +89,94 @@ class AsyncPipeline(Generic[T, E]):
             logger.exception(f"[{self.name}] run() exception")
             return Err(str(e))
 
-        trace: List[Tuple[str, Result[T, E]]] = []
-        outputs: List[U] = []
+        steps: List[Tuple[str, Result[U, E]]] = []
         for task, res in zip(self.tasks, results):
             if debug:
-                trace.append((task.task_name, res))
-            if res.is_err():
-                if debug:
-                    return Ok((None, trace))
-                return res
-            outputs.append(res.unwrap())
-        return Ok((outputs, trace)) if debug else Ok(outputs)
+                steps.append((task.task_name, res))
+        elapsed = time.perf_counter() - start
+
+        return ExecutionResult(
+            result=results,
+            trace=Trace(steps=steps) if debug else None,
+            execution_time=elapsed
+        )
 
     async def run_sequence(
-        self, input_result: Result[T, E], debug: bool = False
-    ) -> Result[Union[U, Tuple[Optional[U], List[Tuple[str, Result[T, E]]]]], E]:
+        self,
+        input_result: Result[T, E],
+        debug: bool = False
+    ) -> ExecutionResult[Result[U, E], E]:
         """
-        Execute registered tasks in sequence.
+        Run tasks in order, passing Result→Result.
+        Returns:
+          - .result: the final Result[U,E]
+          - .trace:  None or Trace[Result,U,E] of each step
         """
-        trace: List[Tuple[str, Result[Any, E]]] = []
-        current: Result[Any, E] = input_result
+        start = time.perf_counter()
+        steps: List[Tuple[str, Result[Any, E]]] = []
+        current = input_result
+
         for task in self.tasks:
             try:
-                res: Result[U, E] = await task(current)
+                current = await task(current)
             except Exception as e:
-                logger.exception(
-                    f"[{self.name}] run_sequence exception in {task.task_name}"
-                )
-                return Err(str(e))
-            trace.append((task.task_name, res))
-            if res.is_err():
-                if debug:
-                    return Ok((None, trace))
-                return res
-            current = res  # type: ignore
-        final = current.unwrap()  # type: ignore
-        return Ok((final, trace)) if debug else Ok(final)
+                logger.exception(f"[{self.name}] run_sequence exception in {task.task_name}")
+                current = Err(str(e))
+            if debug:
+                steps.append((task.task_name, current))
+            if current.is_err() and not debug:
+                break
+
+        elapsed = time.perf_counter() - start
+        return ExecutionResult(
+            result=current,
+            trace=Trace(steps=steps) if debug else None,
+            execution_time=elapsed
+        )
 
     @staticmethod
     async def run_parallel(
         pipelines: List["AsyncPipeline[T, E]"],
         inputs: List[Result[T, E]],
-        debug: bool = False,
-    ) -> Result[
-        Union[
-            List[PipelineResult], Tuple[Optional[List[PipelineResult]], PipelineTrace]
-        ],
-        E,
-    ]:
+        debug: bool = False
+    ) -> ExecutionResult[List[Result[U, E]], E]:
         """
-        Execute multiple pipelines concurrently, each with its own input.
-
+        Execute several pipelines concurrently, each with a single input.
         Returns:
-            - debug=False: Ok([PipelineResult, ...]) or Err(first_error)
-            - debug=True : Ok((List[PipelineResult], PipelineTrace))
+          - .result: List[Result[U,E]]
+          - .trace:  None or Traces[List[Result],E]
         """
         if len(pipelines) != len(inputs):
-            raise AssertionError("Each pipeline must have a corresponding input Result")
+            raise AssertionError("Each pipeline needs a corresponding input Result")
 
+        start = time.perf_counter()
         coros = [p.run_sequence(inp, debug) for p, inp in zip(pipelines, inputs)]
-        try:
-            results = await asyncio.gather(*coros)
-        except Exception as e:
-            logger.exception("run_parallel exception")
-            return Err(str(e))
+        gathered = await asyncio.gather(*coros, return_exceptions=True)
 
-        pipeline_results: List[PipelineResult] = []
-        all_traces: List[SinglePipelineTrace[E]] = []
+        results: List[Result[U, E]] = []
+        traces: List[Trace[U, E]] = []
 
-        for pipeline, res in zip(pipelines, results):
-            if res.is_err():
-                return res
-            if debug:
-                val, trace = res.unwrap()
-                pipeline_results.append(PipelineResult(name=pipeline.name, result=val))
-                all_traces.append(SinglePipelineTrace(name=pipeline.name, tasks=trace))
-            else:
-                pipeline_results.append(
-                    PipelineResult(name=pipeline.name, result=res.unwrap())
-                )
+        for pipeline, exec_res in zip(pipelines, gathered):
+            if isinstance(exec_res, Exception):
+                # unexpected exception
+                err = Err(f"Exception in pipeline '{pipeline.name}': {exec_res}")
+                results.append(err)
+                if debug:
+                    traces.append(Trace(steps=[(pipeline.name, err)]))
+                continue
 
-        if debug:
-            return Ok((pipeline_results, PipelineTrace(pipelines=all_traces)))
-        return Ok(pipeline_results)
+            # exec_res is ExecutionResult[Result[U,E],E]
+            assert isinstance(exec_res, ExecutionResult)
+            results.append(exec_res.result)
+            if debug and exec_res.trace is not None:
+                traces.append(exec_res.trace)  # a Trace[T,E]
+
+        elapsed = time.perf_counter() - start
+        return ExecutionResult(
+            result=results,
+            trace=Traces(pipelines=traces) if debug else None,
+            execution_time=elapsed
+        )
 
     def __str__(self) -> str:
         names = ", ".join(t.task_name for t in self.tasks)

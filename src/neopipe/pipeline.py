@@ -1,17 +1,19 @@
 import inspect
 import logging
 import uuid
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Any, Generic, List, Optional, Tuple, TypeVar, Union, get_origin
+from typing import Generic, List, Optional, Tuple, TypeVar, get_origin
 
 from neopipe.result import (
     Err,
-    Ok,
-    PipelineResult,
-    PipelineTrace,
     Result,
-    SinglePipelineTrace,
+    Trace,
+    Traces,
+    ExecutionResult
 )
+
+
 from neopipe.task import BaseSyncTask
 
 T = TypeVar("T")
@@ -70,110 +72,98 @@ class SyncPipeline(Generic[T, E]):
         self.tasks.append(task)
 
     def run(
-        self, input_result: Result[T, E], debug: bool = False
-    ) -> Union[Result[U, E], Result[Tuple[Optional[U], List[Tuple[str, Result]]], E]]:
+        self,
+        input_result: Result[T, E],
+        debug: bool = False
+    ) -> ExecutionResult[U, E]:
         """
-        Run the pipeline sequentially.
-
-        Args:
-            input_result (Result): Initial input wrapped in Result.
-            debug (bool): If True, returns execution trace as well.
-
-        Returns:
-            Result: Final output or failure, with optional trace in debug mode.
+        Run tasks sequentially. Always returns an ExecutionResult whose
+        .result is a Result[T, E], and .trace is a Trace if debug=True.
         """
-        trace: List[Tuple[str, Result]] = []
-        result: Result = input_result
+        start = time.perf_counter()
+        steps: List[Tuple[str, Result[T, E]]] = []
+        result: Result[T, E] = input_result
 
         if debug:
-            trace.append((self.name, result))
+            steps.append((self.name, result))
 
-        logger.info(f"[{self.name}] Starting with {len(self.tasks)} task(s)")
-
-        for idx, task in enumerate(self.tasks):
-            task_name = task.task_name
-            logger.info(f"[{self.name}] Task {idx + 1}/{len(self.tasks)} → {task_name}")
-
+        for task in self.tasks:
+            name = task.task_name
             try:
                 result = task(result)
-            except Exception as e:
-                logger.exception(f"[{self.name}] Exception in task {task_name}")
-                return Err(f"Exception in task {task_name}: {e}")
+            except Exception as ex:
+                logger.exception(f"[{self.name}] Exception in {name}")
+                result = Err(f"Exception in task {name}: {ex}")
 
             if debug:
-                trace.append((task_name, result))
+                steps.append((name, result))
+            # note: we continue even if Err, to record full trace
 
-            if result.is_err():
-                logger.error(f"[{self.name}] Failed at {task_name}: {result.err()}")
-                return Ok((None, trace)) if debug else result
+            if result.is_err() and not debug:
+                break
 
-        logger.info(f"[{self.name}] Completed successfully")
-        return result if not debug else Ok((result.unwrap(), trace))
+        elapsed = time.perf_counter() - start
+        return ExecutionResult(
+            result=result,
+            trace=Trace(steps=steps) if debug else None,
+            execution_time=elapsed
+        )
 
     @staticmethod
     def run_parallel(
         pipelines: List["SyncPipeline[T, E]"],
         inputs: List[Result[T, E]],
         max_workers: int = 4,
-        debug: bool = False,
-    ) -> Result[
-        Union[
-            List[PipelineResult[U]], Tuple[List[PipelineResult[U]], PipelineTrace[E]]
-        ],
-        E,
-    ]:
+        debug: bool = False
+    ) -> ExecutionResult[List[Result[U, E]], E]:
         """
-        Execute multiple SyncPipelines in parallel threads.
-
-        Args:
-            pipelines: one SyncPipeline per thread
-            inputs:    initial Result[T, E] for each pipeline
-            max_workers: size of thread pool
-            debug: whether to capture per-pipeline, per-task traces
-
-        Returns:
-            - debug=False: Ok([PipelineResult(name, result), ...])
-            - debug=True:  Ok(( [PipelineResult(...)], PipelineTrace(…)))
-            - Err on first pipeline failure or unhandled exception.
+        Execute multiple pipelines concurrently. Returns ExecutionResult where
+        .result is List[Result[T, E]] (one per pipeline), and .trace is
+        Traces(...) if debug=True.
         """
         if len(pipelines) != len(inputs):
             raise AssertionError("Each pipeline needs a corresponding input Result")
 
-        results: List[PipelineResult[U]] = [None] * len(pipelines)
-        traces: List[SinglePipelineTrace[E]] = []
+        start = time.perf_counter()
+        results: List[Result[T, E]] = [None] * len(pipelines)
+        pipeline_traces: List[Trace[T, E]] = []
 
         with ThreadPoolExecutor(max_workers=max_workers) as pool:
-            future_to_idx = {
+            futures = {
                 pool.submit(p.run, inp, debug): idx
                 for idx, (p, inp) in enumerate(zip(pipelines, inputs))
             }
 
-            for fut in as_completed(future_to_idx):
-                idx = future_to_idx[fut]
+            for fut in as_completed(futures):
+                idx = futures[fut]
                 pipe = pipelines[idx]
-
                 try:
-                    res = fut.result()
+                    exec_res = fut.result()  # ExecutionResult[T, E]
                 except Exception as ex:
                     logger.exception(f"[{pipe.name}] Unhandled exception")
-                    return Err(f"Exception in pipeline '{pipe.name}': {ex}")
+                    results[idx] = Err(f"Exception in pipeline '{pipe.name}': {ex}")
+                    if not debug:
+                        break
+                    exec_res = ExecutionResult(
+                        result=results[idx],
+                        trace=Trace(steps=[(pipe.name, results[idx])]),
+                        execution_time=0.0
+                    )
 
-                if res.is_err():
-                    logger.error(f"[{pipe.name}] Failed: {res.err()}")
-                    return Err(res.err())
+                results[idx] = exec_res.result
+                if debug and exec_res.trace is not None:
+                    # exec_res.trace is a Trace[T,E]
+                    pipeline_traces.append(exec_res.trace)
 
-                # unwrap the Result from run(...)
-                if debug:
-                    val, trace = res.unwrap()  # (output, trace_list)
-                    results[idx] = PipelineResult(name=pipe.name, result=val)
-                    traces.append(SinglePipelineTrace(name=pipe.name, tasks=trace))
-                else:
-                    val = res.unwrap()
-                    results[idx] = PipelineResult(name=pipe.name, result=val)
+                if results[idx].is_err() and not debug:
+                    break
 
-        if debug:
-            return Ok((results, PipelineTrace(pipelines=traces)))
-        return Ok(results)
+        elapsed = time.perf_counter() - start
+        return ExecutionResult(
+            result=results,
+            trace=Traces(pipelines=pipeline_traces) if debug else None,
+            execution_time=elapsed
+        )
 
     def __str__(self) -> str:
         task_list = "\n  ".join(task.task_name for task in self.tasks)
