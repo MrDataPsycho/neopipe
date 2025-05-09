@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass
-from typing import Any, Awaitable, Callable, Generic, List, Self, Tuple, TypeVar, Union
+from typing import Any, Awaitable, Callable, Generic, List, Self, Tuple, TypeVar, Union, Optional
 
 T = TypeVar("T")  # Success type
 E = TypeVar("E")  # Error type
@@ -278,40 +278,75 @@ def Err(error: E) -> Result[None, E]:
 
 
 @dataclass
-class PipelineResult(Generic[U]):
+class Trace(Generic[T, E]):
     """
-    Represents the final outcome of a single pipeline run.
-
-    Attributes:
-        name: Name of the pipeline.
-        result: The final output value of type U.
+    A sequential trace of one pipeline:
+    steps is a list of (task_name, Result[T, E]).
     """
+    steps: List[Tuple[str, Result[T, E]]]
 
-    name: str
-    result: U
+    def __len__(self) -> int:
+        return len(self.steps)
+
+    def __repr__(self):
+        return f"Trace(steps={self.steps!r})"
 
 
 @dataclass
-class SinglePipelineTrace(Generic[E]):
+class Traces(Generic[T, E]):
     """
-    Captures the per-step trace for one pipeline.
-
-    Attributes:
-        name: Name of the pipeline.
-        tasks: List of (task_name, Result) tuples for each step.
+    A collection of per-pipeline traces.
+    pipelines is a list of Trace[T, E].
     """
+    pipelines: List[Trace[T, E]]
 
-    name: str
-    tasks: List[Tuple[str, Result[Any, E]]]
+    def __len__(self) -> int:
+        return len(self.pipelines)
+
+    def __repr__(self):
+        return f"Traces(pipelines={self.pipelines!r})"
 
 
 @dataclass
-class PipelineTrace(Generic[E]):
+class ExecutionResult(Generic[T, E]):
     """
-    Aggregates traces from multiple pipelines.
+    The unified result container for piping runs.
 
     Attributes:
-        pipelines: A list of SinglePipelineTrace instances.
+      result: Either a Result[T, E] (single pipeline) or
+              List[Result[T, E]] (parallel pipelines).
+      trace:  Optional Trace[T, E] or Traces[T, E] if debug=True.
+      execution_time: Elapsed time in seconds.
+      time_unit: Always 's'.
     """
+    result: Union[Result[T, E], List[Result[T, E]]]
+    trace: Optional[Union[Trace[T, E], Traces[T, E]]]
+    execution_time: float
+    time_unit: str = "s"
 
-    pipelines: List[SinglePipelineTrace[E]]
+    def value(self) -> Union[T, List[T]]:
+        """
+        Extract the inner success value(s). If any entry is Err, raises.
+        """
+        if isinstance(self.result, list):
+            return [r.unwrap() for r in self.result]
+        return self.result.unwrap()
+
+    def __len__(self) -> int:
+        if isinstance(self.result, list):
+            return len(self.result)
+        return 1
+
+    def __repr__(self) -> str:
+        base = (
+            f"ExecutionResult(result={self.result!r}, "
+            f"execution_time={self.execution_time:.3f}{self.time_unit}"
+        )
+        if self.trace is not None:
+            base += f", trace={self.trace!r}"
+        base += ")"
+        return base
+
+    def __str__(self) -> str:
+        return self.__repr__()
+

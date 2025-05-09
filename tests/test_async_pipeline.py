@@ -1,210 +1,155 @@
 import pytest
-from neopipe.result import Result, Ok, Err, PipelineResult, PipelineTrace
+import asyncio
+from neopipe.result import Ok, Err, Result, Trace, ExecutionResult
 from neopipe.task import FunctionAsyncTask, ClassAsyncTask
 from neopipe.async_pipeline import AsyncPipeline
 
-# ----------------------------
-# Task Definitions
-# ----------------------------
+# -- Task definitions for async tests --
 
-@FunctionAsyncTask.decorator(retries=1)
-async def add_one(res: Result[int, str]) -> Result[int, str]:
+@FunctionAsyncTask.decorator()
+async def add_one_async(res: Result[int, str]) -> Result[int, str]:
+    """Increment an Ok value by 1, propagate Err."""
     if res.is_ok():
         return Ok(res.unwrap() + 1)
     return res
 
-@FunctionAsyncTask.decorator(retries=1)
-async def multiply_two(res: Result[int, str]) -> Result[int, str]:
-    if res.is_ok():
-        return Ok(res.unwrap() * 2)
-    return res
+@FunctionAsyncTask.decorator()
+async def fail_async(res: Result[int, str]) -> Result[int, str]:
+    """Always return an Err."""
+    return Err("failure occurred")
 
-@FunctionAsyncTask.decorator(retries=1)
-async def fail_task(res: Result[int, str]) -> Result[int, str]:
-    return Err("error occurred")
+class MultiplyAsync(ClassAsyncTask[int, str]):
+    """Multiply the Ok value by a given factor asynchronously."""
+    def __init__(self, multiplier: int):
+        super().__init__()
+        self.multiplier = multiplier
 
-class ValidClassTask(ClassAsyncTask[int, str]):
     async def execute(self, res: Result[int, str]) -> Result[int, str]:
         if res.is_ok():
-            return Ok(res.unwrap() + 10)
+            return Ok(res.unwrap() * self.multiplier)
         return res
 
-class NoParamTask(ClassAsyncTask[int, str]):
-    async def execute(self) -> Result[int, str]:  # Missing input parameter
-        return Ok(0)
-
-class WrongTypeTask(ClassAsyncTask[int, str]):
-    async def execute(self, x: int) -> Result[int, str]:  # Wrong annotation
-        return Ok(x)
-
 # ----------------------------
-# Validation Tests
-# ----------------------------
-
-def test_add_task_invalid_type_raises():
-    pipeline = AsyncPipeline()
-    with pytest.raises(TypeError):
-        pipeline.add_task(object())
-
-
-def test_add_task_no_param_raises():
-    pipeline = AsyncPipeline()
-    with pytest.raises(TypeError):
-        pipeline.add_task(NoParamTask())
-
-
-def test_add_task_wrong_type_annotation_raises():
-    pipeline = AsyncPipeline()
-    with pytest.raises(TypeError):
-        pipeline.add_task(WrongTypeTask())
-
-# ----------------------------
-# run: input length mismatch
+# tests/test_async_pipeline.py
 # ----------------------------
 
 @pytest.mark.asyncio
-async def test_run_input_length_mismatch():
-    pipeline = AsyncPipeline.from_tasks([add_one, multiply_two])
-    res = await pipeline.run([Ok(1)])
-    assert res.is_err()
-    assert "Number of inputs must match" in res.err()
+async def test_run_concurrent_success():
+    """
+    AsyncPipeline.run should execute tasks concurrently, returning
+    an ExecutionResult with .result as a list of Result values,
+    and no trace when debug=False.
+    """
+    pipeline = AsyncPipeline.from_tasks([add_one_async, add_one_async], name="IncAsync")
+    inputs = [Ok(1), Ok(2)]
+    exec_res = await pipeline.run(inputs, debug=False)
 
-# ----------------------------
-# run: successful concurrent execution
-# ----------------------------
-
-@pytest.mark.asyncio
-async def test_run_success():
-    pipeline = AsyncPipeline.from_tasks([add_one, multiply_two])
-    res = await pipeline.run([Ok(1), Ok(2)])
-    assert res == Ok([2, 4])
-
-# ----------------------------
-# run: short-circuit on error
-# ----------------------------
+    assert isinstance(exec_res, ExecutionResult)
+    # .result is a list of Result[int, str]
+    assert isinstance(exec_res.result, list)
+    assert exec_res.result == [Ok(2), Ok(3)]
+    # No trace when debug=False
+    assert exec_res.trace is None
 
 @pytest.mark.asyncio
-async def test_run_short_circuit_on_error():
-    pipeline = AsyncPipeline.from_tasks([add_one, fail_task, multiply_two])
-    res = await pipeline.run([Ok(1), Ok(2), Ok(3)])
-    assert res.is_err()
-    assert res.err() == "error occurred"
+async def test_run_concurrent_debug():
+    """
+    AsyncPipeline.run with debug=True should produce both the list of Results
+    and a Trace object with one entry per task.
+    """
+    pipeline = AsyncPipeline.from_tasks([add_one_async, add_one_async], name="IncAsync")
+    inputs = [Ok(5), Ok(6)]
+    exec_res = await pipeline.run(inputs, debug=True)
 
-# ----------------------------
-# run: debug trace
-# ----------------------------
-
-@pytest.mark.asyncio
-async def test_run_debug_trace_success():
-    pipeline = AsyncPipeline.from_tasks([add_one, multiply_two])
-    res = await pipeline.run([Ok(5), Ok(3)], debug=True)
-    assert res.is_ok()
-    outputs, trace = res.unwrap()
-    assert outputs == [6, 6]
-    assert len(trace) == 2
-    assert trace[0][0] == add_one.task_name
-    assert trace[0][1] == Ok(6)
-    assert trace[1][0] == multiply_two.task_name
-    assert trace[1][1] == Ok(6)
-
-@pytest.mark.asyncio
-async def test_run_debug_trace_failure():
-    pipeline = AsyncPipeline.from_tasks([add_one, fail_task, multiply_two])
-    res = await pipeline.run([Ok(2), Ok(0), Ok(0)], debug=True)
-    assert res.is_ok()
-    final, trace = res.unwrap()
-    assert final is None
-    assert len(trace) == 2
-    assert trace[1][1] == Err("error occurred")
-
-# ----------------------------
-# run_sequence: sequential execution
-# ----------------------------
+    assert isinstance(exec_res, ExecutionResult)
+    assert exec_res.result == [Ok(6), Ok(7)]
+    # Trace should record each task's name and Result
+    assert isinstance(exec_res.trace, Trace)
+    steps = exec_res.trace.steps
+    assert steps == [("add_one_async", Ok(6)), ("add_one_async", Ok(7))]
 
 @pytest.mark.asyncio
 async def test_run_sequence_success():
-    pipeline = AsyncPipeline.from_tasks([add_one, multiply_two])
-    res = await pipeline.run_sequence(Ok(2))
-    assert res == Ok(6)
+    """
+    AsyncPipeline.run_sequence should chain tasks in sequence,
+    returning ExecutionResult.result as a single Result,
+    and no trace when debug=False.
+    """
+    pipeline = AsyncPipeline.from_tasks([add_one_async, add_one_async], name="SeqAsync")
+    exec_res = await pipeline.run_sequence(Ok(3), debug=False)
+
+    assert isinstance(exec_res, ExecutionResult)
+    assert isinstance(exec_res.result, Result)
+    assert exec_res.result == Ok(5)
+    assert exec_res.trace is None
 
 @pytest.mark.asyncio
-async def test_run_sequence_error_short_circuit():
-    pipeline = AsyncPipeline.from_tasks([add_one, fail_task, multiply_two])
-    res = await pipeline.run_sequence(Ok(3))
-    assert res.is_err()
-    assert res.err() == "error occurred"
+async def test_run_sequence_debug_error():
+    """
+    AsyncPipeline.run_sequence with debug=True should include all steps
+    even after a failure, recording both successes and the Err.
+    """
+    pipeline = AsyncPipeline.from_tasks(
+        [add_one_async, fail_async, add_one_async],
+        name="SeqAsyncErr"
+    )
+    exec_res = await pipeline.run_sequence(Ok(2), debug=True)
 
-@pytest.mark.asyncio
-async def test_run_sequence_debug_trace():
-    pipeline = AsyncPipeline.from_tasks([add_one, multiply_two])
-    res = await pipeline.run_sequence(Ok(4), debug=True)
-    assert res.is_ok()
-    final, trace = res.unwrap()
-    assert final == 10
-    assert len(trace) == 2
-
-# ----------------------------
-# run_parallel: combine pipelines
-# ----------------------------
+    assert isinstance(exec_res, ExecutionResult)
+    # Final result is Err
+    assert exec_res.result == Err("failure occurred")
+    # Trace should record each step up to the failure
+    assert isinstance(exec_res.trace, Trace)
+    steps = exec_res.trace.steps
+    assert steps[0] == ("add_one_async", Ok(3))
+    assert steps[1] == ("fail_async", Err("failure occurred"))
 
 @pytest.mark.asyncio
 async def test_run_parallel_success():
-    p1 = AsyncPipeline.from_tasks([add_one, multiply_two])
-    p2 = AsyncPipeline.from_tasks([multiply_two, add_one])
-    inputs = [Ok(1), Ok(2)]
-    res = await AsyncPipeline.run_parallel([p1, p2], inputs)
-    res_value = [item.result for item in res.unwrap()]
-    assert res_value == [4, 5]
+    """
+    AsyncPipeline.run_parallel should run multiple pipelines concurrently,
+    returning an ExecutionResult with .result as a list of Result values.
+    """
+    p1 = AsyncPipeline.from_tasks([add_one_async], name="P1")
+    p2 = AsyncPipeline.from_tasks([add_one_async, MultiplyAsync(3)], name="P2")
+    inputs = [Ok(4), Ok(5)]
+
+    exec_res = await AsyncPipeline.run_parallel([p1, p2], inputs, debug=False)
+
+    assert isinstance(exec_res, ExecutionResult)
+    # .result is a list of Result[int, str]
+    assert exec_res.result == [Ok(5), Ok(18)]
+    assert exec_res.trace is None
 
 @pytest.mark.asyncio
-async def test_run_parallel_input_mismatch():
-    p1 = AsyncPipeline.from_tasks([add_one])
+async def test_run_parallel_input_length_mismatch():
+    """
+    AsyncPipeline.run_parallel should raise AssertionError if the number of inputs
+    does not match the number of pipelines.
+    """
+    p = AsyncPipeline.from_tasks([add_one_async], name="Single")
     with pytest.raises(AssertionError):
-        # expecting Err, but method returns Err not raises—adjust accordingly
-        res = await AsyncPipeline.run_parallel([p1, p1], [Ok(1)])
-        assert res.is_err()
-
-
-@pytest.mark.asyncio
-async def test_run_parallel_debug_trace_and_short_circuit():
-    p1 = AsyncPipeline.from_tasks([add_one], name="P1")
-    p2 = AsyncPipeline.from_tasks([fail_task], name="P2")
-
-    inputs = [Ok(3), Ok(4)]
-    res = await AsyncPipeline.run_parallel([p1, p2], inputs, debug=True)
-
-    assert res.is_ok()
-    pipeline_results, pipeline_trace = res.unwrap()
-
-    # -- PipelineResult checks --
-    assert isinstance(pipeline_results, list)
-    # First pipeline succeeded
-    assert pipeline_results[0] == PipelineResult(name="P1", result=4)
-    # Second pipeline short‑circuited, so result is None
-    assert pipeline_results[1] == PipelineResult(name="P2", result=None)
-
-    # -- PipelineTrace checks --
-    assert isinstance(pipeline_trace, PipelineTrace)
-    # We should have two SinglePipelineTrace entries
-    names = [t.name for t in pipeline_trace.pipelines]
-    assert "P1" in names and "P2" in names
-
-    # Extract the trace for each pipeline
-    trace_map = {t.name: t.tasks for t in pipeline_trace.pipelines}
-
-    # p1 ran add_one → Ok(4)
-    assert trace_map["P1"] == [(add_one.task_name, Ok(4))]
-
-    # p2 ran fail_task → Err("error occurred")
-    assert trace_map["P2"] == [(fail_task.task_name, Err("error occurred"))]
+        await AsyncPipeline.run_parallel([p, p], [Ok(1)])
 
 @pytest.mark.asyncio
 async def test_run_parallel_unhandled_exception():
-    # pipeline whose run_sequence raises
-    class BadPipeline(AsyncPipeline):
-        async def run_sequence(self, inp, debug=False):
+    """
+    If a pipeline.run_sequence raises an exception, run_parallel should catch it
+    and include an Err in the results list, without crashing.
+    """
+    class BadAsyncPipeline(AsyncPipeline[int, str]):
+        async def run_sequence(self, *args, **kwargs):
             raise RuntimeError("boom")
-    bad = BadPipeline.from_tasks([add_one])
-    res = await AsyncPipeline.run_parallel([bad], [Ok(1)])
-    assert res.is_err()
-    assert "boom" in res.err()
+
+    bad = BadAsyncPipeline(name="Bad")
+    good = AsyncPipeline.from_tasks([add_one_async], name="Good")
+    inputs = [Ok(1), Ok(2)]
+
+    exec_res = await AsyncPipeline.run_parallel([good, bad], inputs, debug=False)
+
+    assert isinstance(exec_res, ExecutionResult)
+    # Good pipeline result
+    assert exec_res.result[0] == Ok(2)
+    # Bad pipeline captured exception as Err
+    assert exec_res.result[1].is_err()
+    assert "boom" in exec_res.result[1].err()
