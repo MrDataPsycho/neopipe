@@ -11,7 +11,6 @@ U = TypeVar("U")  # Transformed success/error type
 
 class UnwrapError(Exception):
     """Raised when unwrap is called on an Err value."""
-
     pass
 
 
@@ -285,6 +284,14 @@ class Trace(Generic[T, E]):
     """
     steps: List[Tuple[str, Result[T, E]]]
 
+    def __getitem__(self, index: int) -> Tuple[str, Result[T, E]]:
+        """Get a step by index."""
+        return self.steps[index]
+    
+    def __iter__(self):
+        """Iterate over the steps."""
+        return iter(self.steps)
+
     def __len__(self) -> int:
         return len(self.steps)
 
@@ -299,6 +306,14 @@ class Traces(Generic[T, E]):
     pipelines is a list of Trace[T, E].
     """
     pipelines: List[Trace[T, E]]
+
+    def __getitem__(self, index: int) -> Trace[T, E]:
+        """Get a trace by index."""
+        return self.pipelines[index]
+    
+    def __iter__(self):
+        """Iterate over the traces."""
+        return iter(self.pipelines)
 
     def __len__(self) -> int:
         return len(self.pipelines)
@@ -331,8 +346,25 @@ class ExecutionResult(Generic[T, E]):
         if isinstance(self.result, list):
             return [r.unwrap() for r in self.result]
         return self.result.unwrap()
+    
+    def unwrap(self) -> Union[Result[T, E], List[Result[T, E]]]:
+        if self.is_ok():
+            return self.result
+        raise UnwrapError(f"Called unwrap on Err: {self.result}")
+    
+    def is_ok(self) -> bool:
+        if isinstance(self.result, list):
+            return all(r.is_ok() for r in self.result)
+        return self.result.is_ok()
+
+    def is_err(self) -> bool:
+        if isinstance(self.result, list):
+            return any(r.is_err() for r in self.result)
+        return self.result.is_err()
+
 
     def __len__(self) -> int:
+        
         if isinstance(self.result, list):
             return len(self.result)
         return 1
