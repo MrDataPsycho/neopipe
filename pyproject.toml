@@ -7,16 +7,14 @@ name = "neopipe"
 dynamic = ["version"]
 description = 'A Python library for seamless function orchestration, Designed to streamline workflow management in microservices and AI-powered applications'
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = "MIT"
 keywords = ["pipeline", "function", "orchestration"]
 authors = [
   { name = "MrDataPsycho", email = "mr.data.psycho@gmail.com" },
 ]
 classifiers = [
-  "Development Status :: 4 - Beta",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
