@@ -753,9 +753,7 @@
 
               <details class="quote">
                 <summary>Source code in <code>neopipe/pipeline.py</code></summary>
-                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 24</span>
-<span class="normal"> 25</span>
-<span class="normal"> 26</span>
+                <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 26</span>
 <span class="normal"> 27</span>
 <span class="normal"> 28</span>
 <span class="normal"> 29</span>
@@ -902,17 +900,7 @@
 <span class="normal">170</span>
 <span class="normal">171</span>
 <span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span>
-<span class="normal">175</span>
-<span class="normal">176</span>
-<span class="normal">177</span>
-<span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SyncPipeline</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]):</span>
+<span class="normal">173</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SyncPipeline</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A pipeline that executes BaseSyncTasks sequentially, passing Result[T, E] through each step.</span>
 
@@ -961,110 +949,98 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">input_result</span><span class="p">:</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">],</span> <span class="n">Result</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Result</span><span class="p">]]],</span> <span class="n">E</span><span class="p">]]:</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">input_result</span><span class="p">:</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">],</span>
+        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExecutionResult</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Run the pipeline sequentially.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            input_result (Result): Initial input wrapped in Result.</span>
-<span class="sd">            debug (bool): If True, returns execution trace as well.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Result: Final output or failure, with optional trace in debug mode.</span>
+<span class="sd">        Run tasks sequentially. Always returns an ExecutionResult whose</span>
+<span class="sd">        .result is a Result[T, E], and .trace is a Trace if debug=True.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">trace</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Result</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">result</span><span class="p">:</span> <span class="n">Result</span> <span class="o">=</span> <span class="n">input_result</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+        <span class="n">steps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">result</span><span class="p">:</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span> <span class="o">=</span> <span class="n">input_result</span>
 
         <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
-            <span class="n">trace</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
+            <span class="n">steps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">] Starting with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">)</span><span class="si">}</span><span class="s2"> task(s)&quot;</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">task</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">):</span>
-            <span class="n">task_name</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">task_name</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">] Task </span><span class="si">{</span><span class="n">idx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">)</span><span class="si">}</span><span class="s2"> → </span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
+        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">task_name</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="n">task</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">] Exception in task </span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">Err</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in task </span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">] Exception in </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">Err</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in task </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
-                <span class="n">trace</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">task_name</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
+                <span class="n">steps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
+            <span class="c1"># note: we continue even if Err, to record full trace</span>
 
-            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">] Failed at </span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">err</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">Ok</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">trace</span><span class="p">))</span> <span class="k">if</span> <span class="n">debug</span> <span class="k">else</span> <span class="n">result</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_err</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">debug</span><span class="p">:</span>
+                <span class="k">break</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">] Completed successfully&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">result</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">debug</span> <span class="k">else</span> <span class="n">Ok</span><span class="p">((</span><span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(),</span> <span class="n">trace</span><span class="p">))</span>
+        <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+        <span class="k">return</span> <span class="n">ExecutionResult</span><span class="p">(</span>
+            <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">,</span>
+            <span class="n">trace</span><span class="o">=</span><span class="n">Trace</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="n">steps</span><span class="p">)</span> <span class="k">if</span> <span class="n">debug</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">execution_time</span><span class="o">=</span><span class="n">elapsed</span>
+        <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">run_parallel</span><span class="p">(</span>
         <span class="n">pipelines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;SyncPipeline[T, E]&quot;</span><span class="p">],</span>
         <span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]],</span>
         <span class="n">max_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
-        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span>
-        <span class="n">Union</span><span class="p">[</span>
-            <span class="n">List</span><span class="p">[</span><span class="n">PipelineResult</span><span class="p">[</span><span class="n">U</span><span class="p">]],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">PipelineResult</span><span class="p">[</span><span class="n">U</span><span class="p">]],</span> <span class="n">PipelineTrace</span><span class="p">[</span><span class="n">E</span><span class="p">]]</span>
-        <span class="p">],</span>
-        <span class="n">E</span><span class="p">,</span>
-    <span class="p">]:</span>
+        <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExecutionResult</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]],</span> <span class="n">E</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Execute multiple SyncPipelines in parallel threads.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            pipelines: one SyncPipeline per thread</span>
-<span class="sd">            inputs:    initial Result[T, E] for each pipeline</span>
-<span class="sd">            max_workers: size of thread pool</span>
-<span class="sd">            debug: whether to capture per-pipeline, per-task traces</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            - debug=False: Ok([PipelineResult(name, result), ...])</span>
-<span class="sd">            - debug=True:  Ok(( [PipelineResult(...)], PipelineTrace(…)))</span>
-<span class="sd">            - Err on first pipeline failure or unhandled exception.</span>
+<span class="sd">        Execute multiple pipelines concurrently. Returns ExecutionResult where</span>
+<span class="sd">        .result is List[Result[T, E]] (one per pipeline), and .trace is</span>
+<span class="sd">        Traces(...) if debug=True.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pipelines</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;Each pipeline needs a corresponding input Result&quot;</span><span class="p">)</span>
 
-        <span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PipelineResult</span><span class="p">[</span><span class="n">U</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pipelines</span><span class="p">)</span>
-        <span class="n">traces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SinglePipelineTrace</span><span class="p">[</span><span class="n">E</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+        <span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pipelines</span><span class="p">)</span>
+        <span class="n">pipeline_traces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Trace</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">with</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">max_workers</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
-            <span class="n">future_to_idx</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">futures</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="n">pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">debug</span><span class="p">):</span> <span class="n">idx</span>
                 <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">inp</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">pipelines</span><span class="p">,</span> <span class="n">inputs</span><span class="p">))</span>
             <span class="p">}</span>
 
-            <span class="k">for</span> <span class="n">fut</span> <span class="ow">in</span> <span class="n">as_completed</span><span class="p">(</span><span class="n">future_to_idx</span><span class="p">):</span>
-                <span class="n">idx</span> <span class="o">=</span> <span class="n">future_to_idx</span><span class="p">[</span><span class="n">fut</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">fut</span> <span class="ow">in</span> <span class="n">as_completed</span><span class="p">(</span><span class="n">futures</span><span class="p">):</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">futures</span><span class="p">[</span><span class="n">fut</span><span class="p">]</span>
                 <span class="n">pipe</span> <span class="o">=</span> <span class="n">pipelines</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">res</span> <span class="o">=</span> <span class="n">fut</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+                    <span class="n">exec_res</span> <span class="o">=</span> <span class="n">fut</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>  <span class="c1"># ExecutionResult[T, E]</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">pipe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">] Unhandled exception&quot;</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">Err</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in pipeline &#39;</span><span class="si">{</span><span class="n">pipe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">results</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">Err</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in pipeline &#39;</span><span class="si">{</span><span class="n">pipe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">debug</span><span class="p">:</span>
+                        <span class="k">break</span>
+                    <span class="n">exec_res</span> <span class="o">=</span> <span class="n">ExecutionResult</span><span class="p">(</span>
+                        <span class="n">result</span><span class="o">=</span><span class="n">results</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+                        <span class="n">trace</span><span class="o">=</span><span class="n">Trace</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="p">[(</span><span class="n">pipe</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="n">idx</span><span class="p">])]),</span>
+                        <span class="n">execution_time</span><span class="o">=</span><span class="mf">0.0</span>
+                    <span class="p">)</span>
 
-                <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">pipe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">] Failed: </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">err</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">Err</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">err</span><span class="p">())</span>
+                <span class="n">results</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">exec_res</span><span class="o">.</span><span class="n">result</span>
+                <span class="k">if</span> <span class="n">debug</span> <span class="ow">and</span> <span class="n">exec_res</span><span class="o">.</span><span class="n">trace</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># exec_res.trace is a Trace[T,E]</span>
+                    <span class="n">pipeline_traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">exec_res</span><span class="o">.</span><span class="n">trace</span><span class="p">)</span>
 
-                <span class="c1"># unwrap the Result from run(...)</span>
-                <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
-                    <span class="n">val</span><span class="p">,</span> <span class="n">trace</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>  <span class="c1"># (output, trace_list)</span>
-                    <span class="n">results</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">PipelineResult</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">pipe</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">val</span><span class="p">)</span>
-                    <span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SinglePipelineTrace</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">pipe</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">tasks</span><span class="o">=</span><span class="n">trace</span><span class="p">))</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">val</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
-                    <span class="n">results</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">PipelineResult</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">pipe</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">results</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">is_err</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">debug</span><span class="p">:</span>
+                    <span class="k">break</span>
 
-        <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Ok</span><span class="p">((</span><span class="n">results</span><span class="p">,</span> <span class="n">PipelineTrace</span><span class="p">(</span><span class="n">pipelines</span><span class="o">=</span><span class="n">traces</span><span class="p">)))</span>
-        <span class="k">return</span> <span class="n">Ok</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+        <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+        <span class="k">return</span> <span class="n">ExecutionResult</span><span class="p">(</span>
+            <span class="n">result</span><span class="o">=</span><span class="n">results</span><span class="p">,</span>
+            <span class="n">trace</span><span class="o">=</span><span class="n">Traces</span><span class="p">(</span><span class="n">pipelines</span><span class="o">=</span><span class="n">pipeline_traces</span><span class="p">)</span> <span class="k">if</span> <span class="n">debug</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">execution_time</span><span class="o">=</span><span class="n">elapsed</span>
+        <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">task_list</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">task_name</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">)</span>
@@ -1098,104 +1074,13 @@
 
     <div class="doc doc-contents ">
 
-        <p>Run the pipeline sequentially.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>input_result</code>
-            </td>
-            <td>
-                  <code><a class="autorefs autorefs-internal" title="Result
-
-
-  
-      dataclass
-   (neopipe.result.Result)" href="../result/#neopipe.result.Result">Result</a></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Initial input wrapped in Result.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>debug</code>
-            </td>
-            <td>
-                  <code><span title="bool">bool</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>If True, returns execution trace as well.</p>
-              </div>
-            </td>
-            <td>
-                  <code>False</code>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-<th>Name</th>          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-<td><code>Result</code></td>            <td>
-                  <code><span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="Result
-
-
-  
-      dataclass
-   (neopipe.result.Result)" href="../result/#neopipe.result.Result">Result</a>[<span title="neopipe.pipeline.U">U</span>, <span title="neopipe.pipeline.E">E</span>], <a class="autorefs autorefs-internal" title="Result
-
-
-  
-      dataclass
-   (neopipe.result.Result)" href="../result/#neopipe.result.Result">Result</a>[<span title="typing.Tuple">Tuple</span>[<span title="typing.Optional">Optional</span>[<span title="neopipe.pipeline.U">U</span>], <span title="typing.List">List</span>[<span title="typing.Tuple">Tuple</span>[<span title="str">str</span>, <a class="autorefs autorefs-internal" title="Result
-
-
-  
-      dataclass
-   (neopipe.result.Result)" href="../result/#neopipe.result.Result">Result</a>]]], <span title="neopipe.pipeline.E">E</span>]]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Final output or failure, with optional trace in debug mode.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
+        <p>Run tasks sequentially. Always returns an ExecutionResult whose
+.result is a Result[T, E], and .trace is a Trace if debug=True.</p>
 
 
             <details class="quote">
               <summary>Source code in <code>neopipe/pipeline.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 72</span>
-<span class="normal"> 73</span>
-<span class="normal"> 74</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 74</span>
 <span class="normal"> 75</span>
 <span class="normal"> 76</span>
 <span class="normal"> 77</span>
@@ -1231,47 +1116,43 @@
 <span class="normal">107</span>
 <span class="normal">108</span>
 <span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">input_result</span><span class="p">:</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">],</span> <span class="n">Result</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Result</span><span class="p">]]],</span> <span class="n">E</span><span class="p">]]:</span>
+<span class="normal">110</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">input_result</span><span class="p">:</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">],</span>
+    <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExecutionResult</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Run the pipeline sequentially.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        input_result (Result): Initial input wrapped in Result.</span>
-<span class="sd">        debug (bool): If True, returns execution trace as well.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Result: Final output or failure, with optional trace in debug mode.</span>
+<span class="sd">    Run tasks sequentially. Always returns an ExecutionResult whose</span>
+<span class="sd">    .result is a Result[T, E], and .trace is a Trace if debug=True.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">trace</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Result</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">result</span><span class="p">:</span> <span class="n">Result</span> <span class="o">=</span> <span class="n">input_result</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+    <span class="n">steps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span> <span class="o">=</span> <span class="n">input_result</span>
 
     <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
-        <span class="n">trace</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
+        <span class="n">steps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">] Starting with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">)</span><span class="si">}</span><span class="s2"> task(s)&quot;</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">task</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">):</span>
-        <span class="n">task_name</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">task_name</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">] Task </span><span class="si">{</span><span class="n">idx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">)</span><span class="si">}</span><span class="s2"> → </span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
+    <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">task_name</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">task</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">] Exception in task </span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">Err</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in task </span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">] Exception in </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">Err</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in task </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
-            <span class="n">trace</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">task_name</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
+            <span class="n">steps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
+        <span class="c1"># note: we continue even if Err, to record full trace</span>
 
-        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">] Failed at </span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">err</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">Ok</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="n">trace</span><span class="p">))</span> <span class="k">if</span> <span class="n">debug</span> <span class="k">else</span> <span class="n">result</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_err</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">debug</span><span class="p">:</span>
+            <span class="k">break</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">] Completed successfully&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">result</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">debug</span> <span class="k">else</span> <span class="n">Ok</span><span class="p">((</span><span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(),</span> <span class="n">trace</span><span class="p">))</span>
+    <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+    <span class="k">return</span> <span class="n">ExecutionResult</span><span class="p">(</span>
+        <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">,</span>
+        <span class="n">trace</span><span class="o">=</span><span class="n">Trace</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="n">steps</span><span class="p">)</span> <span class="k">if</span> <span class="n">debug</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">execution_time</span><span class="o">=</span><span class="n">elapsed</span>
+    <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1293,205 +1174,15 @@
 
     <div class="doc doc-contents ">
 
-        <p>Execute multiple SyncPipelines in parallel threads.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>pipelines</code>
-            </td>
-            <td>
-                  <code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="SyncPipeline (neopipe.pipeline.SyncPipeline)" href="#neopipe.pipeline.SyncPipeline">SyncPipeline</a>[<span title="neopipe.pipeline.T">T</span>, <span title="neopipe.pipeline.E">E</span>]]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>one SyncPipeline per thread</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>inputs</code>
-            </td>
-            <td>
-                  <code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="Result
-
-
-  
-      dataclass
-   (neopipe.result.Result)" href="../result/#neopipe.result.Result">Result</a>[<span title="neopipe.pipeline.T">T</span>, <span title="neopipe.pipeline.E">E</span>]]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>initial Result[T, E] for each pipeline</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>max_workers</code>
-            </td>
-            <td>
-                  <code><span title="int">int</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>size of thread pool</p>
-              </div>
-            </td>
-            <td>
-                  <code>4</code>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>debug</code>
-            </td>
-            <td>
-                  <code><span title="bool">bool</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>whether to capture per-pipeline, per-task traces</p>
-              </div>
-            </td>
-            <td>
-                  <code>False</code>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code><a class="autorefs autorefs-internal" title="Result
-
-
-  
-      dataclass
-   (neopipe.result.Result)" href="../result/#neopipe.result.Result">Result</a>[<span title="typing.Union">Union</span>[<span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="PipelineResult
-
-
-  
-      dataclass
-   (neopipe.result.PipelineResult)" href="../result/#neopipe.result.PipelineResult">PipelineResult</a>[<span title="neopipe.pipeline.U">U</span>]], <span title="typing.Tuple">Tuple</span>[<span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="PipelineResult
-
-
-  
-      dataclass
-   (neopipe.result.PipelineResult)" href="../result/#neopipe.result.PipelineResult">PipelineResult</a>[<span title="neopipe.pipeline.U">U</span>]], <a class="autorefs autorefs-internal" title="PipelineTrace
-
-
-  
-      dataclass
-   (neopipe.result.PipelineTrace)" href="../result/#neopipe.result.PipelineTrace">PipelineTrace</a>[<span title="neopipe.pipeline.E">E</span>]]], <span title="neopipe.pipeline.E">E</span>]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <ul>
-<li>debug=False: Ok([PipelineResult(name, result), ...])</li>
-</ul>
-              </div>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                  <code><a class="autorefs autorefs-internal" title="Result
-
-
-  
-      dataclass
-   (neopipe.result.Result)" href="../result/#neopipe.result.Result">Result</a>[<span title="typing.Union">Union</span>[<span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="PipelineResult
-
-
-  
-      dataclass
-   (neopipe.result.PipelineResult)" href="../result/#neopipe.result.PipelineResult">PipelineResult</a>[<span title="neopipe.pipeline.U">U</span>]], <span title="typing.Tuple">Tuple</span>[<span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="PipelineResult
-
-
-  
-      dataclass
-   (neopipe.result.PipelineResult)" href="../result/#neopipe.result.PipelineResult">PipelineResult</a>[<span title="neopipe.pipeline.U">U</span>]], <a class="autorefs autorefs-internal" title="PipelineTrace
-
-
-  
-      dataclass
-   (neopipe.result.PipelineTrace)" href="../result/#neopipe.result.PipelineTrace">PipelineTrace</a>[<span title="neopipe.pipeline.E">E</span>]]], <span title="neopipe.pipeline.E">E</span>]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <ul>
-<li>debug=True:  Ok(( [PipelineResult(...)], PipelineTrace(…)))</li>
-</ul>
-              </div>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                  <code><a class="autorefs autorefs-internal" title="Result
-
-
-  
-      dataclass
-   (neopipe.result.Result)" href="../result/#neopipe.result.Result">Result</a>[<span title="typing.Union">Union</span>[<span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="PipelineResult
-
-
-  
-      dataclass
-   (neopipe.result.PipelineResult)" href="../result/#neopipe.result.PipelineResult">PipelineResult</a>[<span title="neopipe.pipeline.U">U</span>]], <span title="typing.Tuple">Tuple</span>[<span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="PipelineResult
-
-
-  
-      dataclass
-   (neopipe.result.PipelineResult)" href="../result/#neopipe.result.PipelineResult">PipelineResult</a>[<span title="neopipe.pipeline.U">U</span>]], <a class="autorefs autorefs-internal" title="PipelineTrace
-
-
-  
-      dataclass
-   (neopipe.result.PipelineTrace)" href="../result/#neopipe.result.PipelineTrace">PipelineTrace</a>[<span title="neopipe.pipeline.E">E</span>]]], <span title="neopipe.pipeline.E">E</span>]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <ul>
-<li>Err on first pipeline failure or unhandled exception.</li>
-</ul>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
+        <p>Execute multiple pipelines concurrently. Returns ExecutionResult where
+.result is List[Result[T, E]] (one per pipeline), and .trace is
+Traces(...) if debug=True.</p>
 
 
             <details class="quote">
               <summary>Source code in <code>neopipe/pipeline.py</code></summary>
-              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">113</span>
+              <div class="codehilite"><table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">112</span>
+<span class="normal">113</span>
 <span class="normal">114</span>
 <span class="normal">115</span>
 <span class="normal">116</span>
@@ -1544,80 +1235,61 @@
 <span class="normal">163</span>
 <span class="normal">164</span>
 <span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span>
-<span class="normal">175</span>
-<span class="normal">176</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="normal">166</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">run_parallel</span><span class="p">(</span>
     <span class="n">pipelines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;SyncPipeline[T, E]&quot;</span><span class="p">],</span>
     <span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]],</span>
     <span class="n">max_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
-    <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span>
-    <span class="n">Union</span><span class="p">[</span>
-        <span class="n">List</span><span class="p">[</span><span class="n">PipelineResult</span><span class="p">[</span><span class="n">U</span><span class="p">]],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">PipelineResult</span><span class="p">[</span><span class="n">U</span><span class="p">]],</span> <span class="n">PipelineTrace</span><span class="p">[</span><span class="n">E</span><span class="p">]]</span>
-    <span class="p">],</span>
-    <span class="n">E</span><span class="p">,</span>
-<span class="p">]:</span>
+    <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExecutionResult</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Result</span><span class="p">[</span><span class="n">U</span><span class="p">,</span> <span class="n">E</span><span class="p">]],</span> <span class="n">E</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Execute multiple SyncPipelines in parallel threads.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        pipelines: one SyncPipeline per thread</span>
-<span class="sd">        inputs:    initial Result[T, E] for each pipeline</span>
-<span class="sd">        max_workers: size of thread pool</span>
-<span class="sd">        debug: whether to capture per-pipeline, per-task traces</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        - debug=False: Ok([PipelineResult(name, result), ...])</span>
-<span class="sd">        - debug=True:  Ok(( [PipelineResult(...)], PipelineTrace(…)))</span>
-<span class="sd">        - Err on first pipeline failure or unhandled exception.</span>
+<span class="sd">    Execute multiple pipelines concurrently. Returns ExecutionResult where</span>
+<span class="sd">    .result is List[Result[T, E]] (one per pipeline), and .trace is</span>
+<span class="sd">    Traces(...) if debug=True.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pipelines</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;Each pipeline needs a corresponding input Result&quot;</span><span class="p">)</span>
 
-    <span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PipelineResult</span><span class="p">[</span><span class="n">U</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pipelines</span><span class="p">)</span>
-    <span class="n">traces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SinglePipelineTrace</span><span class="p">[</span><span class="n">E</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+    <span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Result</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pipelines</span><span class="p">)</span>
+    <span class="n">pipeline_traces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Trace</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">E</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">with</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">max_workers</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
-        <span class="n">future_to_idx</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">futures</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">debug</span><span class="p">):</span> <span class="n">idx</span>
             <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">inp</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">pipelines</span><span class="p">,</span> <span class="n">inputs</span><span class="p">))</span>
         <span class="p">}</span>
 
-        <span class="k">for</span> <span class="n">fut</span> <span class="ow">in</span> <span class="n">as_completed</span><span class="p">(</span><span class="n">future_to_idx</span><span class="p">):</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="n">future_to_idx</span><span class="p">[</span><span class="n">fut</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">fut</span> <span class="ow">in</span> <span class="n">as_completed</span><span class="p">(</span><span class="n">futures</span><span class="p">):</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">futures</span><span class="p">[</span><span class="n">fut</span><span class="p">]</span>
             <span class="n">pipe</span> <span class="o">=</span> <span class="n">pipelines</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="n">fut</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+                <span class="n">exec_res</span> <span class="o">=</span> <span class="n">fut</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>  <span class="c1"># ExecutionResult[T, E]</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">pipe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">] Unhandled exception&quot;</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">Err</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in pipeline &#39;</span><span class="si">{</span><span class="n">pipe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">results</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">Err</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in pipeline &#39;</span><span class="si">{</span><span class="n">pipe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">debug</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">exec_res</span> <span class="o">=</span> <span class="n">ExecutionResult</span><span class="p">(</span>
+                    <span class="n">result</span><span class="o">=</span><span class="n">results</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+                    <span class="n">trace</span><span class="o">=</span><span class="n">Trace</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="p">[(</span><span class="n">pipe</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="n">idx</span><span class="p">])]),</span>
+                    <span class="n">execution_time</span><span class="o">=</span><span class="mf">0.0</span>
+                <span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">pipe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">] Failed: </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">err</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">Err</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">err</span><span class="p">())</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">exec_res</span><span class="o">.</span><span class="n">result</span>
+            <span class="k">if</span> <span class="n">debug</span> <span class="ow">and</span> <span class="n">exec_res</span><span class="o">.</span><span class="n">trace</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># exec_res.trace is a Trace[T,E]</span>
+                <span class="n">pipeline_traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">exec_res</span><span class="o">.</span><span class="n">trace</span><span class="p">)</span>
 
-            <span class="c1"># unwrap the Result from run(...)</span>
-            <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
-                <span class="n">val</span><span class="p">,</span> <span class="n">trace</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>  <span class="c1"># (output, trace_list)</span>
-                <span class="n">results</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">PipelineResult</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">pipe</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">val</span><span class="p">)</span>
-                <span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SinglePipelineTrace</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">pipe</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">tasks</span><span class="o">=</span><span class="n">trace</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
-                <span class="n">results</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">PipelineResult</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">pipe</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">results</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">is_err</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">debug</span><span class="p">:</span>
+                <span class="k">break</span>
 
-    <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Ok</span><span class="p">((</span><span class="n">results</span><span class="p">,</span> <span class="n">PipelineTrace</span><span class="p">(</span><span class="n">pipelines</span><span class="o">=</span><span class="n">traces</span><span class="p">)))</span>
-    <span class="k">return</span> <span class="n">Ok</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+    <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+    <span class="k">return</span> <span class="n">ExecutionResult</span><span class="p">(</span>
+        <span class="n">result</span><span class="o">=</span><span class="n">results</span><span class="p">,</span>
+        <span class="n">trace</span><span class="o">=</span><span class="n">Traces</span><span class="p">(</span><span class="n">pipelines</span><span class="o">=</span><span class="n">pipeline_traces</span><span class="p">)</span> <span class="k">if</span> <span class="n">debug</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">execution_time</span><span class="o">=</span><span class="n">elapsed</span>
+    <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
