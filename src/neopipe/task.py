@@ -1,7 +1,6 @@
 import asyncio
 import logging
 import time
-import traceback
 import uuid
 from abc import ABC, abstractmethod
 from functools import wraps
@@ -57,15 +56,15 @@ class BaseSyncTask(ABC, Generic[T, E]):
                 result = self.execute(input_result)
 
                 if result.is_ok():
-                    logger.info(f"[{self.task_name}] Success on attempt {attempt}")
+                    logger.info(f"[{self.task_name}] Success on attempt {attempt} - Task ID: {self.task_id}")
                     return result
                 else:
-                    logger.error(f"[{self.task_name}] Returned Err: {result.err()}")
+                    logger.error(f"[{self.task_name}] Returned Err: {result.err()} - Task ID: {self.task_id}")
                     return result
 
             except Exception as e:
                 last_exception = e
-                logger.exception(f"[{self.task_name}] Exception on attempt {attempt}")
+                logger.exception(f"[{self.task_name}] Exception on attempt {attempt} - Task ID: {self.task_id}")
                 time.sleep(2 ** (attempt - 1))  # Exponential backoff
 
         return Err(
@@ -201,15 +200,15 @@ class BaseAsyncTask(ABC, Generic[T, E]):
                 result = await self.execute(input_result)
 
                 if result.is_ok():
-                    logger.info(f"[{self.task_name}] Success on attempt {attempt}")
+                    logger.info(f"[{self.task_name}] Success on attempt {attempt} - Task ID: {self.task_id}")
                     return result
                 else:
-                    logger.warning(f"[{self.task_name}] Returned Err: {result.err()}")
+                    logger.warning(f"[{self.task_name}] Returned Err: {result.err()} - Task ID: {self.task_id}")
                     return result
 
             except Exception as e:
                 last_exception = e
-                logger.exception(f"[{self.task_name}] Exception on attempt {attempt}")
+                logger.exception(f"[{self.task_name}] Exception on attempt {attempt} - Task ID: {self.task_id}")
                 await asyncio.sleep(2 ** (attempt - 1))  # exponential backoff
         # tb = traceback.format_exception(
         #     last_exception.__class__, last_exception, last_exception.__traceback__
