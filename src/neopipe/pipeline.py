@@ -2,6 +2,7 @@ import inspect
 import logging
 import uuid
 import time
+import copy
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Generic, List, Optional, Tuple, TypeVar, get_origin
 
@@ -70,6 +71,26 @@ class SyncPipeline(Generic[T, E]):
             )
 
         self.tasks.append(task)
+
+    def replicate_task(self, task: BaseSyncTask, num_replicas: int) -> List[BaseSyncTask]:
+        """
+        Replicate a task multiple times with unique task IDs.
+
+        Args:
+            task: The task to replicate
+            num_replicas: Number of replicas to create
+
+        Returns:
+            List[BaseSyncTask]: List of replicated tasks with unique IDs
+        """
+        replicas = []
+        for _ in range(num_replicas):
+            # Create a deep copy of the task
+            replica = copy.deepcopy(task)
+            # Assign a new unique task ID
+            replica.task_id = uuid.uuid4()
+            replicas.append(replica)
+        return replicas
 
     def run(
         self,
@@ -171,3 +192,11 @@ class SyncPipeline(Generic[T, E]):
 
     def __repr__(self) -> str:
         return self.__str__()
+
+
+class SyncWorkflow(SyncPipeline[T, E]):
+    """
+    A workflow class that inherits from SyncPipeline, providing the same functionality
+    under a different namespace for workflow-oriented use cases.
+    """
+    pass

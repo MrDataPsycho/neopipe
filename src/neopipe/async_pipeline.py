@@ -3,6 +3,7 @@ import inspect
 import time
 import logging
 import uuid
+import copy
 from typing import Any, Generic, List, Optional, Tuple, TypeVar
 
 from neopipe.result import (
@@ -51,6 +52,26 @@ class AsyncPipeline(Generic[T, E]):
     def add_task(self, task: BaseAsyncTask[T, E]) -> None:
         self._validate_task(task)
         self.tasks.append(task)
+
+    def replicate_task(self, task: BaseAsyncTask[T, E], num_replicas: int) -> List[BaseAsyncTask[T, E]]:
+        """
+        Replicate a task multiple times with unique task IDs.
+
+        Args:
+            task: The async task to replicate
+            num_replicas: Number of replicas to create
+
+        Returns:
+            List[BaseAsyncTask[T, E]]: List of replicated tasks with unique IDs
+        """
+        replicas = []
+        for _ in range(num_replicas):
+            # Create a deep copy of the task
+            replica = copy.deepcopy(task)
+            # Assign a new unique task ID
+            replica.task_id = uuid.uuid4()
+            replicas.append(replica)
+        return replicas
 
     def _validate_task(self, task: BaseAsyncTask[T, E]) -> None:
         if not isinstance(task, BaseAsyncTask):
@@ -184,3 +205,11 @@ class AsyncPipeline(Generic[T, E]):
 
     def __repr__(self) -> str:
         return self.__str__()
+
+
+class AsyncWorkflow(AsyncPipeline[T, E]):
+    """
+    A workflow class that inherits from AsyncPipeline, providing the same functionality
+    under a different namespace for workflow-oriented use cases.
+    """
+    pass
