@@ -183,6 +183,20 @@ class Result(Generic[T, E]):
             return self._value  # type: ignore
         raise UnwrapError(f"Called unwrap on Err: {self._value}")
 
+    def unwrap_err(self) -> E:
+        """
+        Extract the error value or raise an error.
+
+        Returns:
+            E: The Err value.
+
+        Raises:
+            UnwrapError: If the result is Ok.
+        """
+        if not self._is_ok:
+            return self._value  # type: ignore
+        raise UnwrapError(f"Called unwrap_err on Ok: {self._value}")
+
     def unwrap_or(self, default: T) -> T:
         """
         Return the success value or a default.
@@ -207,6 +221,30 @@ class Result(Generic[T, E]):
         """
         return self._value if self._is_ok else op(self._value)  # type: ignore
 
+    def err_or(self, default: E) -> E:
+        """
+        Return the error value or a default.
+
+        Args:
+            default: The fallback error value.
+
+        Returns:
+            E: The Err value or the default.
+        """
+        return self._value if not self._is_ok else default  # type: ignore
+
+    def err_or_else(self, op: Callable[[T], E]) -> E:
+        """
+        Return the error value or a value generated from the success value.
+
+        Args:
+            op: A function that maps the success value to a fallback error.
+
+        Returns:
+            E: The Err value or a fallback derived from the success value.
+        """
+        return self._value if not self._is_ok else op(self._value)  # type: ignore
+
     def expect(self, msg: str) -> T:
         """
         Extract the success value or raise with a custom message.
@@ -221,6 +259,23 @@ class Result(Generic[T, E]):
             UnwrapError: If the result is Err.
         """
         if self._is_ok:
+            return self._value  # type: ignore
+        raise UnwrapError(f"{msg}: {self._value}")
+
+    def expect_err(self, msg: str) -> E:
+        """
+        Extract the error value or raise with a custom message.
+
+        Args:
+            msg: The message to include in the exception.
+
+        Returns:
+            E: The Err value.
+
+        Raises:
+            UnwrapError: If the result is Ok.
+        """
+        if not self._is_ok:
             return self._value  # type: ignore
         raise UnwrapError(f"{msg}: {self._value}")
 

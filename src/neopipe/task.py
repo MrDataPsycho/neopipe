@@ -1,7 +1,6 @@
 import asyncio
 import logging
 import time
-import traceback
 import uuid
 from abc import ABC, abstractmethod
 from functools import wraps
