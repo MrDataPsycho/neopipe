@@ -6,6 +6,10 @@ nav:
       - Basic Use Async Pipeline: examples/basic_use_async_pipeline_module.md
       - Basic Use Task: examples/basic_use_task_module.md
       - Basic Use Result: examples/basic_use_result_module.md
+      - Task Replication: examples/task_replication_example.md
+      - Workflow Classes: examples/workflow_classes_example.md
+      - OpenAI Sync Pipeline: examples/openai_sync_pipeline_example.md
+      - OpenAI Async Pipeline: examples/openai_async_pipeline_example.md
   - API Reference:
       - Pipeline: api/pipeline.md
       - Async Pipeline: api/async_pipeline.md
