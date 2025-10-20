@@ -1,0 +1,1004 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>Workflow Classes Example - NeoPipe Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.84d31ad4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#workflow-classes-example" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="NeoPipe Documentation" class="md-header__button md-logo" aria-label="NeoPipe Documentation" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            NeoPipe Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Workflow Classes Example
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="NeoPipe Documentation" class="md-nav__button md-logo" aria-label="NeoPipe Documentation" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    NeoPipe Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basic_use_pipeline_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Use Pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basic_use_async_pipeline_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Use Async Pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basic_use_task_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Use Task
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basic_use_result_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Use Result
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/async_pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Async Pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/result/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Result
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/task/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Task
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-sync-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Sync Workflow
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#async-workflow-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Async Workflow Example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflow-vs-pipeline-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workflow vs Pipeline Comparison
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#business-process-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Business Process Workflow
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-benefits-of-workflow-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Benefits of Workflow Classes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-to-use-workflows-vs-pipelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use Workflows vs Pipelines
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="When to Use Workflows vs Pipelines">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-syncworkflowasyncworkflow-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use SyncWorkflow/AsyncWorkflow when:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-syncpipelineasyncpipeline-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use SyncPipeline/AsyncPipeline when:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="workflow-classes-example">Workflow Classes Example<a class="headerlink" href="#workflow-classes-example" title="Permanent link">&para;</a></h1>
+<p>This example demonstrates how to use <code>SyncWorkflow</code> and <code>AsyncWorkflow</code> classes as alternative namespaces for pipeline functionality.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>Workflow classes provide the same functionality as pipelines but with workflow-oriented terminology:
+- <code>SyncWorkflow</code> - Inherits from <code>SyncPipeline</code>
+- <code>AsyncWorkflow</code> - Inherits from <code>AsyncPipeline</code></p>
+<p>These classes are useful when you want to emphasize the workflow nature of your process rather than the pipeline implementation.</p>
+<h2 id="basic-sync-workflow">Basic Sync Workflow<a class="headerlink" href="#basic-sync-workflow" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">neopipe</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ok</span><span class="p">,</span> <span class="n">Err</span><span class="p">,</span> <span class="n">SyncWorkflow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neopipe.task</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionSyncTask</span>
+
+<span class="c1"># Define workflow steps</span>
+<span class="nd">@FunctionSyncTask</span><span class="o">.</span><span class="n">decorator</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_input</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate the input data.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;user_id&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Err</span><span class="p">(</span><span class="s2">&quot;Invalid input: missing user_id&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Ok</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="nd">@FunctionSyncTask</span><span class="o">.</span><span class="n">decorator</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">enrich_data</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enrich the data with additional information.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;2025-10-20&#39;</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;active&#39;</span>
+
+    <span class="k">return</span> <span class="n">Ok</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="nd">@FunctionSyncTask</span><span class="o">.</span><span class="n">decorator</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">format_output</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Format the final output.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+    <span class="n">formatted</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;user&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;created_at&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;active&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;active&#39;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">Ok</span><span class="p">(</span><span class="n">formatted</span><span class="p">)</span>
+
+<span class="c1"># Create and run the workflow</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">user_processing_workflow</span><span class="p">():</span>
+    <span class="c1"># Create workflow instance</span>
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">SyncWorkflow</span><span class="o">.</span><span class="n">from_tasks</span><span class="p">(</span>
+        <span class="n">tasks</span><span class="o">=</span><span class="p">[</span><span class="n">validate_input</span><span class="p">,</span> <span class="n">enrich_data</span><span class="p">,</span> <span class="n">format_output</span><span class="p">],</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;UserProcessingWorkflow&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Input data</span>
+    <span class="n">user_data</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">({</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="s1">&#39;12345&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">})</span>
+
+    <span class="c1"># Execute workflow</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">user_data</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ Workflow completed successfully!&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Result: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;❌ Workflow failed!&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">unwrap_err</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Execution time: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">execution_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Show workflow trace</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">trace</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📋 Workflow Execution Trace:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">step_name</span><span class="p">,</span> <span class="n">step_result</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">trace</span><span class="o">.</span><span class="n">steps</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;✅&quot;</span> <span class="k">if</span> <span class="n">step_result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;❌&quot;</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">step_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Run the example</span>
+<span class="n">user_processing_workflow</span><span class="p">()</span>
+</code></pre></div>
+
+<h2 id="async-workflow-example">Async Workflow Example<a class="headerlink" href="#async-workflow-example" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neopipe</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ok</span><span class="p">,</span> <span class="n">Err</span><span class="p">,</span> <span class="n">AsyncWorkflow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neopipe.task</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionAsyncTask</span>
+
+<span class="c1"># Define async workflow steps</span>
+<span class="nd">@FunctionAsyncTask</span><span class="o">.</span><span class="n">decorator</span><span class="p">()</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">fetch_user_data</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simulate fetching user data from an API.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+
+    <span class="c1"># Simulate API call</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">user_id</span> <span class="o">==</span> <span class="s2">&quot;invalid&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Err</span><span class="p">(</span><span class="s2">&quot;User not found&quot;</span><span class="p">)</span>
+
+    <span class="n">user_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;User_</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;email&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;user</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s1">@example.com&#39;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">Ok</span><span class="p">(</span><span class="n">user_data</span><span class="p">)</span>
+
+<span class="nd">@FunctionAsyncTask</span><span class="o">.</span><span class="n">decorator</span><span class="p">()</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">calculate_metrics</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate user metrics.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="n">user_data</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+
+    <span class="c1"># Simulate metric calculation</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+
+    <span class="n">metrics</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;user_data&#39;</span><span class="p">:</span> <span class="n">user_data</span><span class="p">,</span>
+        <span class="s1">&#39;login_count&#39;</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+        <span class="s1">&#39;last_active&#39;</span><span class="p">:</span> <span class="s1">&#39;2025-10-20&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="mf">85.5</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">Ok</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span>
+
+<span class="nd">@FunctionAsyncTask</span><span class="o">.</span><span class="n">decorator</span><span class="p">()</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">generate_report</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate final user report.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="n">metrics</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+
+    <span class="c1"># Simulate report generation</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.02</span><span class="p">)</span>
+
+    <span class="n">report</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;user&#39;</span><span class="p">:</span> <span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;user_data&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;email&#39;</span><span class="p">:</span> <span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;user_data&#39;</span><span class="p">][</span><span class="s1">&#39;email&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;activity_score&#39;</span><span class="p">:</span> <span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;active&#39;</span> <span class="k">if</span> <span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;login_count&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;inactive&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;generated_at&#39;</span><span class="p">:</span> <span class="s1">&#39;2025-10-20T10:00:00Z&#39;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">Ok</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">user_analytics_workflow</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Async workflow for user analytics.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Create async workflow</span>
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">AsyncWorkflow</span><span class="o">.</span><span class="n">from_tasks</span><span class="p">(</span>
+        <span class="n">tasks</span><span class="o">=</span><span class="p">[</span><span class="n">fetch_user_data</span><span class="p">,</span> <span class="n">calculate_metrics</span><span class="p">,</span> <span class="n">generate_report</span><span class="p">],</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;UserAnalyticsWorkflow&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Process multiple users concurrently</span>
+    <span class="n">user_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;123&quot;</span><span class="p">),</span> <span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;456&quot;</span><span class="p">),</span> <span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;789&quot;</span><span class="p">),</span> <span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;invalid&quot;</span><span class="p">)]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🚀 Starting concurrent user processing...&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Run workflow concurrently for multiple users</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">user_ids</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📊 Processing completed in </span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">execution_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Display results</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">result</span><span class="p">):</span>
+        <span class="n">user_id</span> <span class="o">=</span> <span class="n">user_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span> <span class="k">if</span> <span class="n">user_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">is_ok</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;unknown&quot;</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">():</span>
+            <span class="n">report</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ User </span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">report</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> - Score: </span><span class="si">{</span><span class="n">report</span><span class="p">[</span><span class="s1">&#39;activity_score&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ User </span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">unwrap_err</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Show trace information</span>
+    <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">trace</span> <span class="ow">and</span> <span class="n">results</span><span class="o">.</span><span class="n">trace</span><span class="o">.</span><span class="n">pipelines</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📋 Processed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">trace</span><span class="o">.</span><span class="n">pipelines</span><span class="p">)</span><span class="si">}</span><span class="s2"> user workflows&quot;</span><span class="p">)</span>
+
+<span class="c1"># Run async example</span>
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">user_analytics_workflow</span><span class="p">())</span>
+</code></pre></div>
+
+<h2 id="workflow-vs-pipeline-comparison">Workflow vs Pipeline Comparison<a class="headerlink" href="#workflow-vs-pipeline-comparison" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Both approaches are functionally identical</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neopipe</span><span class="w"> </span><span class="kn">import</span> <span class="n">SyncPipeline</span><span class="p">,</span> <span class="n">SyncWorkflow</span>
+
+<span class="c1"># Pipeline approach - emphasizes data flow</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">SyncPipeline</span><span class="o">.</span><span class="n">from_tasks</span><span class="p">([</span><span class="n">task1</span><span class="p">,</span> <span class="n">task2</span><span class="p">,</span> <span class="n">task3</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;DataPipeline&quot;</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+
+<span class="c1"># Workflow approach - emphasizes business process</span>
+<span class="n">workflow</span> <span class="o">=</span> <span class="n">SyncWorkflow</span><span class="o">.</span><span class="n">from_tasks</span><span class="p">([</span><span class="n">task1</span><span class="p">,</span> <span class="n">task2</span><span class="p">,</span> <span class="n">task3</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;BusinessWorkflow&quot;</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+
+<span class="c1"># Both inherit the same methods and functionality</span>
+<span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="s1">&#39;add_task&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">workflow</span><span class="p">,</span> <span class="s1">&#39;replicate_task&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+<h2 id="business-process-workflow">Business Process Workflow<a class="headerlink" href="#business-process-workflow" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">neopipe</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ok</span><span class="p">,</span> <span class="n">Err</span><span class="p">,</span> <span class="n">SyncWorkflow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neopipe.task</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassSyncTask</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">OrderValidationTask</span><span class="p">(</span><span class="n">ClassSyncTask</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate order details.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="n">order</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+
+        <span class="c1"># Validation logic</span>
+        <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;amount&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Err</span><span class="p">(</span><span class="s2">&quot;Invalid order amount&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">order</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;customer_id&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Err</span><span class="p">(</span><span class="s2">&quot;Missing customer ID&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Ok</span><span class="p">({</span><span class="o">**</span><span class="n">order</span><span class="p">,</span> <span class="s1">&#39;validated&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PaymentProcessingTask</span><span class="p">(</span><span class="n">ClassSyncTask</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Process payment for the order.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="n">order</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+
+        <span class="c1"># Simulate payment processing</span>
+        <span class="k">if</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;amount&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10000</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Err</span><span class="p">(</span><span class="s2">&quot;Payment declined: amount too high&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Ok</span><span class="p">({</span><span class="o">**</span><span class="n">order</span><span class="p">,</span> <span class="s1">&#39;payment_status&#39;</span><span class="p">:</span> <span class="s1">&#39;completed&#39;</span><span class="p">,</span> <span class="s1">&#39;transaction_id&#39;</span><span class="p">:</span> <span class="s1">&#39;txn_123&#39;</span><span class="p">})</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FulfillmentTask</span><span class="p">(</span><span class="n">ClassSyncTask</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle order fulfillment.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="n">order</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+
+        <span class="c1"># Fulfillment logic</span>
+        <span class="k">return</span> <span class="n">Ok</span><span class="p">({</span>
+            <span class="o">**</span><span class="n">order</span><span class="p">,</span> 
+            <span class="s1">&#39;fulfillment_status&#39;</span><span class="p">:</span> <span class="s1">&#39;shipped&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tracking_number&#39;</span><span class="p">:</span> <span class="s1">&#39;TRK123456789&#39;</span>
+        <span class="p">})</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">order_processing_workflow</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Complete order processing workflow.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Create business workflow</span>
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">SyncWorkflow</span><span class="o">.</span><span class="n">from_tasks</span><span class="p">([</span>
+        <span class="n">OrderValidationTask</span><span class="p">(),</span>
+        <span class="n">PaymentProcessingTask</span><span class="p">(),</span> 
+        <span class="n">FulfillmentTask</span><span class="p">()</span>
+    <span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;OrderProcessingWorkflow&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Sample order</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">({</span>
+        <span class="s1">&#39;order_id&#39;</span><span class="p">:</span> <span class="s1">&#39;ORD001&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;customer_id&#39;</span><span class="p">:</span> <span class="s1">&#39;CUST123&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;amount&#39;</span><span class="p">:</span> <span class="mf">99.99</span><span class="p">,</span>
+        <span class="s1">&#39;items&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;item1&#39;</span><span class="p">,</span> <span class="s1">&#39;item2&#39;</span><span class="p">]</span>
+    <span class="p">})</span>
+
+    <span class="c1"># Process order through workflow</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">():</span>
+        <span class="n">final_order</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🎉 Order processed successfully!&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Order ID: </span><span class="si">{</span><span class="n">final_order</span><span class="p">[</span><span class="s1">&#39;order_id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transaction: </span><span class="si">{</span><span class="n">final_order</span><span class="p">[</span><span class="s1">&#39;transaction_id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tracking: </span><span class="si">{</span><span class="n">final_order</span><span class="p">[</span><span class="s1">&#39;tracking_number&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Order processing failed: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">unwrap_err</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="c1"># Run order processing</span>
+<span class="n">order_result</span> <span class="o">=</span> <span class="n">order_processing_workflow</span><span class="p">()</span>
+</code></pre></div>
+
+<h2 id="key-benefits-of-workflow-classes">Key Benefits of Workflow Classes<a class="headerlink" href="#key-benefits-of-workflow-classes" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Semantic Clarity</strong>: Use when emphasizing business processes over data pipelines</li>
+<li><strong>Full Compatibility</strong>: All pipeline methods and features available</li>
+<li><strong>Team Communication</strong>: Clearer for non-technical stakeholders</li>
+<li><strong>Documentation</strong>: Self-documenting code with workflow terminology</li>
+<li><strong>Future Extensions</strong>: Room for workflow-specific features</li>
+</ol>
+<h2 id="when-to-use-workflows-vs-pipelines">When to Use Workflows vs Pipelines<a class="headerlink" href="#when-to-use-workflows-vs-pipelines" title="Permanent link">&para;</a></h2>
+<h3 id="use-syncworkflowasyncworkflow-when">Use <code>SyncWorkflow</code>/<code>AsyncWorkflow</code> when:<a class="headerlink" href="#use-syncworkflowasyncworkflow-when" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Modeling business processes</li>
+<li>Working with domain experts who think in workflows</li>
+<li>Building process automation systems</li>
+<li>Emphasizing the sequence of business steps</li>
+</ul>
+<h3 id="use-syncpipelineasyncpipeline-when">Use <code>SyncPipeline</code>/<code>AsyncPipeline</code> when:<a class="headerlink" href="#use-syncpipelineasyncpipeline-when" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Focusing on data transformation</li>
+<li>Building data processing systems</li>
+<li>Emphasizing technical data flow</li>
+<li>Working primarily with technical teams</li>
+</ul>
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Consistent Naming</strong>: Choose either workflow or pipeline terminology consistently</li>
+<li><strong>Documentation</strong>: Use workflow terminology in comments and docs when using workflow classes</li>
+<li><strong>Task Naming</strong>: Use business-oriented task names with workflows</li>
+<li><strong>Error Messages</strong>: Frame errors in business context for workflows</li>
+<li><strong>Monitoring</strong>: Use workflow-oriented metrics and logging</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>

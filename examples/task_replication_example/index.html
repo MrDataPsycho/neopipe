@@ -1,0 +1,843 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>Task Replication Example - NeoPipe Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.84d31ad4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#task-replication-example" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="NeoPipe Documentation" class="md-header__button md-logo" aria-label="NeoPipe Documentation" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            NeoPipe Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Task Replication Example
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="NeoPipe Documentation" class="md-nav__button md-logo" aria-label="NeoPipe Documentation" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    NeoPipe Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basic_use_pipeline_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Use Pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basic_use_async_pipeline_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Use Async Pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basic_use_task_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Use Task
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basic_use_result_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Use Result
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/async_pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Async Pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/result/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Result
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/task/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Task
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parallel-processing-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel Processing Example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#async-task-replication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Async Task Replication
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-load-balancing" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Load Balancing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-fault-tolerance" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Fault Tolerance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-ab-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. A/B Testing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Benefits
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="task-replication-example">Task Replication Example<a class="headerlink" href="#task-replication-example" title="Permanent link">&para;</a></h1>
+<p>This example demonstrates how to use the <code>replicate_task</code> functionality to create multiple instances of a task for parallel processing.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>The <code>replicate_task</code> method allows you to create multiple copies of a task with unique IDs, which is useful for:
+- Processing multiple data items in parallel
+- Load balancing across multiple task instances
+- Scaling specific parts of your pipeline</p>
+<h2 id="basic-example">Basic Example<a class="headerlink" href="#basic-example" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neopipe</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ok</span><span class="p">,</span> <span class="n">Err</span><span class="p">,</span> <span class="n">SyncPipeline</span><span class="p">,</span> <span class="n">AsyncPipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neopipe.task</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionSyncTask</span><span class="p">,</span> <span class="n">FunctionAsyncTask</span>
+
+<span class="c1"># Define a data processing task</span>
+<span class="nd">@FunctionSyncTask</span><span class="o">.</span><span class="n">decorator</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">process_data</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simulate data processing that takes some time.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+    <span class="c1"># Simulate processing time</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Ok</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;processed_</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create a pipeline and replicate the task</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">SyncPipeline</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;DataProcessingPipeline&quot;</span><span class="p">)</span>
+
+<span class="c1"># Replicate the task 3 times for parallel processing</span>
+<span class="n">replicated_tasks</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">replicate_task</span><span class="p">(</span><span class="n">process_data</span><span class="p">,</span> <span class="n">num_replicas</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">)</span><span class="si">}</span><span class="s2"> task replicas&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">task</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Task </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> ID: </span><span class="si">{</span><span class="n">task</span><span class="o">.</span><span class="n">task_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<h2 id="parallel-processing-example">Parallel Processing Example<a class="headerlink" href="#parallel-processing-example" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Use replicated tasks for parallel processing</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parallel_processing_example</span><span class="p">():</span>
+    <span class="c1"># Create multiple pipelines with replicated tasks</span>
+    <span class="n">pipelines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">pipeline</span> <span class="o">=</span> <span class="n">SyncPipeline</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Pipeline_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># Each pipeline gets its own replica of the task</span>
+        <span class="n">replicated_tasks</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">replicate_task</span><span class="p">(</span><span class="n">process_data</span><span class="p">,</span> <span class="n">num_replicas</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">pipeline</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">pipelines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pipeline</span><span class="p">)</span>
+
+    <span class="c1"># Input data to process</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;data_1&quot;</span><span class="p">),</span> <span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;data_2&quot;</span><span class="p">),</span> <span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;data_3&quot;</span><span class="p">)]</span>
+
+    <span class="c1"># Process in parallel</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">SyncPipeline</span><span class="o">.</span><span class="n">run_parallel</span><span class="p">(</span>
+        <span class="n">pipelines</span><span class="o">=</span><span class="n">pipelines</span><span class="p">,</span>
+        <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
+        <span class="n">max_workers</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">debug</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Parallel processing results:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">result</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pipeline </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pipeline </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: Error - </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">unwrap_err</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total execution time: </span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">execution_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+
+<span class="c1"># Run the example</span>
+<span class="n">parallel_processing_example</span><span class="p">()</span>
+</code></pre></div>
+
+<h2 id="async-task-replication">Async Task Replication<a class="headerlink" href="#async-task-replication" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="nd">@FunctionAsyncTask</span><span class="o">.</span><span class="n">decorator</span><span class="p">()</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">async_process_data</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Async version of data processing.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+    <span class="c1"># Simulate async processing</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Ok</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;async_processed_</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">async_replication_example</span><span class="p">():</span>
+    <span class="c1"># Create async pipeline with replicated tasks</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">AsyncPipeline</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;AsyncDataPipeline&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Replicate async task</span>
+    <span class="n">replicated_tasks</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">replicate_task</span><span class="p">(</span><span class="n">async_process_data</span><span class="p">,</span> <span class="n">num_replicas</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Add tasks to pipeline</span>
+    <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">replicated_tasks</span><span class="p">:</span>
+        <span class="n">pipeline</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+    <span class="c1"># Process data through the pipeline</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run_sequence</span><span class="p">(</span><span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;async_data&quot;</span><span class="p">),</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Async processing result: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Execution time: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">execution_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Show trace information</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">trace</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Execution trace:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">step_name</span><span class="p">,</span> <span class="n">step_result</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">trace</span><span class="o">.</span><span class="n">steps</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;✅&quot;</span> <span class="k">if</span> <span class="n">step_result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;❌&quot;</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">step_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Run async example</span>
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">async_replication_example</span><span class="p">())</span>
+</code></pre></div>
+
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<h3 id="1-load-balancing">1. Load Balancing<a class="headerlink" href="#1-load-balancing" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Replicate a heavy computation task for load balancing</span>
+<span class="n">heavy_task</span> <span class="o">=</span> <span class="n">create_heavy_computation_task</span><span class="p">()</span>
+<span class="n">replicas</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">replicate_task</span><span class="p">(</span><span class="n">heavy_task</span><span class="p">,</span> <span class="n">num_replicas</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Distribute work across replicas</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">replica</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">replicas</span><span class="p">):</span>
+    <span class="n">worker_pipeline</span> <span class="o">=</span> <span class="n">SyncPipeline</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Worker_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">worker_pipeline</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">replica</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="2-fault-tolerance">2. Fault Tolerance<a class="headerlink" href="#2-fault-tolerance" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Create multiple replicas for redundancy</span>
+<span class="n">unreliable_task</span> <span class="o">=</span> <span class="n">create_network_request_task</span><span class="p">()</span>
+<span class="n">backup_tasks</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">replicate_task</span><span class="p">(</span><span class="n">unreliable_task</span><span class="p">,</span> <span class="n">num_replicas</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># Try each replica until one succeeds</span>
+<span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">backup_tasks</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">task</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">():</span>
+        <span class="k">break</span>
+</code></pre></div>
+
+<h3 id="3-ab-testing">3. A/B Testing<a class="headerlink" href="#3-ab-testing" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Replicate task with different configurations</span>
+<span class="n">base_task</span> <span class="o">=</span> <span class="n">create_ml_model_task</span><span class="p">()</span>
+<span class="n">variants</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">replicate_task</span><span class="p">(</span><span class="n">base_task</span><span class="p">,</span> <span class="n">num_replicas</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Configure different model parameters</span>
+<span class="n">variants</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;version_a&quot;</span><span class="p">}</span>
+<span class="n">variants</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;version_b&quot;</span><span class="p">}</span>
+
+<span class="c1"># Compare results</span>
+<span class="n">results_a</span> <span class="o">=</span> <span class="n">variants</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">test_data</span><span class="p">)</span>
+<span class="n">results_b</span> <span class="o">=</span> <span class="n">variants</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="n">test_data</span><span class="p">)</span>
+</code></pre></div>
+
+<h2 id="key-benefits">Key Benefits<a class="headerlink" href="#key-benefits" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Unique IDs</strong>: Each replicated task gets a unique <code>task_id</code> for tracking</li>
+<li><strong>Independent State</strong>: Deep copying ensures replicas don't share mutable state</li>
+<li><strong>Flexible Usage</strong>: Can be used in both sync and async pipelines</li>
+<li><strong>Scalability</strong>: Easy to scale specific bottleneck tasks</li>
+<li><strong>Debugging</strong>: Each replica can be traced independently</li>
+</ul>
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Resource Management</strong>: Be mindful of memory usage when creating many replicas</li>
+<li><strong>Task Design</strong>: Ensure tasks are stateless or properly handle state isolation</li>
+<li><strong>Error Handling</strong>: Use debug mode to trace issues across replicated tasks</li>
+<li><strong>Performance</strong>: Measure actual performance gains from replication</li>
+<li><strong>Monitoring</strong>: Track individual replica performance using unique task IDs</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>

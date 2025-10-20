@@ -455,6 +455,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#new-in-v012" class="md-nav__link">
+    <span class="md-ellipsis">
+      🆕 New in v0.1.2
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -715,6 +724,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#new-in-v012" class="md-nav__link">
+    <span class="md-ellipsis">
+      🆕 New in v0.1.2
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -780,9 +798,22 @@ error_result = Err(&quot;bad input&quot;).map_err(lambda e: f&quot;Error: {e}&qu
 </code></pre></div>
 
 <h2 id="unwrapping-and-defaults">🧯 Unwrapping and Defaults<a class="headerlink" href="#unwrapping-and-defaults" title="Permanent link">&para;</a></h2>
-<div class="codehilite"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unwrap</span><span class="p">())</span>  <span class="c1"># &quot;hello&quot;</span>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Success path unwrapping</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unwrap</span><span class="p">())</span>  <span class="c1"># &quot;hello&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="s2">&quot;Should be a value&quot;</span><span class="p">))</span>  <span class="c1"># &quot;hello&quot;</span>
+
+<span class="c1"># Error path unwrapping (NEW in v0.1.2!)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Err</span><span class="p">(</span><span class="s2">&quot;boom&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unwrap_err</span><span class="p">())</span>  <span class="c1"># &quot;boom&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Err</span><span class="p">(</span><span class="s2">&quot;boom&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">expect_err</span><span class="p">(</span><span class="s2">&quot;Should be an error&quot;</span><span class="p">))</span>  <span class="c1"># &quot;boom&quot;</span>
+
+<span class="c1"># Defaults and fallbacks</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">Err</span><span class="p">(</span><span class="s2">&quot;boom&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unwrap_or</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">))</span>  <span class="c1"># &quot;default&quot;</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">Err</span><span class="p">(</span><span class="s2">&quot;fail&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unwrap_or_else</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Handled: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>  <span class="c1"># &quot;Handled: fail&quot;</span>
+
+<span class="c1"># Error defaults (NEW in v0.1.2!)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">err_or</span><span class="p">(</span><span class="s2">&quot;no error&quot;</span><span class="p">))</span>  <span class="c1"># &quot;no error&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Err</span><span class="p">(</span><span class="s2">&quot;actual error&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">err_or</span><span class="p">(</span><span class="s2">&quot;no error&quot;</span><span class="p">))</span>  <span class="c1"># &quot;actual error&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">err_or_else</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Error from </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>  <span class="c1"># &quot;Error from success&quot;</span>
 </code></pre></div>
 
 <h2 id="pattern-matching">⚡ Pattern Matching<a class="headerlink" href="#pattern-matching" title="Permanent link">&para;</a></h2>
@@ -816,7 +847,45 @@ error_result = Err(&quot;bad input&quot;).map_err(lambda e: f&quot;Error: {e}&qu
     <span class="k">if</span> <span class="n">user_id</span> <span class="o">==</span> <span class="mi">42</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Ok</span><span class="p">({</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Douglas&quot;</span><span class="p">})</span>
     <span class="k">return</span> <span class="n">Err</span><span class="p">(</span><span class="s2">&quot;User not found&quot;</span><span class="p">)</span>
+
+<span class="c1"># Using the new error handling methods</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">process_user_request</span><span class="p">(</span><span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">get_user</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">():</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found user: </span><span class="si">{</span><span class="n">user</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Use new unwrap_err method</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">unwrap_err</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Request failed: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Or use expect_err with custom message</span>
+        <span class="n">detailed_error</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">expect_err</span><span class="p">(</span><span class="s2">&quot;Expected user lookup to fail&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detailed: </span><span class="si">{</span><span class="n">detailed_error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Example with error defaults</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_error_message</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">Result</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="c1"># Get error or provide default</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">err_or</span><span class="p">(</span><span class="s2">&quot;No error occurred&quot;</span><span class="p">)</span>
+
+<span class="c1"># Usage</span>
+<span class="n">success_result</span> <span class="o">=</span> <span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;Operation completed&quot;</span><span class="p">)</span>
+<span class="n">error_result</span> <span class="o">=</span> <span class="n">Err</span><span class="p">(</span><span class="s2">&quot;Network timeout&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">get_error_message</span><span class="p">(</span><span class="n">success_result</span><span class="p">))</span>  <span class="c1"># &quot;No error occurred&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">get_error_message</span><span class="p">(</span><span class="n">error_result</span><span class="p">))</span>    <span class="c1"># &quot;Network timeout&quot;</span>
 </code></pre></div>
+
+<h2 id="new-in-v012">🆕 New in v0.1.2<a class="headerlink" href="#new-in-v012" title="Permanent link">&para;</a></h2>
+<p>The Result class now includes additional Rust-inspired methods:</p>
+<ul>
+<li><code>unwrap_err()</code> - Extract error value or raise</li>
+<li><code>expect_err(msg)</code> - Extract error value with custom message</li>
+<li><code>err_or(default)</code> - Get error value or default</li>
+<li><code>err_or_else(op)</code> - Get error value or compute from success value</li>
+</ul>
+<p>These methods complete the Result API and provide better symmetry with Rust's Result type.</p>
 
 
 
