@@ -153,3 +153,144 @@ async def test_run_parallel_unhandled_exception():
     # Bad pipeline captured exception as Err
     assert exec_res.result[1].is_err()
     assert "boom" in exec_res.result[1].err()
+
+# -- Tests for AsyncPipeline.replicate_task() --
+
+@pytest.mark.asyncio
+async def test_replicate_task_creates_unique_ids():
+    """
+    AsyncPipeline.replicate_task should create multiple copies of a task
+    with unique task IDs.
+    """
+    pipeline = AsyncPipeline(name="TestAsyncPipeline")
+    original_task = MultiplyAsync(multiplier=2)
+    original_id = original_task.task_id
+
+    replicas = pipeline.replicate_task(original_task, num_replicas=3)
+
+    assert len(replicas) == 3
+    assert all(isinstance(replica, MultiplyAsync) for replica in replicas)
+    assert all(replica.multiplier == 2 for replica in replicas)
+
+    # All task IDs should be unique and different from original
+    task_ids = [replica.task_id for replica in replicas]
+    assert len(set(task_ids)) == 3  # All unique
+    assert original_id not in task_ids  # Different from original
+
+@pytest.mark.asyncio
+async def test_replicate_task_preserves_functionality():
+    """
+    Replicated async tasks should maintain the same functionality as the original.
+    """
+    pipeline = AsyncPipeline(name="TestAsyncPipeline")
+    original_task = MultiplyAsync(multiplier=3)
+
+    replicas = pipeline.replicate_task(original_task, num_replicas=2)
+
+    # Test that replicas work the same as original
+    test_input = Ok(5)
+    expected_result = Ok(15)
+
+    original_result = await original_task(test_input)
+    replica1_result = await replicas[0](test_input)
+    replica2_result = await replicas[1](test_input)
+
+    assert original_result == expected_result
+    assert replica1_result == expected_result
+    assert replica2_result == expected_result
+
+@pytest.mark.asyncio
+async def test_replicate_task_with_function_task():
+    """
+    AsyncPipeline.replicate_task should work with function-based async tasks.
+    """
+    pipeline = AsyncPipeline(name="TestAsyncPipeline")
+
+    replicas = pipeline.replicate_task(add_one_async, num_replicas=4)
+
+    assert len(replicas) == 4
+
+    # All task IDs should be unique
+    task_ids = [replica.task_id for replica in replicas]
+    assert len(set(task_ids)) == 4
+
+    # All should have the same task name
+    assert all(replica.task_name == "add_one_async" for replica in replicas)
+
+    # Test functionality
+    test_input = Ok(10)
+    expected_result = Ok(11)
+
+    for replica in replicas:
+        result = await replica(test_input)
+        assert result == expected_result
+
+@pytest.mark.asyncio
+async def test_replicate_task_zero_replicas():
+    """
+    AsyncPipeline.replicate_task should return empty list for zero replicas.
+    """
+    pipeline = AsyncPipeline(name="TestAsyncPipeline")
+    original_task = MultiplyAsync(multiplier=2)
+
+    replicas = pipeline.replicate_task(original_task, num_replicas=0)
+
+    assert replicas == []
+
+@pytest.mark.asyncio
+async def test_replicated_tasks_with_run_parallel():
+    """
+    Test that replicated async tasks can be used with run_parallel for concurrent execution.
+    """
+    # Create a task and replicate it
+    original_task = MultiplyAsync(multiplier=2)
+
+    # Create individual pipelines with replicated tasks
+    pipelines = []
+    replicas = AsyncPipeline(name="temp").replicate_task(original_task, num_replicas=3)
+
+    for i, replica in enumerate(replicas):
+        pipeline = AsyncPipeline(name=f"AsyncPipeline-{i}")
+        pipeline.add_task(replica)
+        pipelines.append(pipeline)
+
+    # Run with different inputs
+    inputs = [Ok(1), Ok(2), Ok(3)]
+    exec_result = await AsyncPipeline.run_parallel(pipelines, inputs, debug=True)
+
+    # Verify results
+    assert exec_result.is_ok()
+    assert exec_result.result == [Ok(2), Ok(4), Ok(6)]
+
+    # Verify that we have 3 separate pipeline traces
+    assert exec_result.trace is not None
+    assert len(exec_result.trace.pipelines) == 3
+
+@pytest.mark.asyncio
+async def test_replicated_tasks_with_run_concurrent():
+    """
+    Test that replicated async tasks can be used with run() for concurrent execution.
+    """
+    pipeline = AsyncPipeline(name="ConcurrentTest")
+    original_task = MultiplyAsync(multiplier=3)
+
+    # Add replicated tasks to the same pipeline
+    replicas = pipeline.replicate_task(original_task, num_replicas=3)
+    for replica in replicas:
+        pipeline.add_task(replica)
+
+    # Run with different inputs (each task gets one input)
+    inputs = [Ok(1), Ok(2), Ok(3)]
+    exec_result = await pipeline.run(inputs, debug=True)
+
+    # Verify results
+    assert exec_result.is_ok()
+    assert exec_result.result == [Ok(3), Ok(6), Ok(9)]
+
+    # Verify trace contains all replicated tasks
+    assert exec_result.trace is not None
+    assert len(exec_result.trace.steps) == 3
+
+    # Check that all task names are the same but results are different
+    task_names = [step[0] for step in exec_result.trace.steps]
+    assert all(name == "MultiplyAsync" for name in task_names)
