@@ -1,4 +1,7 @@
 site_name: NeoPipe Documentation
+docs_dir: docs
+site_dir: site
+
 nav:
   - Home: index.md
   - Examples: 

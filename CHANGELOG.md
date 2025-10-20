@@ -2,6 +2,15 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.4 (20/10/2025)
+
+### Changed
+- **Documentation**: Updated mkdocs navigation to include new examples
+- **Documentation**: Complete documentation site structure with all v0.1.2+ features
+
+### Fixed  
+- **Documentation**: Missing navigation entries for task replication and workflow examples
+
 ## v0.1.3 (20/10/2025)
 
 ### Added

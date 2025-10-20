@@ -94,7 +94,9 @@ exclude_lines = [
 
 [tool.hatch.envs.docs]
 dependencies = [
-  "mkdocs"
+  "mkdocs",
+  "mkdocs-material", 
+  "mkdocstrings[python]"
 ]
 
 [tool.hatch.envs.docs.scripts]
