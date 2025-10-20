@@ -62,9 +62,22 @@ result = Ok((10, 2)).and_then(lambda pair: safe_divide(*pair))
 ## 🧯 Unwrapping and Defaults
 
 ```python
+# Success path unwrapping
 print(Ok("hello").unwrap())  # "hello"
+print(Ok("hello").expect("Should be a value"))  # "hello"
+
+# Error path unwrapping (NEW in v0.1.2!)
+print(Err("boom").unwrap_err())  # "boom"
+print(Err("boom").expect_err("Should be an error"))  # "boom"
+
+# Defaults and fallbacks
 print(Err("boom").unwrap_or("default"))  # "default"
 print(Err("fail").unwrap_or_else(lambda e: f"Handled: {e}"))  # "Handled: fail"
+
+# Error defaults (NEW in v0.1.2!)
+print(Ok("success").err_or("no error"))  # "no error"
+print(Err("actual error").err_or("no error"))  # "actual error"
+print(Ok("success").err_or_else(lambda x: f"Error from {x}"))  # "Error from success"
 ```
 
 ## ⚡ Pattern Matching
@@ -104,4 +117,43 @@ def get_user(user_id: int) -> Result[dict, str]:
     if user_id == 42:
         return Ok({"id": 42, "name": "Douglas"})
     return Err("User not found")
+
+# Using the new error handling methods
+def process_user_request(user_id: int):
+    result = get_user(user_id)
+    
+    if result.is_ok():
+        user = result.unwrap()
+        print(f"Found user: {user['name']}")
+    else:
+        # Use new unwrap_err method
+        error = result.unwrap_err()
+        print(f"Request failed: {error}")
+        
+        # Or use expect_err with custom message
+        detailed_error = result.expect_err("Expected user lookup to fail")
+        print(f"Detailed: {detailed_error}")
+
+# Example with error defaults
+def get_error_message(result: Result[str, str]) -> str:
+    # Get error or provide default
+    return result.err_or("No error occurred")
+    
+# Usage
+success_result = Ok("Operation completed")
+error_result = Err("Network timeout")
+
+print(get_error_message(success_result))  # "No error occurred"
+print(get_error_message(error_result))    # "Network timeout"
 ```
+
+## 🆕 New in v0.1.2
+
+The Result class now includes additional Rust-inspired methods:
+
+- `unwrap_err()` - Extract error value or raise
+- `expect_err(msg)` - Extract error value with custom message
+- `err_or(default)` - Get error value or default
+- `err_or_else(op)` - Get error value or compute from success value
+
+These methods complete the Result API and provide better symmetry with Rust's Result type.
