@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.3 (20/10/2025)
+
+### Added
+- **Documentation**: Added comprehensive examples for task replication functionality
+- **Documentation**: Added workflow classes usage examples with business process patterns
+- **Documentation**: Enhanced Result module examples with new error handling methods
+
+### Changed
+- **Documentation**: Updated existing examples to showcase v0.1.2 features
+
 ## v0.1.2 (20/10/2025)
 
 ### Added
