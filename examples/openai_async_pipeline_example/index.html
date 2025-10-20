@@ -1,0 +1,1403 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>OpenAI Async Pipeline with Task Replication Example - NeoPipe Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.84d31ad4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#openai-async-pipeline-with-task-replication-example" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="NeoPipe Documentation" class="md-header__button md-logo" aria-label="NeoPipe Documentation" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            NeoPipe Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              OpenAI Async Pipeline with Task Replication Example
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="NeoPipe Documentation" class="md-nav__button md-logo" aria-label="NeoPipe Documentation" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    NeoPipe Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basic_use_pipeline_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Use Pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basic_use_async_pipeline_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Use Async Pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basic_use_task_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Use Task
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basic_use_result_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Use Result
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/async_pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Async Pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/result/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Result
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/task/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Task
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Complete Example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features-demonstrated" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Features Demonstrated
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Features Demonstrated">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-three-async-execution-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Three Async Execution Modes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-async-task-tracking-and-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Async Task Tracking and Performance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-non-blocking-concurrent-api-calls" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Non-blocking Concurrent API Calls
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-benefits-of-async-task-replication" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Benefits of Async Task Replication
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-use-cases-for-async-task-replication" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Use Cases for Async Task Replication
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setup Requirements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-to-use-async-task-replication" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use Async Task Replication
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="openai-async-pipeline-with-task-replication-example">OpenAI Async Pipeline with Task Replication Example<a class="headerlink" href="#openai-async-pipeline-with-task-replication-example" title="Permanent link">&para;</a></h1>
+<p>This example demonstrates using NeoPipe's <code>replicate_task</code> method with AsyncPipeline to create multiple instances of the same OpenAI task and run them asynchronously. We'll focus on task replication for efficient parallel processing.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>We'll create an OpenAI summarization system that:
+- Uses a single OpenAI async task configuration
+- Replicates the task multiple times using <code>replicate_task</code> method
+- Demonstrates async task replication with concurrent execution
+- Shows how replicated tasks can process different inputs simultaneously
+- Compares performance and efficiency of replicated async tasks</p>
+<h2 id="complete-example">Complete Example<a class="headerlink" href="#complete-example" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncOpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dotenv</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dotenv</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">neopipe</span><span class="w"> </span><span class="kn">import</span> <span class="n">Result</span><span class="p">,</span> <span class="n">Ok</span><span class="p">,</span> <span class="n">Err</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neopipe.task</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassAsyncTask</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">neopipe.async_pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncPipeline</span>
+
+<span class="c1"># Load environment variables</span>
+<span class="n">load_dotenv</span><span class="p">()</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TextInput</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple input structure for text summarization.&quot;&quot;&quot;</span>
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SummaryOutput</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Output structure for summarization results.&quot;&quot;&quot;</span>
+    <span class="n">original_text</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">summary</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">tokens_used</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">task_id</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AsyncOpenAISummarizationTask</span><span class="p">(</span><span class="n">ClassAsyncTask</span><span class="p">[</span><span class="n">TextInput</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An async task that calls OpenAI API to summarize text using a consistent system prompt.</span>
+
+<span class="sd">    This demonstrates:</span>
+<span class="sd">    - Async class-based task configuration</span>
+<span class="sd">    - Non-blocking external API integration</span>
+<span class="sd">    - Comprehensive async error handling</span>
+<span class="sd">    - Result type usage in async context</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">system_prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gpt-3.5-turbo&quot;</span><span class="p">,</span>
+                 <span class="n">retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="n">retries</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span> <span class="o">=</span> <span class="n">system_prompt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">AsyncOpenAI</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;OPENAI_API_KEY&quot;</span><span class="p">))</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_result</span><span class="p">:</span> <span class="n">Result</span><span class="p">[</span><span class="n">TextInput</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">[</span><span class="n">SummaryOutput</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the async summarization task.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">input_result</span><span class="o">.</span><span class="n">is_err</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">input_result</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">text_data</span> <span class="o">=</span> <span class="n">input_result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+
+            <span class="c1"># Validate input</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">text_data</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">Err</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Empty content for text ID: </span><span class="si">{</span><span class="n">text_data</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Call OpenAI API asynchronously</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+                    <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">},</span>
+                    <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">text_data</span><span class="o">.</span><span class="n">text</span><span class="p">}</span>
+                <span class="p">],</span>
+                <span class="n">max_tokens</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
+                <span class="n">temperature</span><span class="o">=</span><span class="mf">0.3</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Extract summary</span>
+            <span class="n">summary</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">summary</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Err</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No summary generated for text ID: </span><span class="si">{</span><span class="n">text_data</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Create result</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">SummaryOutput</span><span class="p">(</span>
+                <span class="n">original_text</span><span class="o">=</span><span class="n">text_data</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+                <span class="n">summary</span><span class="o">=</span><span class="n">summary</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+                <span class="n">tokens_used</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">usage</span><span class="o">.</span><span class="n">total_tokens</span><span class="p">,</span>
+                <span class="n">task_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">task_id</span>
+            <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">Ok</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Err</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;OpenAI API error for text ID </span><span class="si">{</span><span class="n">text_data</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2"> (Task: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_id</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">create_sample_texts</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">TextInput</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create sample texts for demonstration.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">TextInput</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            Artificial Intelligence is rapidly transforming various industries,</span>
+<span class="s2">            from healthcare to finance. Machine learning algorithms are becoming</span>
+<span class="s2">            more sophisticated, enabling computers to perform tasks that previously</span>
+<span class="s2">            required human intelligence. Deep learning, a subset of machine learning,</span>
+<span class="s2">            uses neural networks with multiple layers to process and analyze complex data.</span>
+<span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;tech_article&quot;</span>
+        <span class="p">),</span>
+        <span class="n">TextInput</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            Climate change continues to be a pressing global issue. Rising temperatures,</span>
+<span class="s2">            melting ice caps, and extreme weather events are becoming more frequent.</span>
+<span class="s2">            Scientists worldwide are working on innovative solutions including renewable</span>
+<span class="s2">            energy technologies, carbon capture methods, and sustainable agriculture</span>
+<span class="s2">            practices to mitigate the effects of global warming.</span>
+<span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;climate_news&quot;</span>
+        <span class="p">),</span>
+        <span class="n">TextInput</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            Space exploration has entered a new era with private companies joining</span>
+<span class="s2">            government agencies in pursuing ambitious missions. Mars exploration,</span>
+<span class="s2">            asteroid mining, and space tourism are no longer science fiction but</span>
+<span class="s2">            achievable goals. Advanced rocket technology and international cooperation</span>
+<span class="s2">            are driving unprecedented progress in our understanding of the cosmos.</span>
+<span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;space_exploration&quot;</span>
+        <span class="p">),</span>
+        <span class="n">TextInput</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            Recent medical breakthroughs in gene therapy and personalized medicine</span>
+<span class="s2">            are revolutionizing healthcare. CRISPR technology allows precise genetic</span>
+<span class="s2">            editing, while immunotherapy is showing remarkable success in cancer</span>
+<span class="s2">            treatment. Telemedicine and AI-assisted diagnosis are making healthcare</span>
+<span class="s2">            more accessible and accurate than ever before.</span>
+<span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;medical_breakthrough&quot;</span>
+        <span class="p">),</span>
+        <span class="n">TextInput</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            Quantum computing represents a paradigm shift in computational power.</span>
+<span class="s2">            Unlike classical computers that use bits, quantum computers use qubits</span>
+<span class="s2">            that can exist in multiple states simultaneously. This quantum superposition</span>
+<span class="s2">            enables solving complex problems exponentially faster, with applications</span>
+<span class="s2">            in cryptography, drug discovery, and financial modeling.</span>
+<span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;quantum_computing&quot;</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run_replicated_async_tasks</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Demonstrate async task replication using AsyncPipeline.replicate_task method.</span>
+
+<span class="sd">    This shows how to:</span>
+<span class="sd">    - Create a single async task configuration</span>
+<span class="sd">    - Replicate it multiple times with unique IDs</span>
+<span class="sd">    - Run replicated tasks concurrently on different inputs</span>
+<span class="sd">    - Track which task processed which input</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🔄 ASYNC TASK REPLICATION DEMO&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Replicating async OpenAI task and running concurrently...&quot;</span><span class="p">)</span>
+
+    <span class="c1"># System prompt used for all summarizations</span>
+    <span class="n">system_prompt</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    You are a professional summarizer. Create concise, informative summaries</span>
+<span class="s2">    that capture the key points and main ideas of the given text. Focus on</span>
+<span class="s2">    the most important information and maintain a clear, readable style.</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Create a single async summarization task</span>
+    <span class="n">summarization_task</span> <span class="o">=</span> <span class="n">AsyncOpenAISummarizationTask</span><span class="p">(</span>
+        <span class="n">system_prompt</span><span class="o">=</span><span class="n">system_prompt</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-3.5-turbo&quot;</span><span class="p">,</span>
+        <span class="n">retries</span><span class="o">=</span><span class="mi">2</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Get sample texts</span>
+    <span class="n">texts</span> <span class="o">=</span> <span class="n">create_sample_texts</span><span class="p">()</span>
+
+    <span class="c1"># Create pipeline and replicate the task</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">AsyncPipeline</span><span class="p">[</span><span class="n">TextInput</span><span class="p">,</span> <span class="nb">str</span><span class="p">]()</span>
+    <span class="n">replicated_tasks</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">replicate_task</span><span class="p">(</span><span class="n">summarization_task</span><span class="p">,</span> <span class="n">num_replicas</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🔄 Replicated 1 async task into </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">)</span><span class="si">}</span><span class="s2"> instances&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Task IDs: </span><span class="si">{</span><span class="p">[</span><span class="n">task</span><span class="o">.</span><span class="n">task_id</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">replicated_tasks</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+
+    <span class="c1"># Show task-to-input mapping</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">,</span> <span class="n">texts</span><span class="p">)):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;📝 Task </span><span class="si">{</span><span class="n">task</span><span class="o">.</span><span class="n">task_id</span><span class="si">}</span><span class="s2"> → Text &#39;</span><span class="si">{</span><span class="n">text</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Starting concurrent execution of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">)</span><span class="si">}</span><span class="s2"> replicated async tasks...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+
+    <span class="c1"># Create individual pipelines for each replicated task</span>
+    <span class="n">pipelines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">task</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">,</span> <span class="n">texts</span><span class="p">):</span>
+        <span class="n">pipeline</span> <span class="o">=</span> <span class="n">AsyncPipeline</span><span class="o">.</span><span class="n">from_tasks</span><span class="p">([</span><span class="n">task</span><span class="p">])</span>
+        <span class="n">pipelines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pipeline</span><span class="p">)</span>
+        <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Ok</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+
+    <span class="c1"># Run pipelines in parallel</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">execution_results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">AsyncPipeline</span><span class="o">.</span><span class="n">run_parallel</span><span class="p">(</span>
+        <span class="n">pipelines</span><span class="p">,</span>
+        <span class="n">inputs</span><span class="p">,</span>
+        <span class="n">debug</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parallel async execution completed in </span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+
+    <span class="c1"># Process results</span>
+    <span class="n">successful_summaries</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">failed_summaries</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">exec_result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">execution_results</span><span class="p">):</span>
+        <span class="n">text_id</span> <span class="o">=</span> <span class="n">texts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">task_id</span> <span class="o">=</span> <span class="n">replicated_tasks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">task_id</span>
+
+        <span class="k">if</span> <span class="n">exec_result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">():</span>
+            <span class="n">summary</span> <span class="o">=</span> <span class="n">exec_result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+            <span class="n">successful_summaries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">summary</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ Successfully processed &#39;</span><span class="si">{</span><span class="n">text_id</span><span class="si">}</span><span class="s2">&#39; with async task </span><span class="si">{</span><span class="n">task_id</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Original length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">)</span><span class="si">}</span><span class="s2"> chars&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Summary length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">summary</span><span class="p">)</span><span class="si">}</span><span class="s2"> chars&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Tokens used: </span><span class="si">{</span><span class="n">summary</span><span class="o">.</span><span class="n">tokens_used</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Task ID: </span><span class="si">{</span><span class="n">summary</span><span class="o">.</span><span class="n">task_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Execution time: </span><span class="si">{</span><span class="n">exec_result</span><span class="o">.</span><span class="n">execution_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">exec_result</span><span class="o">.</span><span class="n">trace</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Trace steps: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">exec_result</span><span class="o">.</span><span class="n">trace</span><span class="o">.</span><span class="n">steps</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">error_msg</span> <span class="o">=</span> <span class="n">exec_result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">unwrap_err</span><span class="p">()</span>
+            <span class="n">failed_summaries</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">text_id</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Failed to process &#39;</span><span class="si">{</span><span class="n">text_id</span><span class="si">}</span><span class="s2">&#39; with async task </span><span class="si">{</span><span class="n">task_id</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Error: </span><span class="si">{</span><span class="n">error_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Execution time: </span><span class="si">{</span><span class="n">exec_result</span><span class="o">.</span><span class="n">execution_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">()</span>
+
+    <span class="c1"># Summary statistics</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ASYNC TASK REPLICATION SUMMARY&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original async task replicated: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">)</span><span class="si">}</span><span class="s2"> times&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total texts processed: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successful summaries: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">successful_summaries</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed summaries: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">failed_summaries</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">successful_summaries</span><span class="p">:</span>
+        <span class="n">total_tokens</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">tokens_used</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">successful_summaries</span><span class="p">)</span>
+        <span class="n">avg_tokens</span> <span class="o">=</span> <span class="n">total_tokens</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">successful_summaries</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total tokens used: </span><span class="si">{</span><span class="n">total_tokens</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average tokens per summary: </span><span class="si">{</span><span class="n">avg_tokens</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Show async task performance</span>
+        <span class="n">task_performance</span> <span class="o">=</span> <span class="p">[(</span><span class="n">s</span><span class="o">.</span><span class="n">task_id</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">tokens_used</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">successful_summaries</span><span class="p">]</span>
+        <span class="n">task_performance</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Most efficient async task: </span><span class="si">{</span><span class="n">task_performance</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">task_performance</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> tokens)&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Least efficient async task: </span><span class="si">{</span><span class="n">task_performance</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">task_performance</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> tokens)&quot;</span><span class="p">)</span>
+
+    <span class="n">total_time</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">execution_time</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">execution_results</span><span class="p">)</span>
+    <span class="n">avg_time</span> <span class="o">=</span> <span class="n">total_time</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">execution_results</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total execution time: </span><span class="si">{</span><span class="n">total_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average time per replicated async task: </span><span class="si">{</span><span class="n">avg_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Concurrent speedup vs sequential: ~</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">x faster&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">execution_results</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">demonstrate_concurrent_vs_sequential</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compare concurrent replicated tasks vs sequential processing.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🔍 CONCURRENT vs SEQUENTIAL COMPARISON&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Comparing replicated async tasks vs sequential processing...&quot;</span><span class="p">)</span>
+
+    <span class="n">system_prompt</span> <span class="o">=</span> <span class="s2">&quot;Create a brief summary of the main points.&quot;</span>
+
+    <span class="c1"># Create base task</span>
+    <span class="n">summarization_task</span> <span class="o">=</span> <span class="n">AsyncOpenAISummarizationTask</span><span class="p">(</span>
+        <span class="n">system_prompt</span><span class="o">=</span><span class="n">system_prompt</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-3.5-turbo&quot;</span><span class="p">,</span>
+        <span class="n">retries</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Use first 3 texts for comparison</span>
+    <span class="n">texts</span> <span class="o">=</span> <span class="n">create_sample_texts</span><span class="p">()[:</span><span class="mi">3</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">1. CONCURRENT EXECUTION (Replicated Tasks)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+
+    <span class="c1"># Concurrent execution with replicated tasks</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">AsyncPipeline</span><span class="p">[</span><span class="n">TextInput</span><span class="p">,</span> <span class="nb">str</span><span class="p">]()</span>
+    <span class="n">replicated_tasks</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">replicate_task</span><span class="p">(</span><span class="n">summarization_task</span><span class="p">,</span> <span class="n">num_replicas</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">))</span>
+
+    <span class="n">pipelines</span> <span class="o">=</span> <span class="p">[</span><span class="n">AsyncPipeline</span><span class="o">.</span><span class="n">from_tasks</span><span class="p">([</span><span class="n">task</span><span class="p">])</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">replicated_tasks</span><span class="p">]</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Ok</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">]</span>
+
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">concurrent_results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">AsyncPipeline</span><span class="o">.</span><span class="n">run_parallel</span><span class="p">(</span><span class="n">pipelines</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">concurrent_time</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+
+    <span class="n">concurrent_success</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">concurrent_results</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Time: </span><span class="si">{</span><span class="n">concurrent_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Success: </span><span class="si">{</span><span class="n">concurrent_success</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Tasks used: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">)</span><span class="si">}</span><span class="s2"> replicated instances&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">2. SEQUENTIAL EXECUTION (Same Task)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+
+    <span class="c1"># Sequential execution with same task</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">sequential_results</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">:</span>
+        <span class="n">pipeline</span> <span class="o">=</span> <span class="n">AsyncPipeline</span><span class="o">.</span><span class="n">from_tasks</span><span class="p">([</span><span class="n">summarization_task</span><span class="p">])</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run_sequence</span><span class="p">(</span><span class="n">Ok</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">sequential_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="n">sequential_time</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+    <span class="n">sequential_success</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">sequential_results</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">())</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Time: </span><span class="si">{</span><span class="n">sequential_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Success: </span><span class="si">{</span><span class="n">sequential_success</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Tasks used: 1 task instance (reused)&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📊 PERFORMANCE ANALYSIS&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+    <span class="n">speedup</span> <span class="o">=</span> <span class="n">sequential_time</span> <span class="o">/</span> <span class="n">concurrent_time</span> <span class="k">if</span> <span class="n">concurrent_time</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Concurrent replicated tasks: </span><span class="si">{</span><span class="n">concurrent_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sequential single task: </span><span class="si">{</span><span class="n">sequential_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Speedup with replication: </span><span class="si">{</span><span class="n">speedup</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">x faster&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Efficiency gain: </span><span class="si">{</span><span class="p">((</span><span class="n">sequential_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">concurrent_time</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">sequential_time</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">concurrent_results</span><span class="p">,</span> <span class="n">sequential_results</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">demonstrate_async_task_benefits</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Demonstrate the benefits of async task replication.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">⚡ ASYNC TASK REPLICATION BENEFITS&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Demonstrating benefits of async task replication...&quot;</span><span class="p">)</span>
+
+    <span class="n">system_prompt</span> <span class="o">=</span> <span class="s2">&quot;Provide a concise summary of the key innovations.&quot;</span>
+
+    <span class="c1"># Create base async task</span>
+    <span class="n">base_task</span> <span class="o">=</span> <span class="n">AsyncOpenAISummarizationTask</span><span class="p">(</span>
+        <span class="n">system_prompt</span><span class="o">=</span><span class="n">system_prompt</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-3.5-turbo&quot;</span><span class="p">,</span>
+        <span class="n">retries</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🔧 Base async task created with ID: </span><span class="si">{</span><span class="n">base_task</span><span class="o">.</span><span class="n">task_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Create pipeline and replicate the task</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">AsyncPipeline</span><span class="p">[</span><span class="n">TextInput</span><span class="p">,</span> <span class="nb">str</span><span class="p">]()</span>
+    <span class="n">replicated_tasks</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">replicate_task</span><span class="p">(</span><span class="n">base_task</span><span class="p">,</span> <span class="n">num_replicas</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🔄 Async task replicated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">)</span><span class="si">}</span><span class="s2"> times:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">task</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Replica </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">task</span><span class="o">.</span><span class="n">task_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Same config: </span><span class="si">{</span><span class="n">task</span><span class="o">.</span><span class="n">system_prompt</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">base_task</span><span class="o">.</span><span class="n">system_prompt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Unique ID: </span><span class="si">{</span><span class="n">task</span><span class="o">.</span><span class="n">task_id</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">base_task</span><span class="o">.</span><span class="n">task_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Async client: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">client</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+    <span class="c1"># Test with sample texts</span>
+    <span class="n">sample_texts</span> <span class="o">=</span> <span class="n">create_sample_texts</span><span class="p">()[:</span><span class="mi">3</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Testing replicated async tasks concurrently...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+
+    <span class="c1"># Create pipelines for each replicated task</span>
+    <span class="n">pipelines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">task</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">,</span> <span class="n">sample_texts</span><span class="p">):</span>
+        <span class="n">pipeline</span> <span class="o">=</span> <span class="n">AsyncPipeline</span><span class="o">.</span><span class="n">from_tasks</span><span class="p">([</span><span class="n">task</span><span class="p">])</span>
+        <span class="n">pipelines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pipeline</span><span class="p">)</span>
+        <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Ok</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+
+    <span class="c1"># Run all replicated tasks concurrently</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">AsyncPipeline</span><span class="o">.</span><span class="n">run_parallel</span><span class="p">(</span><span class="n">pipelines</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Concurrent async execution completed in </span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+
+    <span class="n">successful_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">():</span>
+            <span class="n">summary</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+            <span class="n">successful_count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ Replica </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> (Task </span><span class="si">{</span><span class="n">replicated_tasks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">task_id</span><span class="si">}</span><span class="s2">):&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Text: </span><span class="si">{</span><span class="n">sample_texts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Tokens: </span><span class="si">{</span><span class="n">summary</span><span class="o">.</span><span class="n">tokens_used</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Time: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">execution_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Task ID in result: </span><span class="si">{</span><span class="n">summary</span><span class="o">.</span><span class="n">task_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Replica </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> failed: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">unwrap_err</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;📊 Async Replication Results:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Successful executions: </span><span class="si">{</span><span class="n">successful_count</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Total concurrent time: </span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Average time per task: </span><span class="si">{</span><span class="p">(</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Async advantage: Non-blocking concurrent execution&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">demonstrate_async_error_handling</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Demonstrate error handling in replicated async tasks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🔍 ASYNC ERROR HANDLING WITH REPLICATION&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+
+    <span class="n">system_prompt</span> <span class="o">=</span> <span class="s2">&quot;Summarize this text:&quot;</span>
+
+    <span class="c1"># Create base task</span>
+    <span class="n">base_task</span> <span class="o">=</span> <span class="n">AsyncOpenAISummarizationTask</span><span class="p">(</span>
+        <span class="n">system_prompt</span><span class="o">=</span><span class="n">system_prompt</span><span class="p">,</span>
+        <span class="n">retries</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Create test cases - some will fail</span>
+    <span class="n">test_cases</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">TextInput</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;This is a valid text for summarization that should work fine.&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;valid_text&quot;</span><span class="p">),</span>
+        <span class="n">TextInput</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;empty_text&quot;</span><span class="p">),</span>  <span class="c1"># This will fail</span>
+        <span class="n">TextInput</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Short&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;too_short&quot;</span><span class="p">),</span>  <span class="c1"># This might fail</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Replicate task for each test case</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">AsyncPipeline</span><span class="p">[</span><span class="n">TextInput</span><span class="p">,</span> <span class="nb">str</span><span class="p">]()</span>
+    <span class="n">replicated_tasks</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">replicate_task</span><span class="p">(</span><span class="n">base_task</span><span class="p">,</span> <span class="n">num_replicas</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">test_cases</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Testing </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">test_cases</span><span class="p">)</span><span class="si">}</span><span class="s2"> scenarios with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">)</span><span class="si">}</span><span class="s2"> replicated async tasks:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">test_case</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">,</span> <span class="n">test_cases</span><span class="p">)):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Task </span><span class="si">{</span><span class="n">task</span><span class="o">.</span><span class="n">task_id</span><span class="si">}</span><span class="s2"> → </span><span class="si">{</span><span class="n">test_case</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Create pipelines and run in parallel</span>
+    <span class="n">pipelines</span> <span class="o">=</span> <span class="p">[</span><span class="n">AsyncPipeline</span><span class="o">.</span><span class="n">from_tasks</span><span class="p">([</span><span class="n">task</span><span class="p">])</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">replicated_tasks</span><span class="p">]</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Ok</span><span class="p">(</span><span class="n">test_case</span><span class="p">)</span> <span class="k">for</span> <span class="n">test_case</span> <span class="ow">in</span> <span class="n">test_cases</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Running error handling test...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">AsyncPipeline</span><span class="o">.</span><span class="n">run_parallel</span><span class="p">(</span><span class="n">pipelines</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Async error handling test completed in </span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">test_case</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">test_cases</span><span class="p">,</span> <span class="n">replicated_tasks</span><span class="p">)):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">test_case</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> (Task </span><span class="si">{</span><span class="n">task</span><span class="o">.</span><span class="n">task_id</span><span class="si">}</span><span class="s2">):&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">():</span>
+            <span class="n">summary</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   ✅ Success: </span><span class="si">{</span><span class="n">summary</span><span class="o">.</span><span class="n">tokens_used</span><span class="si">}</span><span class="s2"> tokens&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Summary: </span><span class="si">{</span><span class="n">summary</span><span class="o">.</span><span class="n">summary</span><span class="p">[:</span><span class="mi">50</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   ❌ Error: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">unwrap_err</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Execution time: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">execution_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">trace</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Trace steps: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">trace</span><span class="o">.</span><span class="n">steps</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Show error isolation benefit</span>
+    <span class="n">successful</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">())</span>
+    <span class="n">failed</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">-</span> <span class="n">successful</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🛡️ Error Isolation Benefits:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Total tasks: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Successful: </span><span class="si">{</span><span class="n">successful</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Failed: </span><span class="si">{</span><span class="n">failed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Success rate: </span><span class="si">{</span><span class="n">successful</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Key benefit: Failed tasks don&#39;t affect successful ones!&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">async_replication_performance_analysis</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Analyze performance characteristics of async task replication.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📊 ASYNC TASK REPLICATION PERFORMANCE ANALYSIS&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+
+    <span class="n">system_prompt</span> <span class="o">=</span> <span class="s2">&quot;Provide a brief summary of the main points.&quot;</span>
+    <span class="n">texts</span> <span class="o">=</span> <span class="n">create_sample_texts</span><span class="p">()[:</span><span class="mi">4</span><span class="p">]</span>  <span class="c1"># Use 4 texts for analysis</span>
+
+    <span class="c1"># Create base task</span>
+    <span class="n">base_task</span> <span class="o">=</span> <span class="n">AsyncOpenAISummarizationTask</span><span class="p">(</span>
+        <span class="n">system_prompt</span><span class="o">=</span><span class="n">system_prompt</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-3.5-turbo&quot;</span><span class="p">,</span>
+        <span class="n">retries</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Performance analysis with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span><span class="si">}</span><span class="s2"> texts...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 1. Single task, sequential execution</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Single Async Task (Sequential Processing)&quot;</span><span class="p">)</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="n">sequential_results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">:</span>
+        <span class="n">pipeline</span> <span class="o">=</span> <span class="n">AsyncPipeline</span><span class="o">.</span><span class="n">from_tasks</span><span class="p">([</span><span class="n">base_task</span><span class="p">])</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run_sequence</span><span class="p">(</span><span class="n">Ok</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">sequential_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="n">sequential_time</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+    <span class="n">sequential_success</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">sequential_results</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Time: </span><span class="si">{</span><span class="n">sequential_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Success: </span><span class="si">{</span><span class="n">sequential_success</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Tasks used: 1 (reused)&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 2. Replicated tasks, parallel execution</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">2. Replicated Async Tasks (Parallel Processing)&quot;</span><span class="p">)</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">AsyncPipeline</span><span class="p">[</span><span class="n">TextInput</span><span class="p">,</span> <span class="nb">str</span><span class="p">]()</span>
+    <span class="n">replicated_tasks</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">replicate_task</span><span class="p">(</span><span class="n">base_task</span><span class="p">,</span> <span class="n">num_replicas</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">))</span>
+
+    <span class="n">pipelines</span> <span class="o">=</span> <span class="p">[</span><span class="n">AsyncPipeline</span><span class="o">.</span><span class="n">from_tasks</span><span class="p">([</span><span class="n">task</span><span class="p">])</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">replicated_tasks</span><span class="p">]</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Ok</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">]</span>
+
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">parallel_results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">AsyncPipeline</span><span class="o">.</span><span class="n">run_parallel</span><span class="p">(</span><span class="n">pipelines</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">parallel_time</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+
+    <span class="n">parallel_success</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">parallel_results</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">is_ok</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Time: </span><span class="si">{</span><span class="n">parallel_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Success: </span><span class="si">{</span><span class="n">parallel_success</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Tasks used: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">)</span><span class="si">}</span><span class="s2"> (replicated)&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 3. Analysis</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📈 Performance Metrics:&quot;</span><span class="p">)</span>
+    <span class="n">speedup</span> <span class="o">=</span> <span class="n">sequential_time</span> <span class="o">/</span> <span class="n">parallel_time</span> <span class="k">if</span> <span class="n">parallel_time</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">efficiency</span> <span class="o">=</span> <span class="p">(</span><span class="n">sequential_time</span> <span class="o">-</span> <span class="n">parallel_time</span><span class="p">)</span> <span class="o">/</span> <span class="n">sequential_time</span> <span class="o">*</span> <span class="mi">100</span> <span class="k">if</span> <span class="n">sequential_time</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Sequential time: </span><span class="si">{</span><span class="n">sequential_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Parallel time: </span><span class="si">{</span><span class="n">parallel_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Speedup: </span><span class="si">{</span><span class="n">speedup</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">x faster&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Efficiency gain: </span><span class="si">{</span><span class="n">efficiency</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Scalability: Linear with task replication&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 4. Resource utilization</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">💻 Resource Utilization:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Memory overhead: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">)</span><span class="si">}</span><span class="s2"> task instances&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Concurrent connections: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">replicated_tasks</span><span class="p">)</span><span class="si">}</span><span class="s2"> to OpenAI API&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Task isolation: Each replica independent&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Error resilience: Failures don&#39;t cascade&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 5. Recommendations</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">💡 Recommendations:&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">speedup</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   ✅ Excellent: Task replication provides </span><span class="si">{</span><span class="n">speedup</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">x speedup&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   ✅ Use replicated tasks for parallel processing&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">speedup</span> <span class="o">&gt;</span> <span class="mf">1.5</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   🟡 Good: Task replication provides </span><span class="si">{</span><span class="n">speedup</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">x speedup&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   🟡 Consider replicated tasks for time-sensitive operations&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   🔴 Limited: Only </span><span class="si">{</span><span class="n">speedup</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">x speedup - check for bottlenecks&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   🔴 Sequential might be sufficient for this workload&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">parallel_results</span><span class="p">,</span> <span class="n">sequential_results</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Main demonstration function.&quot;&quot;&quot;</span>
+    <span class="c1"># Ensure OpenAI API key is available</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;OPENAI_API_KEY&quot;</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;❌ Error: OPENAI_API_KEY environment variable not set.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Please set your OpenAI API key:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;export OPENAI_API_KEY=&#39;your-api-key-here&#39;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;or create a .env file with: OPENAI_API_KEY=your-api-key-here&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🚀 NeoPipe OpenAI Async Pipeline Example&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Run all demonstrations</span>
+        <span class="k">await</span> <span class="n">run_replicated_async_tasks</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">demonstrate_concurrent_vs_sequential</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">demonstrate_async_task_benefits</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">demonstrate_async_error_handling</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">async_replication_performance_analysis</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✨ Async task replication example completed!&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Key takeaways:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- replicate_task() creates multiple async task instances with unique IDs&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Async replication enables true concurrent processing with non-blocking I/O&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Each replicated async task operates independently&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Perfect for scaling API calls and I/O-bound operations&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Significant performance improvements over sequential execution&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Error isolation: failures in one replica don&#39;t affect others&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- AsyncPipeline.run_parallel() efficiently manages concurrent execution&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Ideal for high-throughput, low-latency processing scenarios&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Example failed: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
+        <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</code></pre></div>
+
+<h2 id="key-features-demonstrated">Key Features Demonstrated<a class="headerlink" href="#key-features-demonstrated" title="Permanent link">&para;</a></h2>
+<h3 id="1-three-async-execution-modes">1. <strong>Three Async Execution Modes</strong><a class="headerlink" href="#1-three-async-execution-modes" title="Permanent link">&para;</a></h3>
+<p><strong>Async Task Replication:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Create base async task</span>
+<span class="n">base_task</span> <span class="o">=</span> <span class="n">AsyncOpenAISummarizationTask</span><span class="p">(</span><span class="n">system_prompt</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-3.5-turbo&quot;</span><span class="p">)</span>
+
+<span class="c1"># Replicate async task with unique IDs</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">AsyncPipeline</span><span class="p">[</span><span class="n">TextInput</span><span class="p">,</span> <span class="nb">str</span><span class="p">]()</span>
+<span class="n">replicated_tasks</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">replicate_task</span><span class="p">(</span><span class="n">base_task</span><span class="p">,</span> <span class="n">num_replicas</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># Each replica has unique task_id but same async configuration</span>
+<span class="nb">print</span><span class="p">([</span><span class="n">task</span><span class="o">.</span><span class="n">task_id</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">replicated_tasks</span><span class="p">])</span>
+</code></pre></div>
+
+<p><strong>Parallel Execution of Replicated Async Tasks:</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Create individual pipelines for each replicated async task</span>
+<span class="n">pipelines</span> <span class="o">=</span> <span class="p">[</span><span class="n">AsyncPipeline</span><span class="o">.</span><span class="n">from_tasks</span><span class="p">([</span><span class="n">task</span><span class="p">])</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">replicated_tasks</span><span class="p">]</span>
+
+<span class="c1"># Run in parallel with concurrent async execution</span>
+<span class="n">execution_results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">AsyncPipeline</span><span class="o">.</span><span class="n">run_parallel</span><span class="p">(</span><span class="n">pipelines</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="2-async-task-tracking-and-performance">2. <strong>Async Task Tracking and Performance</strong><a class="headerlink" href="#2-async-task-tracking-and-performance" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Each replicated async task provides detailed tracking</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">SummaryOutput</span><span class="p">(</span>
+    <span class="n">original_text</span><span class="o">=</span><span class="n">text_data</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+    <span class="n">summary</span><span class="o">=</span><span class="n">summary</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+    <span class="n">tokens_used</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">usage</span><span class="o">.</span><span class="n">total_tokens</span><span class="p">,</span>
+    <span class="n">task_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">task_id</span>  <span class="c1"># Unique async task identifier</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<h3 id="3-non-blocking-concurrent-api-calls">3. <strong>Non-blocking Concurrent API Calls</strong><a class="headerlink" href="#3-non-blocking-concurrent-api-calls" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Multiple async API calls execute concurrently</span>
+<span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">text_data</span><span class="o">.</span><span class="n">text</span><span class="p">}</span>
+    <span class="p">],</span>
+    <span class="n">max_tokens</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
+    <span class="n">temperature</span><span class="o">=</span><span class="mf">0.3</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<h3 id="4-benefits-of-async-task-replication">4. <strong>Benefits of Async Task Replication</strong><a class="headerlink" href="#4-benefits-of-async-task-replication" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Concurrency</strong>: True parallel async execution</li>
+<li><strong>Scalability</strong>: Linear performance improvement with replicas</li>
+<li><strong>Efficiency</strong>: Non-blocking I/O maximizes resource utilization</li>
+<li><strong>Isolation</strong>: Independent async task instances</li>
+<li><strong>Monitoring</strong>: Individual task performance tracking</li>
+<li><strong>Resilience</strong>: Async error handling with fault isolation</li>
+</ul>
+<h3 id="5-use-cases-for-async-task-replication">5. <strong>Use Cases for Async Task Replication</strong><a class="headerlink" href="#5-use-cases-for-async-task-replication" title="Permanent link">&para;</a></h3>
+<ul>
+<li>High-throughput API processing</li>
+<li>Concurrent data fetching from multiple sources</li>
+<li>Parallel machine learning inference</li>
+<li>Real-time data processing pipelines</li>
+<li>Scalable microservices orchestration</li>
+</ul>
+<h2 id="setup-requirements">Setup Requirements<a class="headerlink" href="#setup-requirements" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Install dependencies</span>
+pip<span class="w"> </span>install<span class="w"> </span>openai<span class="w"> </span>python-dotenv
+
+<span class="c1"># Set up environment</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_API_KEY</span><span class="o">=</span><span class="s2">&quot;your-api-key-here&quot;</span>
+<span class="c1"># or create .env file with: OPENAI_API_KEY=your-api-key-here</span>
+</code></pre></div>
+
+<h2 id="when-to-use-async-task-replication">When to Use Async Task Replication<a class="headerlink" href="#when-to-use-async-task-replication" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Benefit</th>
+<th>Performance Gain</th>
+<th>Best Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>I/O-bound operations</strong></td>
+<td>Non-blocking concurrent execution</td>
+<td>3-10x speedup</td>
+<td>API calls, file processing</td>
+</tr>
+<tr>
+<td><strong>Independent processing</strong></td>
+<td>Parallel execution without dependencies</td>
+<td>Linear scaling</td>
+<td>Multiple data sources</td>
+</tr>
+<tr>
+<td><strong>High-throughput systems</strong></td>
+<td>Maximize resource utilization</td>
+<td>Significant</td>
+<td>Real-time processing</td>
+</tr>
+<tr>
+<td><strong>Fault-tolerant systems</strong></td>
+<td>Error isolation between replicas</td>
+<td>Same + resilience</td>
+<td>Production systems</td>
+</tr>
+</tbody>
+</table>
+<p>This example demonstrates NeoPipe's async task replication for building highly scalable, concurrent processing systems with optimal resource utilization and comprehensive monitoring.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>
